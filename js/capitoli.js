@@ -316,18 +316,21 @@
       svcMobileList.appendChild(item);
     });
 
-    // pin + corsa orizzontale solo su desktop e senza reduced-motion: negli altri casi il CSS nasconde
-    // lo stage e mostra la lista verticale, quindi qui non serve alcun fallback JS
-    const svcDesktop=window.matchMedia('(min-width:1024px)').matches;
-    if(svcStage && svcDesktop && !reduce){
+    // pin + corsa orizzontale solo su desktop e senza reduced-motion: sotto i 1024px il CSS nasconde
+    // lo stage e mostra la lista verticale. La soglia va rivalutata a ogni resize (non letta una volta
+    // sola): se il viewport attraversa il breakpoint, misura e stato si riallineano da soli
+    if(svcStage && !reduce){
       const svcCards=[...svcTrack.children];
-      let svcTravel=1;
+      let svcTravel=1, svcActive=false;
       function measureSvc(){
+        svcActive=innerWidth>=1024;
+        if(!svcActive){ svcStage.style.height=''; svcTrack.style.transform=''; return; }
         // 1px di scroll = 1px di corsa orizzontale: lo stage è alto quanto viewport + corsa
         svcTravel=Math.max(1,svcTrack.scrollWidth-innerWidth);
         svcStage.style.height=(innerHeight+svcTravel)+'px';
       }
       function renderSvc(p){
+        if(!svcActive) return;
         svcTrack.style.transform='translateX('+(-p*svcTravel).toFixed(1)+'px)';
         if(svcProgressBar) svcProgressBar.style.width=(p*100).toFixed(2)+'%';
         if(svcCounter) svcCounter.textContent=(Math.min(SERVICES.length,Math.round(p*(SERVICES.length-1))+1))+' / '+String(SERVICES.length).padStart(2,'0');

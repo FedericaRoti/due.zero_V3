@@ -148,7 +148,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* ---- ponte verso 2.0 PROJECT: campo fotografico immersivo (non un box), emerge da destra, crop ravvicinato -> a fuoco ---- */
 .ecoProjectImg{position:absolute;right:-10vw;top:50%;width:78vw;height:82vh;z-index:1;
-  background-image:url('img/eco_project_bg.jpg');background-repeat:no-repeat;transform-origin:center;
+  background-image:url('../img/eco_project_bg.jpg');background-repeat:no-repeat;transform-origin:center;
   -webkit-mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
   mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
   opacity:0;pointer-events:none;will-change:transform,filter,background-size,background-position}
@@ -169,7 +169,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* ---- HYPERPARTS: campo fotografico immersivo (tavolo di lavoro reale), titolo dominante con maschera laterale ---- */
 .ecoHyperImg{position:absolute;inset:-4vh -4vw;z-index:1;
-  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.55) 62%,rgba(7,12,20,.78) 100%),url('img/eco_hyperparts_bg.jpg');
+  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.55) 62%,rgba(7,12,20,.78) 100%),url('../img/eco_hyperparts_bg.jpg');
   background-repeat:no-repeat;background-position:center,center 30%;background-size:cover,cover;
   transform-origin:50% 30%;opacity:0;pointer-events:none;will-change:transform,filter,clip-path}
 
