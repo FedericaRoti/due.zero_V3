@@ -1,20 +1,23 @@
 # Nuovo sito Due.Zero — cose da chiedere prima della produzione
 
-Il dominio resta `duezero.eu`. Ogni voce indica cosa manca oggi nel prototipo (`pitch/`).
+Il dominio resta `duezero.eu`. Ogni voce indica cosa manca oggi in questa base (`~/Projects/duezero-v3`, nata dal prototipo `pitch/` di Due.ZeroV3 e ora indipendente).
 
 ## Bloccanti (senza queste non si va in produzione)
 
-- [ ] **Form contatti** — oggi il form apre un `mailto:` verso info@duezero.eu con i campi precompilati: funziona, ma dipende dal client email dell'utente (su molti PC aziendali non è configurato). Da chiedere: a quale email devono arrivare le richieste, e quale soluzione preferiscono tra:
-  1. tenere il `mailto:` (zero costi e zero infrastruttura, esperienza povera);
-  2. servizio esterno tipo Formspree/Web3Forms (funziona su hosting statico, va verificato lato GDPR, piccolo costo);
-  3. script sul server attuale (l'hosting è IIS/ASP.NET, lo supporta — ma serve chi lo scrive e lo mantiene).
+- [ ] **Form contatti** — il sito attuale (`contatti.aspx`, verificato) invia già lato server: postback ASP.NET con reCAPTCHA, l'email parte dal loro backend. Il nostro form invece apre un `mailto:` precompilato verso info@duezero.eu (funziona ma dipende dal client email dell'utente). Da chiedere:
+  1. **chi mantiene il codice ASP.NET del sito attuale?** La strada più coerente è riusare lo stesso invio server-side per il nuovo form (endpoint che riceve i campi e spedisce l'email) — l'infrastruttura c'è già;
+  2. se nessuno lo mantiene: servizio esterno tipo Formspree/Web3Forms (funziona su statico, da verificare GDPR, piccolo costo);
+  3. ultima spiaggia: tenere il `mailto:`.
+  In ogni caso: a quale indirizzo devono arrivare le richieste, e serve la checkbox consenso privacy.
 - [ ] **Privacy e Cookie policy** — URL o testi. Obbligatorie: il form raccoglie nome ed email. Chi le redige (legale/consulente)? Nel footer oggi sono segnaposto non cliccabili. Al form servirà anche la checkbox di consenso.
 - [ ] **Hosting e DNS** — dove verrà pubblicato il nuovo sito quando sostituirà il vecchio? Chi gestisce il DNS di duezero.eu? Serve un referente tecnico (GitHub Pages è solo anteprima).
-- [ ] **Machine Map e 2.0 Project** — sono applicazioni che girano sul server attuale (`duezero.eu/mappa-embed.html` e `duezero.eu/DueZeroProject/Default.aspx`, ASP.NET su IIS). Il dominio resta lo stesso, quindi il punto non è "cambiare i link" ma capire la convivenza sul server: il nuovo sito sostituirà le pagine, le applicazioni devono continuare a rispondere. Da chiedere:
+- [ ] **Machine Map e 2.0 Project** — il nuovo sito **non deve costruire né gestire nulla** di queste due cose: si limita a *incorporare* la mappa (iframe su `mappa-embed.html`) e a *linkare* la pagina di login di 2.0 Project. Tutto ciò che sta dietro (dati, login, app) resta responsabilità loro. L'unico rischio è che, sostituendo il vecchio sito sullo stesso dominio, quelle URL smettano di rispondere. Da chiedere:
   1. chi gestisce il server / come sono deployate le app (referente tecnico o fornitore);
-  2. se restano ai percorsi attuali → nel nuovo sito basta puntare a `www.duezero.eu/...` (il link senza `www` fa un redirect 301 inutile);
-  3. se si vuole un URL più pulito (es. `project.duezero.eu`) → serve configurazione IIS/DNS, da decidere prima del go-live;
-  4. conferma che il deploy del nuovo sito non toccherà le cartelle delle app sul server.
+  2. conferma che il deploy del nuovo sito non toccherà `DueZeroProject/`, `mappa-embed.html`, `Gestori/` e le altre cartelle applicative;
+  3. se restano ai percorsi attuali → nel nuovo sito basta puntare a `www.duezero.eu/...` (senza `www` c'è un redirect 301 inutile);
+  4. se si vuole un URL più pulito (es. `project.duezero.eu`) → configurazione IIS/DNS, da decidere prima del go-live.
+
+- [ ] **Mappa: costi Mapbox e alternative** (verificato sul sorgente attuale) — la mappa usa Mapbox GL JS v2.2 (stile `dark-v10`, token pubblico nel sorgente) ma **i dati delle macchine arrivano dal loro backend** (`Gestori/GET_Elenco_Pubblicazioni_Mappa.ashx` restituisce il GeoJSON): la parte "numeri che si aggiornano" è loro e resta identica con qualsiasi libreria. Mapbox fattura sui caricamenti mappa. Da chiedere: quanti caricamenti/mese fanno oggi (dashboard Mapbox) e se il piano gratuito basta. Se vogliono azzerare il costo: **MapLibre GL** (fork open source di Mapbox GL, API quasi identica → migrazione contenuta) + tile gratuite/economiche (OpenFreeMap, MapTiler free tier) — soglie e prezzi da verificare sulle docs al momento della decisione. Google Maps già escluso da loro per costi.
 
 ## Contenuti
 
