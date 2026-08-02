@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Sitemap: https://www.duezero.eu/sitemap.xml — da attivare quando gli URL definitivi saranno congelati

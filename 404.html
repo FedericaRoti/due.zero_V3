@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pagina non trovata — Due.Zero</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="css/fonts.css">
+<style>
+:root{--black:#0A0A0A;--paper:#EDEDEA;--red:#E2231A;
+  --geo:'Big Shoulders Display',sans-serif;--mono:'IBM Plex Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--paper);font-family:var(--geo);
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 8vw}
+.mark{width:58px;height:47px;background:var(--red);clip-path:polygon(100% 0,100% 100%,0 100%,100% 0);margin-bottom:36px}
+h1{font-weight:800;text-transform:uppercase;font-size:clamp(70px,14vw,220px);line-height:.92;letter-spacing:-.01em}
+p{margin-top:24px;max-width:44ch;font-family:var(--mono);font-size:clamp(13px,1.2vw,16px);
+  line-height:1.6;letter-spacing:.03em;color:rgba(237,237,234,.6)}
+a{margin-top:34px;display:inline-flex;align-items:center;gap:12px;align-self:flex-start;
+  color:var(--paper);text-decoration:none;font-family:var(--mono);font-size:14px;letter-spacing:.1em;
+  text-transform:uppercase;border-bottom:1px solid rgba(237,237,234,.35);padding-bottom:6px;
+  transition:border-color .25s ease}
+a span{color:var(--red);transition:transform .25s ease}
+a:hover{border-color:rgba(237,237,234,.75)}
+a:hover span{transform:translateX(5px)}
+</style>
+</head>
+<body>
+<div class="mark" aria-hidden="true"></div>
+<h1>404</h1>
+<p>La pagina che cerchi non esiste o è stata spostata.</p>
+<a href="/">Torna alla home <span>→</span></a>
+</body>
+</html>

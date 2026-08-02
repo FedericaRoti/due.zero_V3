@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parliamone — Due.Zero</title>
+<meta name="description" content="Contatta Due.Zero: documentazione tecnica, sicurezza macchine e after sales per l'industria. Bologna — +39 051 50 60 797, info@duezero.eu.">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preload" href="fonts/BigShouldersDisplay-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/IBMPlexMono-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/parliamone.css">
+</head>
+<body>
+
+<div class="topbar">
+  <button class="menuBtn" id="menuBtn">MENU <span class="plus">[+]</span></button>
+</div>
+
+<!-- ================= HERO — carta calda ================= -->
+<section class="pgHero" id="pgHero">
+  <div class="pgHeroMark" aria-hidden="true"></div>
+  <span class="pgEyebrow">DUE.ZERO / CONTATTI</span>
+  <h1>PARLIAMONE.</h1>
+  <p>Raccontaci cosa stai costruendo. Ti aiutiamo a rendere ogni informazione più chiara, verificabile e utile.</p>
+</section>
+
+<!-- ================= AREA CONTATTO — nero =================
+     Form solo visivo: nessun backend, nessun invio simulato. Al click apre un mailto: reale verso
+     info@duezero.eu con oggetto fisso "Richiesta dal sito Due.Zero" e un corpo precompilato dai campi,
+     così le informazioni non vanno perse — nessun alert/toast finto. -->
+<section class="pgContact" id="pgContact">
+  <h2>IL PROSSIMO PROGETTO INIZIA DA QUI.</h2>
+  <div class="pgGrid">
+    <div class="pgInfo">
+      <span class="pgInfoLabel">EMAIL</span>
+      <a href="mailto:info@duezero.eu">info@duezero.eu</a>
+      <span class="pgInfoLabel">TELEFONO</span>
+      <a href="tel:+390515060797">+39 051 50 60 797</a>
+      <span class="pgInfoLabel">SEDE</span>
+      <address>
+        Via Persicetana Vecchia, 26<br>
+        40132 Bologna (BO)
+      </address>
+    </div>
+
+    <form class="pgForm" id="pgForm">
+      <div class="pgField">
+        <label for="pgName">Nome e azienda</label>
+        <input type="text" id="pgName" name="name" autocomplete="name">
+      </div>
+      <div class="pgField">
+        <label for="pgEmail">Email</label>
+        <input type="email" id="pgEmail" name="email" autocomplete="email">
+      </div>
+      <div class="pgField">
+        <label for="pgNeed">Di cosa hai bisogno?</label>
+        <textarea id="pgNeed" name="need"></textarea>
+      </div>
+      <button type="submit" class="pgSubmit">INVIA RICHIESTA <span>→</span></button>
+    </form>
+  </div>
+</section>
+
+<!-- ================= CHIUSURA ================= -->
+<section class="pgClose" id="pgClose">
+  <img src="img/DueZero_logo.png" alt="Due.Zero" class="pgCloseLogo">
+  <span class="pgCloseTag">DOCUMENTAZIONE TECNICA / SICUREZZA MACCHINE / AFTER SALES</span>
+</section>
+
+<footer class="pgLegalFooter">
+  <div class="footerLegal">
+    <span>© <span id="footerYear"></span> DUE.ZERO SRL</span>
+    <span>C.F. &amp; P.I. IT03840401206</span>
+    <span class="footerLegalStatic" data-legal="privacy">Privacy</span>
+    <span class="footerLegalStatic" data-legal="cookie">Cookie</span>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay">
+  <button class="close" id="closeBtn">CHIUDI <span class="plus">[+]</span></button>
+  <a href="index.html#scene"><span class="oi">01</span> Chi siamo</a>
+  <a href="index.html#scene2"><span class="oi">02</span> Ecosistema</a>
+  <a href="index.html#servizi"><span class="oi">03</span> Servizi</a>
+  <a href="index.html#qualitySection"><span class="oi">04</span> Qualità</a>
+  <a href="index.html#newsSection"><span class="oi">05</span> News</a>
+  <a href="parliamone.html" class="cta"><span class="oi">→</span> Parliamone</a>
+</div>
+
+<script src="js/parliamone.js"></script>
+</body>
+</html>

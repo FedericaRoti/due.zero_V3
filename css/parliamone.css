@@ -1,0 +1,118 @@
+/* Variabili, reset, palette e font IDENTICI alla homepage (prototipo-hero-card.html) — non toccare. */
+:root{--black:#0A0A0A;--paper:#EDEDEA;--ink:#141412;--red:#E2231A;
+  --geo:'Big Shoulders Display',sans-serif;--mono:'IBM Plex Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
+
+/* ---- topbar + menu (MENO l'hamburger, IDENTICO alla homepage: stesse classi, stesso comportamento) ---- */
+.topbar{position:fixed;top:0;left:0;right:0;height:62px;z-index:8;display:flex;align-items:center;justify-content:flex-end;padding:0 38px}
+.menuBtn{pointer-events:auto;cursor:pointer;background:none;border:none;color:var(--ink);
+  font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;transition:color .5s}
+.menuBtn .plus{color:var(--red)}
+
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(8,8,8,.97);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:center;padding:0 8vw;gap:6px;opacity:0;pointer-events:none;transition:opacity .4s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay a{font-family:var(--geo);font-weight:600;text-transform:uppercase;text-decoration:none;color:#2f2f2f;font-size:clamp(34px,6.5vw,92px);line-height:1.04;transition:color .25s,padding-left .25s;display:flex;gap:20px;align-items:baseline}
+.overlay a .oi{font-family:var(--mono);font-size:13px;color:rgba(237,237,234,.3)}
+.overlay a:hover{color:#EDEDEA;padding-left:14px}.overlay a.cta{color:var(--red)}
+.overlay .close{position:absolute;top:20px;right:38px;cursor:pointer;background:none;border:none;color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.overlay .close .plus{color:var(--red);display:inline-block;transform:rotate(45deg)}
+
+/* ================= HERO — carta calda ================= */
+.pgHero{position:relative;overflow:hidden;background:var(--paper);min-height:92vh;
+  display:flex;flex-direction:column;justify-content:center;padding:14vh 6vw 8vh}
+/* piccolo segno rosso: stessa forma/clip-path del triangolo del hero Capitolo 1, statico (nessuna nuova grafica) */
+.pgHeroMark{position:absolute;left:6vw;top:9vh;width:58px;height:47px;background:var(--red);
+  clip-path:polygon(100% 0,100% 100%,0 100%,100% 0)}
+.pgEyebrow{display:block;font-family:var(--mono);color:var(--red);font-size:clamp(12px,1.05vw,14px);
+  letter-spacing:.16em;text-transform:uppercase;margin-top:8vh}
+.pgHero h1{margin-top:18px;font-family:var(--geo);font-weight:800;text-transform:uppercase;color:var(--ink);
+  font-size:clamp(70px,13vw,220px);line-height:.92;letter-spacing:-.01em;max-width:90vw;
+  clip-path:inset(0 100% 0 0);transition:clip-path 1s cubic-bezier(.4,0,.2,1) .2s}
+.pgHero p{margin-top:26px;max-width:38vw;font-family:var(--mono);color:rgba(20,20,18,.7);
+  font-size:clamp(14px,1.2vw,17px);line-height:1.6;opacity:0;transform:translateY(14px);
+  transition:opacity .6s ease .5s,transform .6s ease .5s}
+.pgHero.revealed h1{clip-path:inset(0 0% 0 0)}
+.pgHero.revealed p{opacity:1;transform:translateY(0)}
+
+/* ================= AREA CONTATTO — nero =================
+   Nessuno sticky: sezione normale nel flusso. "Il campo carta si ritrae e rivela il nero" è reso con una
+   maschera verticale sulla sezione stessa (stessa tecnica già usata per il reveal del footer homepage),
+   che scatta una sola volta quando la sezione raggiunge il viewport — non un effetto scroll-linked continuo. */
+.pgContact{position:relative;background:var(--black);color:#EDEDEA;padding:12vh 6vw 10vh;
+  clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.4,0,.2,1)}
+.pgContact.revealed{clip-path:inset(0 0 0% 0)}
+.pgContact h2{font-family:var(--geo);font-weight:800;text-transform:uppercase;
+  font-size:clamp(34px,4.4vw,64px);line-height:1.06;letter-spacing:-.01em;max-width:60vw;margin-bottom:8vh}
+
+.pgGrid{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:start}
+
+.pgInfo{display:flex;flex-direction:column;gap:18px;opacity:0;transform:translateY(20px);
+  transition:opacity .6s ease .15s,transform .6s ease .15s}
+.pgContact.revealed .pgInfo{opacity:1;transform:translateY(0)}
+.pgInfo a,.pgInfo address{font-family:var(--mono);font-size:clamp(16px,1.4vw,20px);color:#EDEDEA;
+  text-decoration:none;font-style:normal;line-height:1.6}
+.pgInfo a:hover{color:var(--red)}
+.pgInfoLabel{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(237,237,234,.45);margin-top:14px}
+.pgInfoLabel:first-child{margin-top:0}
+
+.pgForm{display:flex;flex-direction:column;gap:26px;opacity:0;transform:translateY(20px);
+  transition:opacity .6s ease .3s,transform .6s ease .3s}
+.pgContact.revealed .pgForm{opacity:1;transform:translateY(0)}
+.pgField{display:flex;flex-direction:column;gap:8px}
+.pgField label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(237,237,234,.5)}
+.pgField input,.pgField textarea{background:none;border:none;border-bottom:1px solid rgba(237,237,234,.25);
+  color:#EDEDEA;font-family:var(--mono);font-size:15px;padding:8px 2px;outline:none;resize:none;width:100%;
+  transition:border-color .25s ease}
+.pgField input:focus,.pgField textarea:focus{border-color:var(--red)}
+.pgField textarea{min-height:88px}
+.pgSubmit{margin-top:4px;align-self:flex-start;display:inline-flex;align-items:center;gap:12px;
+  background:none;border:none;cursor:pointer;font-family:var(--mono);font-size:14px;letter-spacing:.1em;
+  text-transform:uppercase;color:#EDEDEA;border-bottom:1px solid rgba(237,237,234,.35);padding-bottom:6px;
+  transition:border-color .25s ease}
+.pgSubmit span{color:var(--red);transition:transform .25s ease}
+.pgSubmit:hover{border-color:rgba(237,237,234,.75)}
+.pgSubmit:hover span{transform:translateX(5px)}
+
+/* ================= CHIUSURA — logo + riga mono + legal minimale ================= */
+.pgClose{background:var(--black);padding:9vh 6vw 5vh;text-align:center;
+  display:flex;flex-direction:column;align-items:center}
+.pgCloseLogo{width:clamp(220px,26vw,420px);height:auto;opacity:0;transform:translateY(20px);
+  transition:opacity .8s ease,transform .8s ease}
+.pgClose.revealed .pgCloseLogo{opacity:1;transform:translateY(0)}
+.pgCloseTag{margin-top:24px;font-family:var(--mono);font-size:clamp(11px,1vw,13px);letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(237,237,234,.5);opacity:0;transition:opacity .8s ease .15s}
+.pgClose.revealed .pgCloseTag{opacity:1}
+
+/* footer legale minimale — stesse classi/stile del footer homepage, ridotto ai soli dati legali */
+.pgLegalFooter{background:var(--black);padding:5vh 6vw 34px;display:flex;justify-content:center}
+.footerLegal{margin-top:6vh;padding-top:22px;border-top:1px solid rgba(237,237,234,.14);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:24px;width:100%;max-width:900px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:rgba(237,237,234,.5)}
+.footerLegal a{color:rgba(237,237,234,.5);text-decoration:none}
+.footerLegal a:hover{color:var(--red)}
+.footerLegalStatic{cursor:default;color:rgba(237,237,234,.32)} /* Privacy/Cookie: nessun URL reale ancora, testo non cliccabile */
+
+@media (max-width:820px){
+  .pgHero{padding:12vh 8vw 7vh}
+  .pgHeroMark{left:8vw;top:7vh;width:44px;height:36px}
+  .pgEyebrow{margin-top:6vh}
+  .pgHero h1{font-size:clamp(48px,15vw,84px)}
+  .pgHero p{max-width:84vw}
+  .pgContact{padding:9vh 8vw 8vh}
+  .pgContact h2{max-width:88vw;font-size:clamp(28px,7.5vw,44px);margin-bottom:6vh}
+  .pgGrid{grid-template-columns:1fr;gap:48px}
+  .pgClose{padding:8vh 8vw 4vh}
+  .pgLegalFooter{padding:4vh 8vw 28px}
+  .footerLegal{gap:14px 20px;font-size:10px;justify-content:flex-start}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .pgHero h1{clip-path:inset(0 0% 0 0);transition:none}
+  .pgHero p{opacity:1;transform:none;transition:none}
+  .pgContact{clip-path:inset(0 0 0% 0);transition:none}
+  .pgInfo,.pgForm{opacity:1;transform:none;transition:none}
+  .pgCloseLogo,.pgCloseTag{opacity:1;transform:none;transition:none}
+}

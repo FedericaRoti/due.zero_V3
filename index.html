@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Due.Zero — Technical Communication</title>
+<meta name="description" content="Trasformiamo dati tecnici, manuali, ricambi e contenuti multilingua in strumenti digitali chiari, consultabili e coerenti con i processi industriali. Bologna, dal 2008.">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preload" href="fonts/BebasNeue-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/BigShouldersDisplay-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/IBMPlexMono-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="preloaderMark">
+    <span class="preloaderWord">DUE<span class="dot">.</span>ZERO</span>
+    <div class="preloaderBar"><div class="preloaderBarFill" id="preloaderBarFill"></div></div>
+  </div>
+</div>
+
+<div class="scene" id="scene">
+  <div class="sticky" id="sticky">
+    <div class="ambient" id="ambient"></div>
+    <div class="lightPanel" id="lightPanel"></div>
+
+    <!-- CAPITOLO 1 -->
+    <div class="chapter1" id="chapter1">
+      <div class="ch-title" id="chTitle">
+        <span class="ln"><i>Dal 2008</i></span>
+        <span class="ln"><i>mettiamo in ordine</i></span>
+        <span class="ln"><i>il sapere</i></span>
+        <span class="ln"><i>delle macchine.</i></span>
+      </div>
+    </div>
+    <!-- banner che si costruisce a quadrati -->
+    <div class="chBanner" id="chBanner"><span class="bt">Capitolo 1 — Chi siamo</span></div>
+
+    <div class="topbar">
+      <button class="menuBtn" id="menuBtn">MENU <span class="plus">[+]</span></button>
+    </div>
+
+    <div class="center">
+      <div class="heroMove" id="heroMove">
+        <div class="tilt" id="tilt">
+          <div class="gloss-wrap" id="glossWrap">
+            <div class="title base" aria-hidden="true"><span class="l0">DUE<span class="dot">.</span>ZERO</span><span class="l1">Technical</span><span class="l2">Communication</span></div>
+            <div class="title sheen" aria-hidden="true"><span class="l0">DUE<span class="dot">.</span>ZERO</span><span class="l1">Technical</span><span class="l2">Communication</span></div>
+            <div class="title gloss" id="gloss"><span class="l0">DUE<span class="dot">.</span>ZERO</span><span class="l1">Technical</span><span class="l2">Communication</span></div>
+            <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Due.Zero — Technical Communication</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="triangle" id="triangle" aria-hidden="true"></div>
+
+    <nav class="legend" id="legend">
+      <div class="lh">Indice — contenuti</div>
+      <a href="#scene" id="legFirst"><span class="n">01</span><span>Chi siamo</span></a>
+      <a href="#scene2"><span class="n">02</span><span>Ecosistema</span></a>
+      <a href="#servizi"><span class="n">03</span><span>Servizi</span></a>
+      <a href="#qualitySection"><span class="n">04</span><span>Qualità</span></a>
+      <a href="#newsSection"><span class="n">05</span><span>News</span></a>
+    </nav>
+
+    <div class="card1b" id="card1b">
+      <span class="c1b-head"><span class="idx">01</span> — Chi siamo</span>
+      <p class="c1b-text" id="c1bText">Trasformiamo dati tecnici, manuali, ricambi e contenuti multilingua in strumenti digitali chiari, consultabili e sempre coerenti con i processi industriali.</p>
+      <span class="c1b-foot">due.zero — documentazione tecnica industriale</span>
+    </div>
+
+    <div class="hint" id="hint"></div>
+
+    <!-- badge progetti: visibili solo dopo il preload, spariscono appena si scrolla (non collegati per ora) -->
+    <div class="heroBadges" id="heroBadges">
+      <a class="heroBadge" href="https://www.duezero.eu/DueZeroProject/Default.aspx" target="_blank" rel="noopener noreferrer">2.0 Project<span class="heroBadgeArrow">→</span></a>
+      <a class="heroBadge" href="https://hyperparts.it/" target="_blank" rel="noopener noreferrer">Hyperparts<span class="heroBadgeArrow">→</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CAPITOLO 2 — ECOSISTEMA (asset reali) ================= -->
+<div class="scene2" id="scene2">
+  <div class="sticky2" id="sticky2">
+    <!-- Ponte Cap.1 -> Cap.2: il perimetro della card finale si espande e diventa il campo nero -->
+    <div class="ecoBridge" id="ecoBridge" aria-hidden="true"></div>
+    <div class="ecoBg bgHyper" id="bgHyper"></div>
+    <div class="ecoBg bgPaper2" id="bgPaper2"></div>
+
+    <!-- Apertura Ecosistema -->
+    <!-- Banner ricorrente di capitolo — stessa logica del Capitolo 1: barra rossa che si costruisce + label mono -->
+    <div class="ch2Banner" id="ch2Banner" aria-hidden="true">
+      <span class="ch2BannerBar" id="ch2BannerBar"></span>
+      <span class="ch2BannerText" id="ch2BannerText">Capitolo 02 — Ecosistema</span>
+    </div>
+    <div class="eco-open" id="ecoOpen">
+      <h2 class="eco-open-h" id="ecoOpenH">Non tre software.<br>Un solo sistema<br>che segue ogni macchina.</h2>
+      <p class="eco-open-sub" id="ecoOpenSub">Progetti, documenti e persone. Tutto parte da qui.</p>
+    </div>
+
+    <!-- Ponte verso 2.0 PROJECT: crop ravvicinato del telefono che va a fuoco -->
+    <div class="ecoProjectImg" id="ecoProjectImg" aria-hidden="true"></div>
+
+    <!-- 2.0 PROJECT — titolo protagonista, sottotitolo editoriale, riga di supporto mono, CTA -->
+    <div id="sceneProject">
+      <div class="pj-group" id="pjGroup">
+        <h3 class="pj-title" id="pjTitle">2.0 Project</h3>
+        <p class="pj-sub" id="pjSub">Dove il progetto prende forma.</p>
+      </div>
+      <span class="pj-mono" id="pjMono">Progetti / Documenti / Persone</span>
+      <a href="https://www.duezero.eu/DueZeroProject/Default.aspx" target="_blank" rel="noopener noreferrer" class="pj-cta" id="pjCta">Scopri 2.0 Project <span class="plus">[+]</span></a>
+    </div>
+
+    <!-- HYPERPARTS — campo fotografico immersivo (eco_hyperparts_bg.jpg), titolo dominante, nessun numero interno -->
+    <div class="ecoHyperImg" id="ecoHyperImg" aria-hidden="true"></div>
+    <div id="sceneHyper">
+      <h3 class="hp-title" id="hpTitle">Hyperparts</h3>
+      <p class="hp-sub" id="hpSub">Il post-vendita resta connesso alla macchina.</p>
+      <span class="hp-mono" id="hpMono">Ricambi / Documenti / Richieste</span>
+      <a href="https://hyperparts.it/" target="_blank" rel="noopener noreferrer" class="hp-cta" id="hpCta">Esplora Hyperparts <span class="plus">[+]</span></a>
+    </div>
+
+    <!-- DOCUMENTATION 4.0 — cambio di scala: da componente/macchina a parco macchine. Fondo carta, nessuna foto aggiuntiva. -->
+    <div id="sceneDoc">
+      <h3 class="dc-title" id="dcTitle">Documentation 4.0</h3>
+      <span class="dc-accent" id="dcAccent" aria-hidden="true"></span>
+      <p class="dc-sub" id="dcSub">Ogni macchina resta visibile.</p>
+      <p class="dc-text"><i id="dcPara">Matricole, stato e documentazione aggiornata. In un'unica mappa.</i></p>
+    </div>
+  </div>
+</div>
+
+<!-- Documentation 4.0 È la Machine Map, ed è anche la soglia del Capitolo 03 — UN SOLO sticky, un solo progresso di
+     scroll, tre layer sovrapposti: mappa (cresce da contenuta a schermo intero e resta protagonista), outro nero
+     (sale e la chiude), soglia Servizi (banner + titolo + sottotitolo, entrano nello stesso viewport già durante la
+     chiusura, restano fermi per un hold reale, poi l'arco dei servizi prende il posto in una sezione successiva). -->
+<section class="mapServicesTransition" id="mapServicesTransition">
+  <div class="mapServicesSticky" id="mapServicesSticky">
+
+    <!-- layer 1: mappa (chrome + iframe), logica interna invariata -->
+    <div class="mapLayer" id="mapLayer">
+      <div class="docMapChrome" id="docMapChrome">
+        <div class="docMapChromeL">
+          <span class="docMapChromeTitle">Documentation 4.0</span>
+          <span class="docMapChromeSub">Machine Map — Interattiva</span>
+          <span class="docMapChromeLoading" id="docMapLoading">Caricamento mappa…</span>
+        </div>
+        <div class="docMapChromeR">
+          <button class="mapFsBtn" id="mapFsBtn" type="button" aria-label="Espandi mappa a schermo intero" title="Espandi mappa">
+            <svg id="mapFsIcon" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true" focusable="false">
+              <path d="M9 3H3v6M15 3h6v6M21 15v6h-6M3 15v6h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span id="mapFsBtnText">Espandi mappa</span>
+          </button>
+          <!-- TODO: fallback mostrato solo via JS se il Fullscreen API non è disponibile o viene rifiutato -->
+          <a class="mapFsFallback" id="mapFsFallback" href="https://duezero.eu/mappa-embed.html" target="_blank" rel="noopener" hidden>Apri la mappa in una nuova scheda</a>
+        </div>
+      </div>
+      <div class="ecoMapFrame" id="ecoMapFrame">
+        <iframe
+          id="docMapIframe"
+          src="https://duezero.eu/mappa-embed.html"
+          title="Technical Documentation 4.0 Map"
+          style="width:100%; height:100%; border:0;"
+          loading="eager"
+          allow="fullscreen; geolocation"
+          allowfullscreen>
+        </iframe>
+        <!-- layer trasparenti: impediscono che l'iframe catturi wheel/click quando la mappa è inline (non fullscreen);
+             nessun listener, nessun colore/opacità/testo — lasciano libera solo la finestra in basso a destra
+             dove si trovano i controlli nativi +/-/frecce della mappa, così restano cliccabili -->
+        <div class="ecoMapGuards" id="ecoMapGuards" aria-hidden="true">
+          <div class="ecoMapGuardTop"></div>
+          <div class="ecoMapGuardBottomLeft"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- layer 2: unico elemento di chiusura, sale dal basso e copre la mappa con nero pieno -->
+    <div class="mapOutro" id="mapOutro" aria-hidden="true"></div>
+
+    <!-- layer 3: soglia Capitolo 03 — banner + titolo + sottotitolo, stesso sticky, stesso progresso -->
+    <div class="servicesIntroLayer" id="servicesIntroLayer">
+      <div class="ch3Banner" id="ch3Banner" aria-hidden="true">
+        <span class="ch3BannerText" id="ch3BannerText">Capitolo 03 — Servizi</span>
+      </div>
+      <div class="svc-open" id="svcOpen">
+        <h2 class="svc-open-h" id="svcOpenH">Otto servizi.<br>Un processo continuo.</h2>
+        <p class="svc-open-sub" id="svcOpenSub">Ogni competenza entra nello stesso processo.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Servizi — card a scroll orizzontale (dalla bozza duezero-scroll): su desktop la sezione è pinnata
+     e il binario di card scorre lateralmente guidato dallo scroll, con contatore, barra di progresso e
+     spotlight sulla card centrale; su mobile e in reduced-motion gli stessi dati sono resi come lista
+     verticale statica. Card e lista sono generate da JS dall'array SERVICES: cambiare numero o titoli
+     dei servizi significa modificare solo quell'array. Le card non hanno ancora href: le pagine
+     servizio non esistono e gli slug sono da congelare (vedi DA-CHIEDERE.md). -->
+<section class="svcSection" id="servizi">
+  <div class="svcStage" id="svcStage">
+    <div class="svcSticky" id="svcSticky">
+      <div class="svcHead">
+        <div class="svcHeadLeft">
+          <h2 class="svcHeadLabel"><span class="svcHeadBar" aria-hidden="true"></span>03 — I Servizi</h2>
+          <p class="svcHeadTitle">Specialisti<br>dell'industria</p>
+        </div>
+        <div class="svcProgressWrap">
+          <span class="svcCounter" id="svcCounter">1 / 08</span>
+          <div class="svcProgressTrack"><div class="svcProgressBar" id="svcProgressBar"></div></div>
+        </div>
+      </div>
+      <div class="svcTrackWrap"><div class="svcTrack" id="svcTrack"></div></div>
+    </div>
+  </div>
+  <div class="svcMobileList" id="svcMobileList" aria-label="I nostri servizi">
+    <p class="svcMobileLabel"><span class="svcHeadBar" aria-hidden="true"></span>03 — I Servizi</p>
+  </div>
+</section>
+
+<!-- Capitolo 04 — Qualità: metodo, validazione, tracciabilità (non badge/certificazioni). Un solo sticky,
+     quattro gesti in sequenza: apertura (carta calda + banner + titolo), metodo (DQ/IQ/OQ/PQ, una sigla
+     alla volta), tracciabilità (foglio tecnico + firma), chiusura (nero + titolo + CTA). -->
+<section class="qualitySection" id="qualitySection">
+  <div class="qualitySticky" id="qualitySticky">
+    <div class="qualityPaper" id="qualityPaper"></div>
+
+    <div class="qualityIntro" id="qualityIntro">
+      <div class="qualityBanner">CAPITOLO 04 — QUALITÀ</div>
+      <h2>LA QUALITÀ<br>NON SI CONTROLLA<br>ALLA FINE.</h2>
+      <p>Si progetta, si verifica, si rende tracciabile.</p>
+    </div>
+
+    <div class="qualityMethod" id="qualityMethod">
+      <p class="qualityEyebrow">QUATTRO VERIFICHE. UN SOLO RISULTATO.</p>
+      <div class="qualityCodeMask">
+        <div class="qualityCodeStrip" id="qualityCodeStrip">
+          <div class="qualityCode" data-def="Progettazione verificata.">DQ</div>
+          <div class="qualityCode" data-def="Installazione verificata.">IQ</div>
+          <div class="qualityCode" data-def="Operatività verificata.">OQ</div>
+          <div class="qualityCode" data-def="Prestazioni verificate.">PQ</div>
+        </div>
+      </div>
+      <div class="qualityDefinition" id="qualityDefinition">PROGETTAZIONE VERIFICATA.</div>
+    </div>
+
+    <div class="qualityRecord" id="qualityRecord">
+      <span class="qualityRecordLabel">CERTIFICATO DI ORIGINE</span>
+      <h3>OGNI PUBBLICAZIONE<br>HA UNA STORIA<br>VERIFICABILE.</h3>
+      <div class="qualityMeta">
+        <span>MATRICOLA / VERSIONE / RILASCIO</span>
+        <span class="qualityBarcode" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <div class="qualityFinal" id="qualityFinal">
+      <h3>CONFORME PER OGGI.<br>PRONTO PER CIÒ CHE CAMBIA.</h3>
+      <a href="parliamone.html" class="qualityCta">PARLIAMO DEL TUO PROCESSO <span>→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- Capitolo 05 — News: sezione editoriale, non feed social e non griglia di card. Un solo sticky,
+     tre gesti: apertura (banner+titolo, stesso schema di Cap.04), editoriale (lista di tre titoli a
+     sinistra — l'attivo grande e nitido, gli altri due piccoli e leggibili — pannello immagine+estratto
+     a destra che cambia con crop orizzontale e maschera verticale), chiusura (nero + invito LinkedIn).
+     newsList è popolata via JS da NEWS_ITEMS; ogni riga porta anche un fallback statico (immagine,
+     estratto, CTA) visibile solo in reduced-motion, dove il pannello dinamico condiviso non ha senso. -->
+<section class="newsSection" id="newsSection">
+  <div class="newsSticky" id="newsSticky">
+    <div class="newsIntro" id="newsIntro">
+      <div class="newsBanner">CAPITOLO 05 — NEWS</div>
+      <h2>IL LAVORO<br>CONTINUA.</h2>
+      <p>Progetti, tecnologie e punti di vista dal mondo Due.Zero.</p>
+    </div>
+
+    <div class="newsEditorial" id="newsEditorial">
+      <div class="newsList" id="newsList"></div>
+
+      <div class="newsVisual" id="newsVisual">
+        <img id="newsImage" alt="">
+      </div>
+
+      <div class="newsDetail" id="newsDetail">
+        <span class="newsMeta" id="newsMeta"></span>
+        <p id="newsExcerpt"></p>
+        <button type="button" class="newsCta" id="newsCta">
+          LEGGI L’INSIGHT <span>→</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="newsFinal" id="newsFinal">
+      <p>SEGUI IL LAVORO DI DUE.ZERO.</p>
+      <button type="button" class="linkedinCta">
+        SEGUICI SU LINKEDIN <span>→</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer — chiusura editoriale del sito, non un footer basso tradizionale. Nessuno sticky: prosegue nel
+     flusso naturale sullo stesso nero su cui chiude News, ed entra in scena una sola volta quando raggiunge
+     il viewport (titolo con maschera, poi CTA, poi logo, poi i tre blocchi informativi). Anchor "Esplora"
+     puntano agli id reali già presenti nel file (non esiste una sezione "Chi siamo" dedicata: punta all'Hero,
+     l'apertura del sito). Privacy/Cookie non hanno ancora una URL reale: testo non cliccabile, da collegare
+     in seguito, non href="#". -->
+<footer class="siteFooter" id="parliamone">
+  <div class="footerIntro">
+    <span class="footerEyebrow">DUE.ZERO / BOLOGNA</span>
+    <h2>PARLIAMONE.</h2>
+    <p>Il prossimo progetto inizia da qui.</p>
+
+    <a class="footerMainCta" href="parliamone.html">
+      SCRIVICI <span>→</span>
+    </a>
+  </div>
+
+  <div class="footerLogoWrap">
+    <img src="img/DueZero_logo.png" alt="Due.Zero" class="footerLogo">
+  </div>
+
+  <div class="footerInfo">
+    <div class="footerBlock">
+      <span class="footerLabel">CONTATTI</span>
+      <a href="tel:+390515060797">+39 051 50 60 797</a>
+      <a href="mailto:info@duezero.eu">info@duezero.eu</a>
+    </div>
+
+    <div class="footerBlock">
+      <span class="footerLabel">SEDE</span>
+      <address>
+        Via Persicetana Vecchia, 26<br>
+        40132 Bologna (BO)
+      </address>
+    </div>
+
+    <div class="footerBlock footerLinks">
+      <span class="footerLabel">ESPLORA</span>
+      <a href="#scene">Chi siamo</a>
+      <a href="#scene2">Ecosistema</a>
+      <a href="#servizi">Servizi</a>
+      <a href="#qualitySection">Qualità</a>
+      <a href="#newsSection">News</a>
+    </div>
+  </div>
+
+  <div class="footerLegal">
+    <span>© <span id="footerYear"></span> DUE.ZERO SRL</span>
+    <span>C.F. &amp; P.I. IT03840401206</span>
+    <span class="footerLegalStatic" data-legal="privacy">Privacy</span>
+    <span class="footerLegalStatic" data-legal="cookie">Cookie</span>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay">
+  <button class="close" id="closeBtn">CHIUDI <span class="plus">[+]</span></button>
+  <a href="#scene"><span class="oi">01</span> Chi siamo</a>
+  <a href="#scene2"><span class="oi">02</span> Ecosistema</a>
+  <a href="#servizi"><span class="oi">03</span> Servizi</a>
+  <a href="#qualitySection"><span class="oi">04</span> Qualità</a>
+  <a href="#newsSection"><span class="oi">05</span> News</a>
+  <a href="https://www.duezero.eu/DueZeroProject/Default.aspx" target="_blank" rel="noopener noreferrer"><span class="oi">↗</span> 2.0 Project</a>
+  <a href="https://hyperparts.it/" target="_blank" rel="noopener noreferrer"><span class="oi">↗</span> Hyperparts</a>
+  <a href="parliamone.html" class="cta"><span class="oi">→</span> Parliamone</a>
+</div>
+
+<script src="js/vendor/lenis.min.js"></script>
+<script src="js/capitolo1.js"></script>
+<script src="js/capitoli.js"></script>
+</body>
+</html>

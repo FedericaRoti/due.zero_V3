@@ -1,0 +1,741 @@
+:root{--black:#0A0A0A;--paper:#EDEDEA;--ink:#141412;--red:#E2231A;
+  --geo:'Big Shoulders Display',sans-serif;--mono:'IBM Plex Mono',monospace;--mx:50vw;--my:44vh;
+  --hero-font:'Bebas Neue',sans-serif} /* solo per .title (scritta centrale hero): il resto del sito resta su --geo */
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
+
+.scene{position:relative;height:760vh}
+.sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black)}
+.ambient{position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(480px circle at var(--mx) var(--my),rgba(255,255,255,.05),rgba(255,255,255,0) 70%)}
+.lightPanel{position:absolute;inset:0;z-index:1;background:var(--paper);transform:translateY(101%)}
+
+/* ---- topbar (solo MENU) ---- */
+.topbar{position:absolute;top:0;left:0;right:0;height:62px;z-index:8;display:flex;align-items:center;justify-content:flex-end;padding:0 38px}
+.menuBtn{pointer-events:auto;cursor:pointer;background:none;border:none;color:#EDEDEA;
+  font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;opacity:0;transition:opacity .35s,color .5s}
+.menuBtn .plus{color:var(--red)}
+.light .menuBtn{color:var(--ink)}
+
+/* ---- titolo hero (centro) ---- */
+.center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;perspective:1400px;z-index:3}
+.heroMove{position:relative;transform-origin:left top;will-change:transform,opacity}
+.tilt{position:relative;transform-style:preserve-3d;will-change:transform}
+.gloss-wrap{position:relative;text-align:center;pointer-events:auto;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.title{font-family:var(--hero-font);font-weight:400;text-transform:uppercase;font-size:clamp(46px,11.5vw,205px);line-height:.94;letter-spacing:.01em}
+.title .l0,.title .l1,.title .l2{display:block;width:fit-content;margin-inline:auto}
+.title .l0{transform:translateX(var(--l0Shift,0px))}
+.title .l1{transform:translateX(var(--l1Shift,0px))}
+.title .l2{transform:translateX(var(--l2Shift,0px))}
+.title .dot{color:#fff} /* il punto di "Due.Zero" resta sempre bianco, in ogni layer/stato */
+.preloaderWord .dot{color:#fff}
+.title.base{color:#2f2f2f;text-shadow:0 1px 0 #0f0f0f,0 2px 0 #0d0d0d,0 3px 0 #0b0b0b,0 4px 0 #090909,0 5px 0 #070707,0 8px 14px rgba(0,0,0,.78),0 -1px 0 rgba(255,255,255,.20)}
+.title.sheen{position:absolute;left:0;top:0;right:0;color:transparent;
+  background:linear-gradient(to bottom,rgba(255,255,255,.7) 0%,rgba(255,255,255,.26) 24%,rgba(255,255,255,.04) 46%,rgba(255,255,255,0) 58%);-webkit-background-clip:text;background-clip:text}
+/* luce obliqua invece che a cerchio: una banda diagonale (var(--gp)), stessa oscillazione automatica di
+   prima (non era in realtà legata al mouse in tempo reale, solo --mx/--my dell'ambient lo sono — qui si
+   riusa la stessa animazione esistente, solo rimappata da centro-cerchio a posizione-banda) che, per via
+   dell'angolo, attraversa sempre almeno una parte di ciascuna delle 3 righe del titolo */
+.title.gloss{position:absolute;left:0;top:0;right:0;color:transparent;
+  background:linear-gradient(125deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0) calc(var(--gp,45%) - 22%),
+    rgba(255,255,255,1) var(--gp,45%),rgba(255,255,255,0) calc(var(--gp,45%) + 22%),rgba(255,255,255,0) 100%);
+  -webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 18px rgba(255,255,255,.18))}
+
+/* ---- triangolo ---- */
+.triangle{position:absolute;left:0;top:0;z-index:7;width:65px;height:65px;background:var(--red);clip-path:polygon(100% 0,100% 100%,0 100%,100% 0);will-change:left,top,width,height,clip-path,opacity}
+
+/* ---- indice / legenda (piccola e leggera, con lieve zoom) ---- */
+.legend{position:absolute;left:38px;bottom:34px;z-index:6;width:270px;opacity:0;font-family:var(--mono);color:rgba(237,237,234,.4);transform-origin:left bottom}
+.legend .lh{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(237,237,234,.32);padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,.16)}
+.legend a{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.08);
+  font-size:11px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:inherit;transition:color .3s,padding-left .25s}
+.legend a .n{color:rgba(237,237,234,.28);transition:color .3s}
+.legend a:hover{padding-left:8px;color:#EDEDEA}
+
+.hint{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);z-index:4;font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(237,237,234,.3)}
+
+/* ---- badge hero (visibili solo dopo il preload, spariscono appena si scrolla): due link reali con lo
+   stesso trattamento a bordo sottile già usato per le CTA di 2.0 Project/Hyperparts, in versione minore ---- */
+.heroBadges{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:6;
+  display:flex;align-items:center;gap:16px;opacity:0;pointer-events:none;transition:opacity .4s ease}
+.heroBadge{display:inline-flex;align-items:center;gap:9px;padding:10px 20px;border:1px solid rgba(237,237,234,.55);
+  border-radius:999px;background:rgba(237,237,234,.06);font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(237,237,234,.92);text-decoration:none;white-space:nowrap;cursor:pointer;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1),background .3s ease,color .3s ease,border-color .3s ease}
+/* stesso linguaggio delle altre CTA del sito (2.0 Project/Hyperparts/footer): sfondo che si inverte in
+   chiaro all'hover, freccia rossa che scivola — piu lo zoom richiesto */
+.heroBadge:hover{transform:scale(1.08);background:#EDEDEA;color:var(--black);border-color:#EDEDEA}
+.heroBadgeArrow{color:var(--red);transition:transform .25s ease}
+.heroBadge:hover .heroBadgeArrow{transform:translateX(4px)}
+/* effetto legato al PRIMO scroll (non al caricamento): se lo scroll parte veloce i badge rischiano di
+   sparire prima di essere notati, quindi proprio nell'istante in cui iniziano a sfumare fanno un piccolo
+   "pop" che cattura l'occhio invece di svanire silenziosamente */
+@keyframes heroBadgePop{0%{transform:scale(1)}40%{transform:scale(1.14)}100%{transform:scale(1)}}
+.heroBadges.pulseOut .heroBadge{animation:heroBadgePop .55s ease}
+.heroBadges.pulseOut .heroBadge:nth-child(2){animation-delay:.05s}
+
+/* ---- preloader: wordmark DUE.ZERO (stesso font/punto tondo dell'hero) + riga rossa che si completa,
+   poi dissolve rivelando la home ---- */
+.preloader{position:fixed;inset:0;z-index:100;background:var(--black);
+  display:flex;align-items:center;justify-content:center;transition:opacity .6s ease;opacity:1}
+.preloader.done{opacity:0;pointer-events:none}
+.preloaderMark{display:flex;flex-direction:column;align-items:center;gap:16px}
+.preloaderWord{font-family:var(--hero-font);font-weight:400;text-transform:uppercase;
+  font-size:clamp(26px,4.4vw,42px);letter-spacing:.02em;color:var(--paper)}
+.preloaderBar{width:150px;height:2px;background:rgba(237,237,234,.15);overflow:hidden}
+.preloaderBarFill{height:100%;width:0%;background:var(--red);transition:width 1.1s cubic-bezier(.3,.6,.3,1)}
+
+/* ---- CAPITOLO 1 (chiaro) ---- */
+.chapter1{position:absolute;inset:0;z-index:4;color:var(--ink);opacity:0;pointer-events:none}
+.ch-desc{position:absolute;top:112px;left:38px;max-width:600px;font-family:var(--mono);font-size:18px;line-height:1.6;letter-spacing:.01em;color:rgba(20,20,18,.92)}
+.ch-desc .dw{display:inline-block;opacity:0;transform:translateY(9px)}
+.ch-title{position:absolute;left:38px;bottom:56px;font-weight:800;text-transform:uppercase;font-size:clamp(38px,7.4vw,124px);line-height:.92;letter-spacing:-.01em;color:var(--ink)}
+.ch-title .ln{display:block;overflow:hidden}
+.ch-title .ln i{display:block;font-style:normal;transform:translateY(106%)}
+/* banner che si COSTRUISCE a quadrati */
+.chBanner{position:absolute;z-index:9;opacity:0;display:flex;align-items:center;padding:0 26px}
+.chBanner .bt{position:relative;z-index:1;color:#fff;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:clamp(18px,2.1vw,30px);white-space:nowrap;opacity:0}
+
+/* overlay */
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(8,8,8,.97);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:center;padding:0 8vw;gap:6px;opacity:0;pointer-events:none;transition:opacity .4s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay a{font-family:var(--geo);font-weight:600;text-transform:uppercase;text-decoration:none;color:#2f2f2f;font-size:clamp(34px,6.5vw,92px);line-height:1.04;transition:color .25s,padding-left .25s;display:flex;gap:20px;align-items:baseline}
+.overlay a .oi{font-family:var(--mono);font-size:13px;color:rgba(237,237,234,.3)}
+.overlay a:hover{color:#EDEDEA;padding-left:14px}.overlay a.cta{color:var(--red)}
+.overlay .close{position:absolute;top:20px;right:38px;cursor:pointer;background:none;border:none;color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.overlay .close .plus{color:var(--red);display:inline-block;transform:rotate(45deg)}
+
+.after{background:var(--paper);color:var(--ink);min-height:120vh;padding:120px 38px;border-top:1px solid rgba(20,20,18,.1)}
+.after .k{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
+.after p{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(20,20,18,.5);margin-top:16px}
+/* card editoriale — nasce dallo stesso pannello carta: un solo gesto continuo (scale morph) */
+.card1b{position:absolute;top:12vh;left:6vw;right:6vw;height:76vh;z-index:6;background:var(--paper);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);border:1px solid rgba(20,20,18,.12);opacity:0;transform-origin:center;will-change:transform}
+.card1b .c1b-head,.card1b .c1b-foot{position:absolute;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(20,20,18,.5);opacity:0}
+.card1b .c1b-head{top:34px}.card1b .c1b-foot{bottom:34px}
+.card1b .c1b-head .idx{color:var(--red)}
+.c1b-text{font-weight:600;text-transform:uppercase;font-size:clamp(22px,3.2vw,48px);line-height:1.22;max-width:640px;letter-spacing:-.005em}
+.c1b-text .ph{display:block;overflow:hidden}
+.c1b-text .ph i{display:block;font-style:normal;transform:translateY(100%)}
+
+/* ================= CAPITOLO 2 — ECOSISTEMA (asset reali, no SVG generico) ================= */
+.scene2{position:relative;height:860vh;background:var(--black)}
+.sticky2{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black);perspective:1200px}
+
+/* fondi Hyperparts/Documentation (invariati, gestiti da render2 come prima) */
+.ecoBg{position:absolute;inset:0;z-index:0;opacity:0;pointer-events:none}
+.ecoBg.bgHyper{background:#070c14}
+.ecoBg.bgPaper2{background:var(--paper)}
+
+/* ---- ponte Cap.1 -> Cap.2: il perimetro della card si espande e si trasforma in nero (un solo elemento, un solo gesto) ---- */
+.ecoBridge{position:absolute;top:12vh;left:6vw;right:6vw;height:76vh;z-index:0;background:var(--paper);
+  border:1px solid rgba(20,20,18,.12);box-shadow:0 6px 18px rgba(0,0,0,.08);pointer-events:none;will-change:top,left,right,height,background}
+
+/* ---- apertura: label in alto-sx, headline enorme in blocco unico (no split text, no stagger) ---- */
+/* ---- banner ricorrente di capitolo, stessa dimensione (larghezza+altezza) del Capitolo 1: linea -> barra piena -> testo ---- */
+.ch2Banner{position:absolute;left:38px;top:11vh;z-index:5;display:flex;align-items:center;width:min(50vw,660px);height:clamp(80px,10vh,118px);padding:0 32px;opacity:0;pointer-events:none}
+.ch2BannerBar{position:absolute;left:0;top:50%;width:0;height:3px;background:var(--red);transform:translateY(-50%);will-change:width,height}
+.ch2BannerText{position:relative;z-index:1;color:#fff;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:clamp(18px,2.1vw,30px);white-space:nowrap;opacity:0;will-change:transform,opacity}
+.eco-open{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 6vw}
+.eco-open-h{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(64px,10.5vw,180px);line-height:.88;letter-spacing:-.015em;opacity:0;transform:scale(1.06);will-change:transform,opacity,clip-path}
+.eco-open-sub{margin-top:30px;color:rgba(237,237,234,.8);font-family:var(--mono);font-size:clamp(14px,1.35vw,18px);letter-spacing:.06em;max-width:520px;opacity:0}
+
+/* ---- label comune (mono, piccola) — posizione/colore per scena ---- */
+.eco-lbl{position:absolute;z-index:4;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:0;pointer-events:none}
+.eco-lbl .idx{color:var(--red)}
+
+/* ---- ponte verso 2.0 PROJECT: campo fotografico immersivo (non un box), emerge da destra, crop ravvicinato -> a fuoco ---- */
+.ecoProjectImg{position:absolute;right:-10vw;top:50%;width:78vw;height:82vh;z-index:1;
+  background-image:url('img/eco_project_bg.jpg');background-repeat:no-repeat;transform-origin:center;
+  -webkit-mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
+  mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
+  opacity:0;pointer-events:none;will-change:transform,filter,background-size,background-position}
+
+/* ---- 2.0 PROJECT: titolo protagonista, sottotitolo editoriale, riga di supporto mono, CTA reale ---- */
+#sceneProject{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:620px}
+/* gruppo "2.0 PROJECT + sottotitolo": si riallinea (sale) dopo il hold, un solo gesto continuo legato allo scroll */
+.pj-group{display:flex;flex-direction:column;gap:14px;transform-origin:left bottom;will-change:transform}
+.pj-title{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(40px,6.8vw,104px);line-height:.92;letter-spacing:-.01em;opacity:0;transform:translateY(18px);transform-origin:left center;pointer-events:none;will-change:transform,opacity}
+.pj-sub{color:#EDEDEA;font-family:var(--geo);font-weight:600;text-transform:uppercase;font-size:clamp(17px,2.1vw,28px);line-height:1.24;letter-spacing:-.005em;max-width:480px;opacity:0;pointer-events:none}
+.pj-mono{color:rgba(237,237,234,.62);font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:0;pointer-events:none}
+.pj-cta{display:inline-flex;align-items:center;gap:10px;margin-top:4px;padding:11px 20px;border:1px solid rgba(237,237,234,.42);
+  color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
+  opacity:0;transform:translateX(0);pointer-events:none;transition:transform .3s ease,background-color .3s ease,color .3s ease,border-color .3s ease}
+.pj-cta .plus{color:var(--red);transition:color .3s ease}
+.pj-cta:hover{transform:translateX(8px);background:#EDEDEA;color:var(--black);border-color:#EDEDEA}
+.pj-cta:hover .plus{color:var(--red)}
+
+/* ---- HYPERPARTS: campo fotografico immersivo (tavolo di lavoro reale), titolo dominante con maschera laterale ---- */
+.ecoHyperImg{position:absolute;inset:-4vh -4vw;z-index:1;
+  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.55) 62%,rgba(7,12,20,.78) 100%),url('img/eco_hyperparts_bg.jpg');
+  background-repeat:no-repeat;background-position:center,center 30%;background-size:cover,cover;
+  transform-origin:50% 30%;opacity:0;pointer-events:none;will-change:transform,filter,clip-path}
+
+#sceneHyper{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:660px}
+.hp-title{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(48px,8vw,132px);line-height:.90;letter-spacing:-.01em;opacity:0;clip-path:inset(0 100% 0 0);transform-origin:left center;pointer-events:none;will-change:transform,opacity,clip-path}
+.hp-sub{color:#EDEDEA;font-family:var(--geo);font-weight:600;text-transform:uppercase;font-size:clamp(17px,2.1vw,28px);line-height:1.24;letter-spacing:-.005em;max-width:520px;opacity:0;pointer-events:none}
+.hp-mono{color:rgba(237,237,234,.62);font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:0;pointer-events:none}
+.hp-cta{display:inline-flex;align-items:center;gap:10px;margin-top:4px;padding:11px 20px;border:1px solid rgba(255,211,0,.4);
+  color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
+  opacity:0;transform:translateY(0);pointer-events:none;transition:transform .3s ease,background-color .3s ease,color .3s ease,border-color .3s ease}
+.hp-cta .plus{color:var(--red);transition:color .3s ease}
+.hp-cta:hover{transform:translateY(-6px);background:#EDEDEA;color:var(--black);border-color:#EDEDEA}
+.hp-cta:hover .plus{color:var(--red)}
+
+/* ---- DOCUMENTATION 4.0: cambio di scala (da componente a parco macchine) — fondo carta, titolo dominante centrato, nessuna foto aggiuntiva ---- */
+#sceneDoc{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 6vw}
+.dc-title{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(48px,8vw,132px);line-height:.90;letter-spacing:-.01em;opacity:0;transform:scale(1.06);will-change:transform,opacity,clip-path}
+.dc-accent{width:52px;height:3px;background:var(--red);margin:22px 0;opacity:0;transform-origin:center;will-change:opacity,transform}
+.dc-sub{color:var(--ink);font-family:var(--geo);font-weight:600;text-transform:uppercase;font-size:clamp(17px,2.1vw,28px);line-height:1.24;letter-spacing:-.005em;max-width:640px;opacity:0}
+/* riga mono: stessa grammatica editoriale delle altre righe del prototipo — wrapper overflow:hidden + riga intera
+   che entra/esce in verticale (translateY), mai parola per parola, mai rotazioni o scatti */
+.dc-text{margin-top:18px;max-width:480px;overflow:hidden}
+.dc-text i{display:block;font-style:normal;color:rgba(20,20,18,.62);font-family:var(--mono);font-size:clamp(13px,1.2vw,15px);line-height:1.6;transform:translateY(100%);will-change:transform}
+
+/* Documentation 4.0 È la Machine Map, e la Machine Map è anche la soglia del Capitolo 03 — UN SOLO sticky, UN SOLO
+   progresso di scroll, tre layer sovrapposti (mappa, outro nero, intro Servizi): mai due sticky indipendenti che
+   si rincorrono. La mappa cresce da contenuta a schermo intero e resta protagonista; il nero sale e la chiude;
+   banner e titolo del Capitolo 03 entrano nello STESSO viewport già durante la chiusura, mai dopo un vuoto nero;
+   restano poi fermi e leggibili per un hold reale (oltre una viewport) prima che l'arco dei servizi prenda il posto. */
+.mapServicesTransition{position:relative;height:500vh;background:var(--black);overflow:visible}
+.mapServicesSticky{position:sticky;top:0;height:100vh;width:100%;overflow:hidden;background:var(--paper)}
+
+/* layer 1 — mappa: chrome + iframe, invariati nella logica interna */
+.mapLayer{position:absolute;inset:0;z-index:1}
+.docMapChrome{position:absolute;inset:0;z-index:6;pointer-events:none;opacity:1}
+.docMapChromeL{position:absolute;top:26px;left:30px;display:flex;flex-direction:column;gap:3px;pointer-events:none}
+.docMapChromeTitle{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-shadow:0 1px 2px rgba(255,255,255,.9),0 0 10px rgba(255,255,255,.7)}
+.docMapChromeSub{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(20,20,18,.55);text-shadow:0 1px 2px rgba(255,255,255,.9),0 0 10px rgba(255,255,255,.7)}
+.docMapChromeLoading{margin-top:2px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(20,20,18,.4)}
+.docMapChromeLoading[hidden]{display:none}
+.docMapChromeR{position:absolute;top:20px;right:24px;pointer-events:auto}
+
+/* ingresso: la mappa nasce contenuta dentro il campo carta della scena Documentation (stessa geometria "card" del
+   prototipo: top 12vh, left/right 6vw, height 76vh) e cresce fino a 100vw×100vh animando left/top/width/height —
+   mai transform:scale(), per non perdere nitidezza nell'iframe. Bordo sottilissimo, nessuna ombra, nessuna card. */
+.ecoMapFrame{position:absolute;left:6vw;top:12vh;width:88vw;height:76vh;opacity:1;border:1px solid rgba(20,20,18,.12);background:var(--paper);will-change:left,top,width,height,border-color}
+.ecoMapFrame iframe{position:absolute;inset:0;width:100%;height:100%;display:block;border:0;opacity:1;filter:none}
+/* la mappa inline è un momento visivo, non un embed interattivo: questi layer trasparenti (nessun listener) impediscono
+   che wheel/click vengano catturati dall'iframe, così lo scroll della pagina prosegue anche col cursore sopra la mappa —
+   tranne sulla finestra in basso a destra, lasciata libera per i controlli nativi +/-/frecce della mappa */
+.ecoMapGuards{position:absolute;inset:0;z-index:3;pointer-events:none;--mapGuardFree:180px}
+.ecoMapGuardTop{position:absolute;top:0;left:0;right:0;bottom:var(--mapGuardFree);pointer-events:auto}
+.ecoMapGuardBottomLeft{position:absolute;left:0;bottom:0;width:calc(100% - var(--mapGuardFree));height:var(--mapGuardFree);pointer-events:auto}
+
+/* layer 2 — chiusura: un solo campo nero che sale dal basso e copre la mappa — nessun fade bianco, nessun rimpicciolimento.
+   z-index sopra il layer mappa (1): resta sopra iframe/guard/chrome finché non è coperto a sua volta dal layer intro */
+.mapOutro{position:absolute;inset:0;z-index:9;background:var(--black);transform:translateY(100%);pointer-events:none;will-change:transform}
+
+/* fullscreen richiesto sul contenitore che comprende iframe + chrome: dentro, tutto resta nitido e realmente interattivo */
+.mapServicesSticky.isFullscreen{width:100vw;height:100vh;opacity:1!important;transform:none!important;filter:none!important;background:var(--paper)}
+.mapServicesSticky.isFullscreen .ecoMapFrame{left:0!important;top:0!important;width:100%!important;height:100%!important;opacity:1!important;border:0!important;filter:none!important;background:var(--paper)}
+.mapServicesSticky.isFullscreen .ecoMapFrame iframe{width:100%;height:100%;opacity:1;filter:none}
+.mapServicesSticky.isFullscreen .ecoMapGuardTop,
+.mapServicesSticky.isFullscreen .ecoMapGuardBottomLeft{pointer-events:none}
+.mapServicesSticky.isFullscreen .mapOutro{transform:translateY(100%)!important}
+
+.mapFsBtn{position:relative;z-index:6;display:inline-flex;align-items:center;gap:7px;pointer-events:auto;
+  background:rgba(237,237,234,.94);border:1px solid rgba(20,20,18,.16);color:var(--ink);cursor:pointer;
+  padding:7px 11px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
+  transition:background-color .2s ease,border-color .2s ease}
+.mapFsBtn:hover{background:#fff;border-color:rgba(20,20,18,.32)}
+.mapFsBtn svg{display:block;pointer-events:none;flex:none}
+.mapFsFallback{position:relative;z-index:6;display:inline-block;pointer-events:auto;background:rgba(237,237,234,.94);border:1px solid rgba(20,20,18,.16);
+  padding:7px 11px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);text-decoration:none;white-space:nowrap}
+.mapFsFallback:hover{background:#fff}
+.mapFsFallback[hidden]{display:none}
+
+/* ================= CAPITOLO 03 — SERVIZI ================= */
+/* layer 3 — soglia Capitolo 03: banner rosso, titolo e sottotitolo vivono nel TERZO layer dello stesso sticky della
+   Machine Map (nessun sticky separato, nessuna sovrapposizione tra sezioni indipendenti) e sono animati dalla
+   stessa render3(s)/progress unico — compaiono già mentre il nero sta chiudendo la mappa, mai dopo un vuoto nero.
+   z-index sopra .mapOutro, così restano leggibili sul nero che sale e poi restano fermi per l'hold finale. ---- */
+.servicesIntroLayer{position:absolute;inset:0;z-index:10;pointer-events:none}
+.ch3Banner{position:absolute;left:38px;top:9vh;display:flex;align-items:center;
+  width:min(50vw,660px);height:clamp(80px,10vh,118px);padding:0 32px;background:var(--red);
+  transform:translateX(-120%);pointer-events:none;will-change:transform}
+.ch3BannerText{font-family:var(--mono);font-size:clamp(18px,2.1vw,30px);letter-spacing:.05em;text-transform:uppercase;color:#fff;white-space:nowrap}
+
+.svc-open{position:absolute;left:6vw;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;
+  align-items:flex-start;text-align:left;pointer-events:none;max-width:46vw}
+.svc-open-h{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(46px,7.2vw,118px);
+  line-height:.92;letter-spacing:-.01em;clip-path:inset(0 100% 0 0);transform:scale(1.10);transform-origin:left center;
+  will-change:transform,clip-path}
+.svc-open-sub{margin-top:22px;color:rgba(237,237,234,.75);font-family:var(--mono);font-size:clamp(13px,1.2vw,16px);
+  letter-spacing:.06em;max-width:420px;opacity:0}
+
+/* ---- servizi: CARD A SCROLL ORIZZONTALE (dalla bozza duezero-scroll, adattata a palette/font del sito) —
+   su desktop la sezione è pinnata (sticky) e il binario di card trasla in orizzontale legato allo scroll,
+   1px di scroll = 1px di corsa (altezza dello stage impostata da JS su misura del binario). Su mobile
+   (<1024px) e in reduced-motion lo stage è nascosto e gli stessi dati sono resi come lista verticale. ---- */
+.svcSection{background:var(--black)}
+.svcStage{position:relative} /* altezza = 100vh + corsa orizzontale, calcolata da JS */
+.svcSticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black);
+  display:flex;flex-direction:column;justify-content:center}
+.svcHead{padding:0 38px 26px;display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.svcHeadLabel{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--red);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.svcHeadBar{display:inline-block;width:2px;height:12px;background:var(--red);flex-shrink:0}
+.svcHeadTitle{font-family:var(--geo);font-weight:800;text-transform:uppercase;color:#EDEDEA;
+  font-size:clamp(28px,3.6vw,52px);line-height:1.02;letter-spacing:-.01em}
+.svcProgressWrap{display:flex;align-items:center;gap:22px;flex-shrink:0}
+.svcCounter{font-family:var(--mono);font-size:11px;color:rgba(237,237,234,.35);letter-spacing:.2em;min-width:80px;text-align:right}
+.svcProgressTrack{width:120px;height:1px;background:rgba(237,237,234,.12);position:relative;overflow:hidden}
+.svcProgressBar{position:absolute;top:0;left:0;height:100%;width:0%;background:var(--red)}
+.svcTrackWrap{overflow:hidden}
+.svcTrack{display:flex;gap:24px;padding:24px 38px 0;will-change:transform}
+
+/* card: sfondo fotografico + overlay scuro che si alleggerisce all'hover (il testo si inverte in scuro) */
+.service-card{flex-shrink:0;width:max(380px,27vw);min-height:clamp(440px,54vh,620px);
+  background-color:#0a0a0a;background-size:cover;background-position:center;
+  border:1px solid rgba(237,237,234,.08);padding:40px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;text-decoration:none;color:#EDEDEA;cursor:pointer;
+  transition:transform .45s cubic-bezier(.16,1,.3,1),border-color .4s ease,opacity .15s ease}
+.service-card:hover{transform:translateY(-6px);border-color:rgba(237,237,234,.14);z-index:10;opacity:1!important}
+.service-card::after{content:'';position:absolute;inset:0;z-index:0;
+  background:linear-gradient(rgba(0,0,0,.68) 0%,rgba(0,0,0,.84) 100%);transition:background .5s ease}
+.service-card:hover::after{background:linear-gradient(rgba(237,237,234,.82) 0%,rgba(237,237,234,.68) 100%)}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);
+  transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1);z-index:2}
+.service-card:hover::before{transform:scaleX(1)}
+.service-card>*{position:relative;z-index:1}
+.sc-num{font-family:var(--mono);font-weight:500;font-size:56px;color:rgba(237,237,234,.10);line-height:1;
+  margin-bottom:24px;transition:color .4s ease}
+.sc-title{font-family:var(--geo);font-weight:700;text-transform:uppercase;font-size:clamp(21px,1.7vw,27px);
+  line-height:1.12;letter-spacing:-.005em;margin-bottom:12px;color:#EDEDEA;transition:color .4s ease}
+.sc-desc{font-family:var(--mono);font-size:13px;line-height:1.7;color:rgba(237,237,234,.45);
+  flex-grow:1;margin-bottom:24px;transition:color .4s ease}
+.sc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+.sc-tag{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.05em;
+  color:rgba(237,237,234,.35);background:rgba(237,237,234,.05);padding:5px 9px;border-radius:2px;
+  white-space:nowrap;transition:color .4s ease,background .4s ease}
+.sc-cta{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10px;
+  text-transform:uppercase;letter-spacing:.2em;color:var(--red);font-weight:500;margin-top:auto;
+  transition:gap .3s ease}
+.service-card:hover .sc-cta{gap:16px}
+.sc-link-icon{position:absolute;top:20px;right:20px;width:30px;height:30px;border:1px solid rgba(237,237,234,.12);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(237,237,234,.25);
+  font-size:12px;z-index:2;transition:color .3s ease,border-color .3s ease,transform .3s ease;pointer-events:none}
+.service-card:hover .sc-num{color:rgba(10,10,10,.16)}
+.service-card:hover .sc-title{color:#0a0a0a}
+.service-card:hover .sc-desc{color:rgba(10,10,10,.65)}
+.service-card:hover .sc-tag{color:rgba(10,10,10,.55);background:rgba(10,10,10,.08)}
+.service-card:hover .sc-link-icon{color:var(--red);border-color:var(--red);transform:rotate(45deg)}
+
+/* lista verticale (mobile + reduced-motion): stessi dati delle card, nessun pin */
+.svcMobileList{display:none;background:var(--black);padding:90px 8vw 100px}
+.svcMobileLabel{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--red);display:flex;align-items:center;gap:10px;margin-bottom:34px}
+.svcMobileItem{display:flex;align-items:center;gap:16px;padding:18px 0;text-decoration:none;
+  border-top:1px solid rgba(237,237,234,.10)}
+.svcMobileItem:last-child{border-bottom:1px solid rgba(237,237,234,.10)}
+.svcMobileNum{font-family:var(--mono);font-size:11px;color:rgba(237,237,234,.35);flex-shrink:0;min-width:22px}
+.svcMobileImg{width:64px;height:46px;overflow:hidden;flex-shrink:0}
+.svcMobileImg img{width:100%;height:100%;object-fit:cover;display:block}
+.svcMobileName{font-family:var(--geo);font-weight:700;text-transform:uppercase;color:#EDEDEA;
+  font-size:clamp(17px,4.6vw,24px);line-height:1.08;flex-grow:1}
+.svcMobileArrow{color:var(--red);font-size:15px;flex-shrink:0}
+@media (max-width:1023px){
+  .svcStage{display:none}
+  .svcMobileList{display:block}
+}
+
+/* ================= CAPITOLO 04 — QUALITÀ ================= */
+/* Metodo, validazione, tracciabilità — non una vetrina di badge. Contrasto netto con il nero dei Servizi:
+   la scena si apre in carta calda (--paper) e chiude tornando al nero. Un solo sticky, quattro gesti in
+   sequenza (apertura, metodo, tracciabilità, chiusura), ciascuno un layer assoluto nello stesso sticky. */
+.qualitySection{position:relative;height:520vh;background:var(--black);overflow:visible}
+.qualitySticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black)}
+
+.qualityPaper{position:absolute;inset:0;z-index:1;background:var(--paper);transform:translateY(101%);will-change:transform}
+
+/* ---- scena 1 — apertura: banner alto a sinistra (fuori dal flex, posizione propria), titolo grande
+   nella metà inferiore sinistra (flex column con justify-content:flex-end) ---- */
+.qualityIntro{position:absolute;inset:0;z-index:2;pointer-events:none;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  padding:0 6vw;clip-path:inset(0 0 0 0);will-change:clip-path}
+.qualityBanner{position:absolute;left:38px;top:9vh;display:flex;align-items:center;
+  width:min(46vw,560px);height:clamp(64px,8vh,90px);padding:0 28px;background:var(--red);color:#fff;
+  font-family:var(--mono);font-size:clamp(15px,1.6vw,22px);letter-spacing:.06em;text-transform:uppercase;
+  transform:translateX(-120%);pointer-events:none;will-change:transform}
+.qualityIntro h2{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;
+  font-size:clamp(42px,6.6vw,104px);line-height:.94;letter-spacing:-.01em;max-width:70vw;
+  clip-path:inset(0 100% 0 0);transform-origin:center center;will-change:transform,clip-path}
+.qualityIntro p{margin-top:22px;max-width:44vw;color:rgba(20,20,18,.68);
+  font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);letter-spacing:.03em;opacity:0;will-change:opacity}
+
+/* ---- scena 2 — metodo: nessuna card/griglia/dashboard. Una sola sigla pienamente visibile alla volta,
+   dentro una finestra mascherata (qualityCodeMask), con hold leggibile e definizione a maschera verticale ---- */
+.qualityMethod{position:absolute;inset:0;z-index:3;pointer-events:none;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  padding:0 6vw;clip-path:inset(0 0 0 0);will-change:clip-path}
+.qualityEyebrow{color:var(--ink);font-family:var(--mono);font-size:clamp(13px,1.15vw,16px);
+  letter-spacing:.14em;text-transform:uppercase;opacity:0;margin-bottom:26px;will-change:opacity}
+.qualityCodeMask{position:relative;width:min(60vw,720px);height:clamp(120px,20vh,220px);overflow:hidden;
+  opacity:0;will-change:opacity}
+.qualityCodeStrip{display:flex;flex-direction:column;will-change:transform}
+.qualityCode{height:clamp(120px,20vh,220px);display:flex;align-items:center;flex:none;
+  color:var(--ink);font-family:var(--geo);font-weight:800;
+  font-size:clamp(90px,13vw,220px);line-height:1;letter-spacing:-.01em}
+.qualityDefinition{margin-top:26px;max-width:34vw;color:rgba(20,20,18,.7);
+  font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);letter-spacing:.03em;opacity:0;
+  clip-path:inset(0 0 0% 0);transition:clip-path .22s cubic-bezier(.4,0,.2,1);will-change:opacity,clip-path}
+
+/* ---- scena 3 — tracciabilità: entra dal basso come un foglio tecnico (solo translateY, niente ombra/card),
+   il testo domina; sotto, riga mono + firma di tracciabilità (linee CSS, non un barcode finto) ---- */
+.qualityRecord{position:absolute;inset:0;z-index:4;pointer-events:none;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  padding:0 6vw;transform:translateY(100%);will-change:transform}
+.qualityRecordLabel{color:var(--red);font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);
+  letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}
+.qualityRecord h3{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;
+  font-size:clamp(40px,6.2vw,96px);line-height:.96;letter-spacing:-.01em;max-width:56vw}
+.qualityMeta{margin-top:30px;display:flex;align-items:center;gap:22px;opacity:0;will-change:opacity}
+.qualityMeta span:first-child{color:rgba(20,20,18,.6);font-family:var(--mono);font-size:clamp(11px,.95vw,13px);
+  letter-spacing:.12em;text-transform:uppercase}
+.qualityBarcode{display:inline-block;width:130px;height:20px;
+  background:repeating-linear-gradient(90deg,
+    var(--ink) 0 2px, transparent 2px 5px,
+    var(--red) 5px 7px, transparent 7px 12px,
+    var(--ink) 12px 13px, transparent 13px 18px,
+    var(--red) 18px 21px, transparent 21px 27px,
+    var(--ink) 27px 28px, transparent 28px 34px);
+  opacity:.85}
+
+/* ---- scena 4 — chiusura: un campo nero (il layer stesso) sale sopra la carta; titolo bianco + CTA senza box pieno ---- */
+.qualityFinal{position:absolute;inset:0;z-index:5;pointer-events:none;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  padding:0 6vw;background:var(--black);transform:translateY(100%);will-change:transform}
+.qualityFinal h3{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;
+  font-size:clamp(44px,6.8vw,108px);line-height:.94;letter-spacing:-.01em;max-width:60vw;opacity:0;will-change:opacity}
+.qualityCta{margin-top:34px;display:inline-flex;align-items:center;gap:12px;pointer-events:auto;
+  color:#EDEDEA;text-decoration:none;font-family:var(--mono);font-size:clamp(14px,1.3vw,18px);
+  letter-spacing:.1em;text-transform:uppercase;opacity:0;border-bottom:1px solid rgba(237,237,234,.3);
+  padding-bottom:6px;transition:border-color .25s ease;will-change:opacity}
+.qualityCta span{color:var(--red);transition:transform .25s ease}
+.qualityCta:hover{border-color:rgba(237,237,234,.7)}
+.qualityCta:hover span{transform:translateX(4px)}
+
+/* ================= CAPITOLO 05 — NEWS =================
+   Editoriale, non feed social e non griglia di card. Un solo sticky, tre gesti in sequenza:
+   apertura (carta + banner + titolo, stesso meccanismo di Cap.04), editoriale (lista di tre titoli
+   a sinistra, articolo attivo grande/nitido a sinistra e pannello immagine+estratto a destra,
+   swap via crop orizzontale sull'immagine e maschera verticale su categoria/estratto — stessa
+   tecnica già usata per il pannello Servizi/qualityDefinition), chiusura (nero + invito LinkedIn). */
+.newsSection{position:relative;height:500vh;background:var(--paper);overflow:visible}
+.newsSticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--paper)}
+
+/* ---- scena 1 — apertura: stesso schema di Cap.04 (banner top-left assoluto, titolo in blocco
+   con maschera orizzontale, sottotitolo dopo una breve pausa) ---- */
+.newsIntro{position:absolute;inset:0;z-index:2;pointer-events:none;
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;
+  padding:0 6vw 13vh;clip-path:inset(0 0 0 0);will-change:clip-path}
+.newsBanner{position:absolute;left:38px;top:9vh;display:flex;align-items:center;
+  width:min(46vw,560px);height:clamp(64px,8vh,90px);padding:0 28px;background:var(--red);color:#fff;
+  font-family:var(--mono);font-size:clamp(15px,1.6vw,22px);letter-spacing:.06em;text-transform:uppercase;
+  transform:translateX(-120%);pointer-events:none;will-change:transform}
+.newsIntro h2{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;
+  font-size:clamp(42px,6.6vw,104px);line-height:.94;letter-spacing:-.01em;max-width:52vw;
+  clip-path:inset(0 100% 0 0);transform-origin:left center;will-change:transform,clip-path}
+.newsIntro p{margin-top:22px;max-width:38vw;color:rgba(20,20,18,.68);
+  font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);letter-spacing:.03em;opacity:0;will-change:opacity}
+
+/* ---- scena 2 — editoriale: lista (52vw) a sinistra sempre leggibile su tre righe, immagine in alto
+   a destra, dettaglio (categoria+estratto+CTA) sotto l'immagine — griglia perché newsList/newsVisual/
+   newsDetail sono fratelli nello stesso layer, non innestati ---- */
+.newsEditorial{position:absolute;inset:0;z-index:3;pointer-events:none;
+  display:grid;grid-template-columns:52vw 1fr;grid-template-rows:auto auto;
+  align-items:center;column-gap:4vw;padding:0 6vw;clip-path:inset(0 0 0 0);will-change:clip-path}
+
+.newsList{grid-column:1;grid-row:1/3;display:flex;flex-direction:column;justify-content:center;
+  gap:32px;opacity:0;will-change:opacity}
+.newsListItem{pointer-events:none}
+.newsListItem:not(:first-child){border-top:1px solid rgba(20,20,18,.14);padding-top:26px}
+.newsListHead{display:flex;align-items:center;gap:12px}
+.newsListNum{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:rgba(20,20,18,.4);
+  transition:color .3s ease}
+.newsListCategory{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(20,20,18,.4);transition:color .3s ease}
+.newsListItem h3{margin-top:8px;font-family:var(--geo);font-weight:700;text-transform:uppercase;
+  color:rgba(20,20,18,.38);font-size:clamp(20px,2.15vw,30px);line-height:1.08;
+  transition:color .35s ease,font-size .35s ease,font-weight .35s ease}
+.newsListItem.active .newsListNum,.newsListItem.active .newsListCategory{color:var(--red)}
+.newsListItem.active h3{color:var(--ink);font-weight:800;font-size:clamp(30px,3.6vw,48px)}
+.newsListStatic{display:none} /* solo fallback reduced-motion */
+
+.newsVisual{grid-column:2;grid-row:1;align-self:end;position:relative;
+  width:clamp(300px,36vw,520px);height:58vh;overflow:hidden;opacity:0;will-change:opacity}
+.newsVisual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  clip-path:inset(0 0 0 0);transition:clip-path .7s cubic-bezier(.4,0,.2,1)}
+
+.newsDetail{grid-column:2;grid-row:2;align-self:start;margin-top:22px;pointer-events:none;opacity:0;
+  will-change:opacity}
+.newsMeta{display:block;font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--red);clip-path:inset(0 0 0% 0);
+  transition:clip-path .22s cubic-bezier(.4,0,.2,1)}
+.newsDetail p{margin-top:14px;max-width:32vw;color:rgba(20,20,18,.7);font-family:var(--mono);
+  font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.02em;clip-path:inset(0 0 0% 0);
+  transition:clip-path .22s cubic-bezier(.4,0,.2,1)}
+.newsCta{margin-top:22px;display:inline-flex;align-items:center;gap:10px;background:none;border:none;
+  cursor:pointer;padding:0;font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink);pointer-events:auto}
+.newsCta span{color:var(--red);transition:transform .25s ease}
+.newsCta:hover span{transform:translateX(4px)}
+
+/* ---- scena 3 — chiusura: un campo nero sale sopra la carta; invito grande + CTA LinkedIn ---- */
+.newsFinal{position:absolute;inset:0;z-index:5;pointer-events:none;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  padding:0 6vw;background:var(--black);transform:translateY(100%);will-change:transform}
+.newsFinal p{color:rgba(237,237,234,.65);font-family:var(--mono);font-size:clamp(13px,1.1vw,16px);
+  letter-spacing:.16em;text-transform:uppercase;opacity:0;will-change:opacity}
+.linkedinCta{margin-top:26px;display:inline-flex;align-items:center;gap:16px;pointer-events:auto;
+  background:none;border:none;cursor:pointer;color:#EDEDEA;font-family:var(--geo);font-weight:800;
+  text-transform:uppercase;font-size:clamp(36px,5.6vw,88px);line-height:1;letter-spacing:-.01em;
+  opacity:0;will-change:opacity}
+.linkedinCta span{color:var(--red);transition:transform .25s ease}
+.linkedinCta:hover span{transform:translateX(8px)}
+
+/* ================= FOOTER — chiusura editoriale, non un footer basso tradizionale =================
+   Nessuno sticky: è un blocco normale nel flusso, alto almeno 135vh, che entra in scena una sola volta
+   quando il footer raggiunge il viewport (classe .revealed aggiunta via scroll listener leggero, non
+   IntersectionObserver, per restare coerenti con lo stile del resto del file — ma qui il trigger è
+   "on-enter" una tantum, non un progresso continuo legato allo scroll: niente sticky, niente scene). */
+.siteFooter{position:relative;min-height:135vh;background:var(--black);color:var(--paper);
+  padding:10vh 6vw 34px;overflow:hidden;display:flex;flex-direction:column}
+
+.footerEyebrow{display:block;font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);
+  letter-spacing:.16em;text-transform:uppercase;color:rgba(237,237,234,.55);
+  opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.footerIntro h2{margin-top:18px;font-family:var(--geo);font-weight:800;text-transform:uppercase;
+  font-size:clamp(84px,15vw,250px);line-height:.92;letter-spacing:-.01em;color:#EDEDEA;
+  clip-path:inset(0 100% 0 0);transform-origin:left center;
+  transition:clip-path .9s cubic-bezier(.4,0,.2,1) .15s}
+.footerIntro p{margin-top:20px;max-width:36vw;font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);
+  letter-spacing:.02em;color:rgba(237,237,234,.65);
+  opacity:0;transform:translateY(14px);transition:opacity .5s ease .15s,transform .5s ease .15s}
+.footerMainCta{margin-top:30px;display:inline-flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);letter-spacing:.1em;text-transform:uppercase;
+  color:#EDEDEA;text-decoration:none;border-bottom:1px solid rgba(237,237,234,.35);padding-bottom:6px;
+  opacity:0;transform:translateY(14px);
+  transition:opacity .6s ease 1s,transform .6s ease 1s,border-color .25s ease}
+.footerMainCta span{color:var(--red);transition:transform .25s ease}
+.footerMainCta:hover{border-color:rgba(237,237,234,.75)}
+.footerMainCta:hover span{transform:translateX(5px)}
+
+.footerLogoWrap{flex:1;display:flex;align-items:center;justify-content:center;
+  min-height:30vh;padding:6vh 0}
+.footerLogo{width:clamp(280px,34vw,640px);height:auto;
+  opacity:0;transform:translateY(26px);transition:opacity .9s ease 1.1s,transform .9s ease 1.1s}
+
+.footerInfo{display:flex;flex-wrap:wrap;gap:6vw;padding-top:4vh;
+  border-top:1px solid rgba(237,237,234,.14)}
+.footerBlock{display:flex;flex-direction:column;gap:10px;min-width:180px;
+  opacity:0;transform:translateY(20px);transition:opacity .6s ease 1.3s,transform .6s ease 1.3s}
+.footerLabel{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(237,237,234,.45);margin-bottom:4px}
+.footerBlock a,.footerBlock address{font-family:var(--mono);font-size:clamp(14px,1.05vw,16px);
+  color:#EDEDEA;text-decoration:none;font-style:normal;line-height:1.6}
+.footerBlock a:hover{color:var(--red)}
+.footerLinks{gap:8px}
+
+.footerLegal{margin-top:6vh;padding-top:22px;border-top:1px solid rgba(237,237,234,.14);
+  display:flex;flex-wrap:wrap;align-items:center;gap:24px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:rgba(237,237,234,.5)}
+.footerLegal a{color:rgba(237,237,234,.5);text-decoration:none}
+.footerLegal a:hover{color:var(--red)}
+.footerLegalStatic{cursor:default;color:rgba(237,237,234,.32)} /* Privacy/Cookie: nessun URL reale ancora, testo non cliccabile */
+
+/* stato rivelato: la classe scatta una sola volta via JS quando il footer raggiunge il viewport
+   (vedi commento nello script) — titolo prima, poi CTA, poi logo, poi i tre blocchi informativi */
+.siteFooter.revealed .footerEyebrow{opacity:1;transform:translateY(0)}
+.siteFooter.revealed .footerIntro h2{clip-path:inset(0 0% 0 0)}
+.siteFooter.revealed .footerIntro p{opacity:1;transform:translateY(0)}
+.siteFooter.revealed .footerMainCta{opacity:1;transform:translateY(0)}
+.siteFooter.revealed .footerLogo{opacity:1;transform:translateY(0)}
+.siteFooter.revealed .footerBlock{opacity:1;transform:translateY(0)}
+
+@media (max-width:820px){
+  /* mappa + soglia Capitolo 03: stesso meccanismo scroll-driven del desktop (un solo sticky, un solo progresso),
+     solo margini di ingresso della mappa più stretti (via JS) e stage proporzionalmente più corto */
+  .mapServicesTransition{height:420vh}
+  .mapServicesSticky{height:100svh}
+  .ecoMapGuards{--mapGuardFree:200px}
+  /* Capitolo 03 su mobile/tablet: headline della soglia più contenuta; la lista verticale dei servizi
+     è già gestita dalla media query (max-width:1023px) della sezione card */
+  .svc-open{max-width:88vw}
+  .svc-open-h{font-size:clamp(40px,11vw,80px)}
+  /* Capitolo 04 — Qualità: stesso meccanismo scroll-driven, stage più corto, titoli ridotti,
+     DQ/IQ/OQ/PQ uno alla volta senza sovrapposizioni (stessa maschera, solo più piccola) */
+  .qualitySection{height:460vh}
+  .qualityIntro{padding:0 8vw}
+  .qualityIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
+  .qualityIntro p{max-width:80vw}
+  .qualityBanner{width:min(70vw,420px);left:20px;top:7vh}
+  .qualityMethod{padding:0 8vw}
+  .qualityCodeMask{width:84vw;height:clamp(90px,17vh,150px)}
+  .qualityCode{height:clamp(90px,17vh,150px);font-size:clamp(56px,20vw,120px)}
+  .qualityDefinition{max-width:82vw}
+  .qualityRecord{padding:0 8vw}
+  .qualityRecord h3{font-size:clamp(30px,8vw,56px);max-width:86vw}
+  .qualityFinal{padding:0 8vw}
+  .qualityFinal h3{font-size:clamp(32px,8.5vw,60px);max-width:86vw}
+
+  /* Capitolo 05 — News: apertura identica, ma la scena editoriale su mobile impila in colonna unica
+     (lista con l'attivo in evidenza e i due inattivi ridotti a una riga ellissata, poi immagine, poi
+     dettaglio) per garantire che tutto stia dentro i 100vh dello sticky senza sovrapposizioni */
+  .newsSection{height:600vh}
+  .newsIntro{padding:0 8vw}
+  .newsIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
+  .newsIntro p{max-width:80vw}
+  .newsBanner{width:min(70vw,420px);left:20px;top:7vh}
+
+  .newsEditorial{display:flex;flex-direction:column;justify-content:center;padding:0 8vw;gap:16px}
+  .newsList{width:auto;gap:12px}
+  .newsListItem:not(:first-child){padding-top:12px}
+  .newsListItem h3{font-size:14px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .newsListItem.active h3{font-size:clamp(22px,6.4vw,30px);white-space:normal;margin-top:6px}
+  .newsListItem:not(.active){opacity:.55}
+  .newsVisual{width:100%;height:24vh}
+  .newsDetail{margin-top:14px}
+  .newsDetail p{max-width:100%;font-size:13px}
+  .newsFinal{padding:0 8vw}
+  .linkedinCta{font-size:clamp(30px,9vw,48px)}
+
+  /* Footer: titolo mai tagliato, logo già sotto la CTA nel flusso naturale (nessun riordino necessario),
+     blocchi contatti/sede/esplora impilati, legal libero di andare su due righe */
+  .siteFooter{min-height:auto;padding:9vh 8vw 28px}
+  .footerIntro h2{font-size:clamp(48px,13vw,84px)}
+  .footerIntro p{max-width:82vw}
+  .footerLogoWrap{min-height:auto;padding:7vh 0}
+  .footerLogo{width:min(70vw,320px)}
+  .footerInfo{flex-direction:column;gap:32px}
+  .footerLegal{gap:14px 20px;font-size:10px}
+}
+
+/* ---- fix responsive Capitolo 02 per laptop compatti (es. MacBook 13"): banner più piccolo/alto, headline leggermente ridotta ----
+   non è un layout mobile: resta lo stesso sticky assoluto, solo le dimensioni cambiano ---- */
+@media (max-width:1280px), (max-height:820px){
+  /* laptop compatti: tutti i banner (Cap.1, Cap.2, Cap.3) si riducono insieme, stessa scala, mai giganti */
+  .chBanner{padding:0 22px}
+  .chBanner .bt{font-size:clamp(14px,1.8vw,20px)}
+  .ch2Banner{top:5.5vh;width:min(43vw,460px);height:clamp(64px,8vh,86px);padding:0 22px}
+  .ch2BannerText{font-size:clamp(14px,1.8vw,20px)}
+  .ch3Banner{top:5.5vh;width:min(43vw,460px);height:clamp(64px,8vh,86px);padding:0 22px}
+  .ch3BannerText{font-size:clamp(14px,1.8vw,20px)}
+  .eco-open-h{font-size:clamp(56px,8.8vw,150px)}
+  /* Machine Map + soglia Cap.03: su laptop compatti lo stage unico resta alla stessa altezza del desktop
+     (500vh, dalla regola base) — solo chrome/bottoni si riducono, nessun overflow su MacBook 13" */
+  .docMapChrome{top:20px;left:22px}
+  .docMapChromeTitle{font-size:10px}
+  .docMapChromeSub{font-size:9px}
+  .mapFsBtn,.mapFsFallback{top:16px;right:18px;padding:6px 10px;font-size:10px}
+  /* Capitolo 03: headline della soglia leggermente ridotta, nessun overflow su MacBook 13" */
+  .svc-open-h{font-size:clamp(42px,6.4vw,96px)}
+  /* Capitolo 04: stessa scala di riduzione, nessun overflow su MacBook 13" — stage resta 520vh (regola base) */
+  .qualityIntro h2{font-size:clamp(38px,5.6vw,84px)}
+  .qualityCode{font-size:clamp(72px,10.5vw,170px)}
+  .qualityRecord h3{font-size:clamp(34px,5vw,76px)}
+  .qualityFinal h3{font-size:clamp(36px,5.4vw,84px)}
+  /* Capitolo 05: stessa scala di riduzione, nessun overflow su MacBook 13" — stage resta 380vh (regola base).
+     Niente override di altezza per .newsVisual qui: questa query si sovrappone anche alle larghezze mobile
+     (max-width:1280px include anche 375-390px) e vincerebbe sulla regola mobile .newsVisual{height:24vh}
+     per ordine di sorgente, rompendo il fit verticale calcolato per l'impilamento mobile — sui laptop veri
+     (821-1280px) l'editoriale resta a due colonne (grid, non flex-stack), quindi 58vh di base è già sicuro */
+  .newsIntro h2{font-size:clamp(38px,5.6vw,84px)}
+  .newsListItem.active h3{font-size:clamp(26px,3.2vw,40px)}
+  .linkedinCta{font-size:clamp(32px,4.8vw,72px)}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .scene2{height:auto;background:var(--paper)}
+  .sticky2{position:static;height:auto;overflow:visible;background:none;perspective:none;display:flex;flex-direction:column;gap:76px;padding:110px 38px 90px}
+  .ecoBg,.ecoBridge,.ecoProjectImg,.ecoHyperImg{display:none}
+  .ch2Banner{position:static;opacity:1;display:inline-flex;width:auto;height:auto;padding:14px 24px;background:var(--red);pointer-events:auto}
+  .ch2BannerBar{display:none}
+  .ch2BannerText{opacity:1;transform:none}
+  .eco-open{position:static;color:var(--ink)}
+  .eco-open-h{opacity:1;transform:none;clip-path:none;color:var(--ink)}
+  .eco-open-sub{opacity:1;color:rgba(20,20,18,.65)}
+  .eco-lbl{
+    position:static;display:block;opacity:1;transform:none;filter:none;clip-path:none;text-align:left;max-width:640px}
+  #sceneProject{position:static;display:flex;flex-direction:column;align-items:flex-start;gap:14px;color:var(--ink)}
+  .pj-group{transform:none}
+  .pj-title,.pj-sub,.pj-mono{opacity:1;transform:none;color:var(--ink);pointer-events:auto}
+  .pj-mono{color:rgba(20,20,18,.6)}
+  .pj-cta{opacity:1;pointer-events:auto;color:var(--ink);border-color:rgba(20,20,18,.35)}
+  .pj-cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  #sceneHyper{position:static;display:flex;flex-direction:column;align-items:flex-start;gap:14px;background:#070c14;color:#EDEDEA;padding:32px;max-width:none}
+  .hp-title,.hp-sub,.hp-mono{opacity:1;transform:none;clip-path:none;color:#EDEDEA;pointer-events:auto}
+  .hp-mono{color:rgba(237,237,234,.6)}
+  .hp-cta{opacity:1;pointer-events:auto}
+  #sceneDoc{position:static;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:10px;color:var(--ink);pointer-events:auto;padding:0}
+  .dc-title,.dc-sub,.dc-text,.dc-accent{opacity:1;transform:none;clip-path:none}
+  .dc-text i{transform:none}
+  /* mappa: da contenuta a piena senza coreografia complessa (stage non pinnato, nessuna crescita animata) */
+  .mapServicesTransition{height:auto}
+  .mapServicesSticky{position:static;height:auto;min-height:100svh}
+  .mapLayer{position:static}
+  .docMapChrome{opacity:1}
+  .ecoMapFrame{position:relative;left:auto;top:auto;width:100%;height:100svh;opacity:1;border:0}
+  /* chiusura netta: nessun campo nero animato; banner e titolo Servizi seguono subito, impilati staticamente
+     nello stesso sticky della mappa (un solo sticky, nessuna sezione separata) */
+  .mapOutro{display:none}
+  .servicesIntroLayer{position:static;pointer-events:auto}
+  .ch3Banner{position:static;opacity:1;width:auto;height:auto;transform:none;margin:40px 38px 0;padding:14px 24px;background:var(--red);pointer-events:auto}
+  .svc-open{position:static;height:auto;max-width:none;padding:40px 38px 90px;color:#EDEDEA}
+  .svc-open-h{opacity:1;transform:none;clip-path:none;color:#EDEDEA}
+  .svc-open-sub{opacity:1}
+
+  /* servizi: niente pin né corsa orizzontale — la stessa lista verticale usata su mobile */
+  .svcStage{display:none}
+  .svcMobileList{display:block}
+
+  /* Capitolo 04 — Qualità: sequenza lineare statica, niente sticky/coreografia —
+     intro → quattro verifiche (tutte e quattro, non una alla volta) → tracciabilità → CTA */
+  .qualitySection{height:auto;background:var(--paper)}
+  .qualitySticky{position:static;height:auto;overflow:visible;display:flex;flex-direction:column;gap:64px;padding:100px 38px 110px}
+  .qualityPaper{display:none}
+  .qualityIntro,.qualityMethod,.qualityRecord,.qualityFinal{position:static;clip-path:none;transform:none;
+    pointer-events:auto;display:flex;flex-direction:column;align-items:flex-start;padding:0}
+  .qualityBanner{position:static;transform:none;margin-bottom:28px}
+  .qualityIntro h2,.qualityIntro p,.qualityEyebrow,.qualityDefinition,.qualityMeta,.qualityFinal h3,.qualityCta{
+    opacity:1;transform:none;clip-path:none}
+  .qualityCodeMask{position:static;height:auto;overflow:visible;width:auto;opacity:1}
+  .qualityCodeStrip{position:static;transform:none;display:flex;flex-direction:column;gap:22px}
+  .qualityCode{height:auto;font-size:clamp(48px,9vw,90px);display:flex;flex-direction:column;gap:6px}
+  .qualityCode::after{content:attr(data-def);font-family:var(--mono);font-size:14px;font-weight:400;
+    text-transform:none;letter-spacing:.03em;color:rgba(20,20,18,.65)}
+  .qualityDefinition{display:none}
+  .qualityFinal{background:var(--black);color:#EDEDEA;padding:60px 38px;margin:0 -38px}
+  .qualityFinal h3{color:#EDEDEA}
+  .qualityCta{color:#EDEDEA;pointer-events:auto}
+
+  /* Capitolo 05 — News: sequenza lineare statica — intro → i tre articoli per intero (titolo, immagine,
+     estratto, CTA ciascuno, non solo l'attivo: il pannello dinamico condiviso non ha senso senza scroll)
+     → invito LinkedIn */
+  .newsSection{height:auto;background:var(--paper)}
+  .newsSticky{position:static;height:auto;overflow:visible;display:flex;flex-direction:column;gap:64px;padding:100px 38px 110px}
+  .newsIntro,.newsEditorial,.newsFinal{position:static;clip-path:none;transform:none;
+    pointer-events:auto;display:flex;flex-direction:column;align-items:flex-start;padding:0}
+  .newsBanner{position:static;transform:none;margin-bottom:28px}
+  .newsIntro h2,.newsIntro p,.newsFinal p,.linkedinCta{opacity:1;transform:none;clip-path:none}
+  .newsList{opacity:1;width:100%;gap:48px}
+  .newsListItem h3{color:var(--ink);font-weight:800;font-size:clamp(24px,4vw,36px)}
+  .newsListNum,.newsListCategory{color:var(--red)}
+  .newsListStatic{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-top:18px}
+  .newsListStatic img{width:100%;max-width:480px;height:auto;aspect-ratio:4/3;object-fit:cover}
+  .newsListStatic p{max-width:520px;color:rgba(20,20,18,.7);font-family:var(--mono);font-size:14px;line-height:1.6}
+  .newsCtaStatic{display:inline-flex;align-items:center;gap:10px;background:none;border:none;cursor:pointer;
+    padding:0;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+  .newsCtaStatic span{color:var(--red)}
+  .newsVisual,.newsDetail{display:none}
+  .newsFinal{background:var(--black);color:#EDEDEA;padding:60px 38px;margin:0 -38px}
+  .newsFinal p{color:rgba(237,237,234,.65)}
+  .linkedinCta{color:#EDEDEA;pointer-events:auto}
+
+  /* Footer: niente reveal-on-scroll, tutto già visibile e fermo */
+  .footerEyebrow,.footerIntro h2,.footerIntro p,.footerMainCta,.footerLogo,.footerBlock{
+    opacity:1;transform:none;clip-path:none;transition:none}
+}
