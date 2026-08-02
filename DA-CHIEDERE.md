@@ -2,6 +2,14 @@
 
 Il dominio resta `duezero.eu`. Ogni voce indica cosa manca oggi in questa base (`~/Projects/duezero-v3`, nata dal prototipo `pitch/` di Due.ZeroV3 e ora indipendente).
 
+## Cinque domande per il programmatore interno
+
+1. **Deploy** — come viene pubblicato oggi il sito sul server? Quando andrà su il nuovo, conferma che `DueZeroProject/`, `Gestori/`, `mappa-embed.html` e le altre cartelle applicative non si toccano. (Le app restano sul server: il nuovo sito le usa solo via link/iframe, niente entra nel nostro repo.)
+2. **Form** — il form attuale invia email dal vostro ASP.NET (postback + reCAPTCHA): puoi esporre lo stesso invio come endpoint per il form del nuovo sito?
+3. **Mappa** — quanti caricamenti/mese vedi nella dashboard Mapbox e che piano avete? (Prima di valutare alternative tipo MapLibre: se siete nel piano gratuito, il problema costi non esiste. I dati macchine arrivano dal vostro `GET_Elenco_Pubblicazioni_Mappa.ashx` e restano invariati con qualsiasi libreria.)
+4. **Redirect** — i 301 dal vecchio sito al nuovo si gestiscono via `web.config` su IIS: li fai tu o li prepariamo noi?
+5. **Accessi** — Google Search Console e eventuale Analytics: chi li ha?
+
 ## Bloccanti (senza queste non si va in produzione)
 
 - [ ] **Form contatti** — il sito attuale (`contatti.aspx`, verificato) invia già lato server: postback ASP.NET con reCAPTCHA, l'email parte dal loro backend. Il nostro form invece apre un `mailto:` precompilato verso info@duezero.eu (funziona ma dipende dal client email dell'utente). Da chiedere:
