@@ -160,7 +160,13 @@
     const curTop=lerp(innerHeight-curH,bannerTop+bannerH/2-curH/2,migrate);
     triangle.style.left=curLeft.toFixed(1)+'px'; triangle.style.top=curTop.toFixed(1)+'px';
     triangle.style.width=curW.toFixed(1)+'px'; triangle.style.height=curH.toFixed(1)+'px';
-    triangle.style.clipPath='polygon(100% 0%,100% 100%,0% 100%,'+lerp(100,0,migrate).toFixed(2)+'% 0%)';
+    // angolo in basso a destra tagliato a 45°, come il lembo di una pagina che si sfoglia. Cresce con
+    // fillBar (cioè mentre la linea diventa barra piena): finché è una linea alta 3px un angolo tagliato
+    // non si leggerebbe, e il triangolo iniziale resta intatto. Il taglio è in pixel e viene riconvertito
+    // in percentuali sui due assi, altrimenti su un rettangolo largo e basso i 45° non sarebbero tali.
+    const cutPx=lerp(0,Math.min(curH*0.42,44),fillBar);
+    const cutX=(cutPx/Math.max(curW,1))*100, cutY=(cutPx/Math.max(curH,1))*100;
+    triangle.style.clipPath='polygon(100% 0%,100% '+(100-cutY).toFixed(2)+'%,'+(100-cutX).toFixed(2)+'% 100%,0% 100%,'+lerp(100,0,migrate).toFixed(2)+'% 0%)';
     triangle.style.opacity=chapterOut.toFixed(3);
 
     chBanner.style.opacity=(Math.min(1,btOp*3)*chapterOut).toFixed(3);
