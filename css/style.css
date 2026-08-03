@@ -101,7 +101,9 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .ch-desc .dw{display:inline-block;opacity:0;transform:translateY(9px)}
 .ch-title{position:absolute;left:38px;bottom:56px;font-weight:800;text-transform:uppercase;font-size:clamp(38px,7.4vw,124px);line-height:.92;letter-spacing:-.01em;color:var(--ink)}
 .ch-title .ln{display:block;overflow:hidden}
-.ch-title .ln i{display:block;font-style:normal;transform:translateY(106%)}
+/* nowrap: gli a capo sono decisi a mano nel markup, una riga per .ln. Senza, su schermi stretti una
+   riga lunga si spezza da sola e la maschera che la rivela ne scopre due insieme, rompendo il ritmo */
+.ch-title .ln i{display:block;font-style:normal;transform:translateY(106%);white-space:nowrap}
 /* banner che si COSTRUISCE a quadrati */
 .chBanner{position:absolute;z-index:9;opacity:0;display:flex;align-items:center;padding:0 26px}
 .chBanner .bt{position:relative;z-index:1;color:#fff;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:clamp(18px,2.1vw,30px);white-space:nowrap;opacity:0}
@@ -671,6 +673,10 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   /* menu: stesso margine laterale degli altri elementi mobile, e area toccabile portata a ~44px */
   .topbar{padding:0 20px}
   .menuBtn{padding:13px 18px}
+  /* titolo di capitolo: il minimo di 38px della regola base era tarato su righe corte. Con le righe
+     attuali la più lunga misura ~10,1 volte il corpo, quindi su telefono va scalata o non entra
+     (e con nowrap verrebbe tagliata invece che andare a capo) */
+  .ch-title{font-size:clamp(22px,7.9vw,44px);bottom:44px}
   .chBanner{padding:0 18px}          /* larghezza calcolata in JS: vedi buildBanner() */
   .chBanner .bt{font-size:13px}
   .ch2Banner{left:20px;width:min(86vw,420px);padding:0 18px}
