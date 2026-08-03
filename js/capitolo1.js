@@ -53,11 +53,13 @@
 
   let bannerLeft=0,bannerTop=0,bannerBW=660,bannerH=118;
   function buildBanner(){
-    // laptop compatti (stessa soglia della media query del Capitolo 2): banner ridotto, non gigante
-    const vw=innerWidth,vh=innerHeight, compact=(vw<=1280||vh<=820);
-    const bw=compact?Math.min(vw*0.43,460):Math.min(vw*0.5,660);
+    // laptop compatti (stessa soglia della media query del Capitolo 2): banner ridotto, non gigante.
+    // Su telefono 43vw non basta a contenere il testo (nowrap) e la scritta usciva dal rettangolo:
+    // stessa larghezza dei banner di Cap.02/03, definita nella media query (max-width:820px)
+    const vw=innerWidth,vh=innerHeight, mobile=vw<=820, compact=(vw<=1280||vh<=820);
+    const bw=mobile?Math.min(vw*0.86,420):(compact?Math.min(vw*0.43,460):Math.min(vw*0.5,660));
     bannerH=compact?Math.min(Math.max(64,vh*0.08),86):118; bannerBW=bw;
-    bannerLeft=vw-38-bw; bannerTop=vh*0.30;
+    bannerLeft=vw-(mobile?20:38)-bw; bannerTop=vh*0.30;   // su telefono il banner è più largo: margine laterale ridotto
     chBanner.style.left=bannerLeft+'px'; chBanner.style.top=bannerTop+'px';
     chBanner.style.width=bw+'px'; chBanner.style.height=bannerH+'px';
   }

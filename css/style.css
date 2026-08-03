@@ -648,6 +648,26 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .linkedinCta{font-size:clamp(32px,4.8vw,72px)}
 }
 
+/* ---- correzioni telefono: DEVONO stare dopo la query (max-width:1280px) qui sopra ----
+   La query dei laptop compatti include anche le larghezze telefono (375-430px) e, a parità di
+   specificità, vince per ordine di sorgente: i banner di capitolo prendevano 43vw (161px su un
+   iPhone), troppo poco per il testo che è white-space:nowrap — la scritta usciva dal rettangolo
+   rosso e restava visibile perfino quando il banner era parcheggiato fuori schermo a translateX(-120%).
+   Stessa larghezza dei banner di Cap.04/05, che su telefono erano già corretti. */
+@media (max-width:820px){
+  .chBanner{padding:0 18px}          /* larghezza calcolata in JS: vedi buildBanner() */
+  .chBanner .bt{font-size:13px}
+  .ch2Banner{left:20px;width:min(86vw,420px);padding:0 18px}
+  .ch2BannerText{font-size:13px}
+  .ch3Banner{left:20px;width:min(86vw,420px);padding:0 18px}
+  .ch3BannerText{font-size:13px}
+  /* chrome della mappa: il titolo a sinistra e il bottone a destra si sovrapponevano di pochi px,
+     tagliando "Machine Map — Interattiva". Il blocco sinistro ora si ferma prima del bottone e va a capo.
+     215px = larghezza del bottone "Espandi mappa" (~155px) + margine destro + spazio di respiro */
+  .docMapChromeL{top:18px;left:20px;max-width:calc(100vw - 215px)}
+  .docMapChromeSub{white-space:normal;line-height:1.35}
+}
+
 @media (prefers-reduced-motion: reduce){
   .scene2{height:auto;background:var(--paper)}
   .sticky2{position:static;height:auto;overflow:visible;background:none;perspective:none;display:flex;flex-direction:column;gap:76px;padding:110px 38px 90px}
