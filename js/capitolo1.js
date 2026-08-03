@@ -2,7 +2,7 @@
   const $=id=>document.getElementById(id);
   const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),menuBtn=$('menuBtn'),
         glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),lightPanel=$('lightPanel'),
-        chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),
+        chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),chSub=$('chSub'),
         overlay=$('overlay'),closeBtn=$('closeBtn'),root=document.documentElement,body=document.body,
         preloader=$('preloader'),heroBadges=$('heroBadges');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -111,10 +111,13 @@
     const btOp      = smooth(sub(s,.40,.46));    // label "Capitolo 1 — Chi siamo": subito dopo la salita, niente vuoto
     const chOp      = smooth(sub(s,.42,.46));    // ch-title entra, in parallelo al label
     const chLine    = i=>smooth(sub(s,.44+i*.025,.52+i*.025));   // l'ultima riga completa l'entrata a ~.60
-    const chapterOut= 1-smooth(sub(s,.72,.84));  // parte dopo una pausa di lettura completa (.60→.72)
-    const cardIn    = smooth(sub(s,.70,.86));    // il pannello si apre nella card editoriale, sovrapposto a chapterOut
-    const cardHead  = smooth(sub(s,.76,.82));
-    const phLine    = i=>smooth(sub(s,.80+i*.03,.88+i*.03));
+    const subIn     = smooth(sub(s,.60,.66));    // sottotitolo: entra appena il titolo ha finito, in blocco unico
+    // le tappe successive sono spostate avanti di .02 rispetto a prima: il sottotitolo consuma parte
+    // della pausa di lettura, e senza questo scarto resterebbe leggibile troppo poco
+    const chapterOut= 1-smooth(sub(s,.74,.86));  // pausa di lettura completa (.66→.74) con titolo e sottotitolo fermi
+    const cardIn    = smooth(sub(s,.72,.88));    // il pannello si apre nella card editoriale, sovrapposto a chapterOut
+    const cardHead  = smooth(sub(s,.78,.84));
+    const phLine    = i=>smooth(sub(s,.82+i*.03,.90+i*.03));
 
     // il menu non è più legato al progresso di questa scena: resta visibile su tutto il documento
     // (viene acceso una volta sola alla fine del preloader, vedi hidePreloader)
@@ -174,6 +177,7 @@
 
     chapter1.style.opacity=(chOp*chapterOut).toFixed(3);
     chLines.forEach((el,i)=>{ const wp=chLine(i); el.style.transform='translateY('+((1-wp)*106).toFixed(1)+'%)'; });
+    if(chSub) chSub.style.transform='translateY('+((1-subIn)*105).toFixed(1)+'%)';
 
     // card editoriale: il pannello carta si apre nella card (scale morph, stesso gesto della palette)
     const cardW=card1b.offsetWidth||1, cardH=card1b.offsetHeight||1, side=cardH*0.26;
