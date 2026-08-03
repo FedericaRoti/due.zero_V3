@@ -22,6 +22,7 @@
   }
   function hidePreloader(){
     preloadDone=true;
+    if(menuBtn) menuBtn.style.opacity='1';   // da qui in poi il menu resta acceso per tutto il documento
     if(preloader){
       if(preloaderBarFill){ preloaderBarFill.style.transition='width .3s ease'; preloaderBarFill.style.width='100%'; }
       setTimeout(()=>{
@@ -115,7 +116,8 @@
     const cardHead  = smooth(sub(s,.76,.82));
     const phLine    = i=>smooth(sub(s,.80+i*.03,.88+i*.03));
 
-    menuBtn.style.opacity=reveal.toFixed(3); menuBtn.style.pointerEvents=reveal>.5?'auto':'none';
+    // il menu non è più legato al progresso di questa scena: resta visibile su tutto il documento
+    // (viene acceso una volta sola alla fine del preloader, vedi hidePreloader)
     hint.style.opacity=Math.max(0,1-reveal*2.5).toFixed(3);
 
     // badge hero: solo dopo il preload, spariscono all'inizio dello scroll (soglia leggermente più larga
