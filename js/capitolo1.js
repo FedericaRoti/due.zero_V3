@@ -2,7 +2,7 @@
   const $=id=>document.getElementById(id);
   const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),menuBtn=$('menuBtn'),
         glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),lightPanel=$('lightPanel'),
-        chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),chSub=$('chSub'),
+        chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),chSub=$('chSub'),ch1Img=$('ch1Img'),
         overlay=$('overlay'),closeBtn=$('closeBtn'),root=document.documentElement,body=document.body,
         preloader=$('preloader'),heroBadges=$('heroBadges');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -115,6 +115,12 @@
     // le tappe successive sono spostate avanti di .02 rispetto a prima: il sottotitolo consuma parte
     // della pausa di lettura, e senza questo scarto resterebbe leggibile troppo poco
     const chapterOut= 1-smooth(sub(s,.74,.86));  // pausa di lettura completa (.66→.74) con titolo e sottotitolo fermi
+    // immagine a destra: stessa tecnica di ecoProjectImg in Ecosistema (crop ravvicinato -> a fuoco).
+    // Entra PRIMA del titolo (in parallelo alla salita del pannello carta, .20-.42), così il titolo
+    // non arriva su una scena vuota; esce in sync con chapterOut, quando la card prende il posto
+    const imgCrop   = smooth(sub(s,.20,.42));
+    const imgFadeIn = smooth(sub(s,.20,.30));
+    const imgExit   = smooth(sub(s,.74,.86));
     const cardIn    = smooth(sub(s,.72,.88));    // il pannello si apre nella card editoriale, sovrapposto a chapterOut
     const cardHead  = smooth(sub(s,.78,.84));
     const phLine    = i=>smooth(sub(s,.82+i*.03,.90+i*.03));
@@ -178,6 +184,14 @@
     chapter1.style.opacity=(chOp*chapterOut).toFixed(3);
     chLines.forEach((el,i)=>{ const wp=chLine(i); el.style.transform='translateY('+((1-wp)*106).toFixed(1)+'%)'; });
     if(chSub) chSub.style.transform='translateY('+((1-subIn)*105).toFixed(1)+'%)';
+
+    if(ch1Img){
+      ch1Img.style.opacity=(imgFadeIn*(1-imgExit)).toFixed(3);
+      ch1Img.style.filter='blur('+(lerp(6,0,imgCrop)+lerp(0,8,imgExit)).toFixed(2)+'px)';
+      ch1Img.style.backgroundSize=lerp(300,130,imgCrop).toFixed(0)+'% auto';
+      ch1Img.style.backgroundPosition=lerp(46,50,imgCrop).toFixed(1)+'% '+lerp(30,42,imgCrop).toFixed(1)+'%';
+      ch1Img.style.transform='translate('+(lerp(10,0,imgCrop)+lerp(0,16,imgExit)).toFixed(2)+'vw,-50%) scale('+(lerp(.6,1,imgCrop)*lerp(1,1.25,imgExit)).toFixed(3)+')';
+    }
 
     // card editoriale: il pannello carta si apre nella card (scale morph, stesso gesto della palette)
     const cardW=card1b.offsetWidth||1, cardH=card1b.offsetHeight||1, side=cardH*0.26;

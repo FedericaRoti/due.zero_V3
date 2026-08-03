@@ -97,12 +97,25 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* ---- CAPITOLO 1 (chiaro) ---- */
 .chapter1{position:absolute;inset:0;z-index:4;color:var(--ink);opacity:0;pointer-events:none}
+/* immagine a destra — stessa tecnica di .ecoProjectImg (Ecosistema): campo fotografico, non un box,
+   sfumato sul bordo sinistro perché qui il testo vive a sinistra; z-index sopra il pannello carta
+   (1) e sotto titolo/triangolo/legenda (4/6/7), così non compete mai con il testo */
+.ch1Img{position:absolute;right:-2vw;top:50%;width:38vw;height:78vh;z-index:2;
+  background-image:url('../img/01-DOCTEC.jpg');background-repeat:no-repeat;transform-origin:center;
+  -webkit-mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 26%);
+  mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 26%);
+  opacity:0;pointer-events:none;will-change:transform,filter,background-size,background-position}
 .ch-desc{position:absolute;top:112px;left:38px;max-width:600px;font-family:var(--mono);font-size:18px;line-height:1.6;letter-spacing:.01em;color:rgba(20,20,18,.92)}
 .ch-desc .dw{display:inline-block;opacity:0;transform:translateY(9px)}
 /* blocco titolo+sottotitolo ancorato in basso a sinistra: è il contenitore ad avere la posizione,
    così il titolo sale da sé quando sotto entra il sottotitolo */
 .ch-block{position:absolute;left:38px;bottom:56px;max-width:calc(100vw - 76px);display:flex;flex-direction:column;gap:30px}
-.ch-title{font-weight:800;text-transform:uppercase;font-size:clamp(34px,6.6vw,112px);line-height:.92;letter-spacing:-.01em;color:var(--ink)}
+/* il corpo non è più libero di crescere quanto vuole: con l'immagine a destra (.ch1Img, 38vw+2vw di
+   sbordo = bordo sinistro a ~64% della viewport), la riga più lunga del titolo ("E SOLUZIONI DIGITALI
+   IN CLOUD", ~10,1 volte il corpo, nowrap) deve stare a sinistra di quel bordo su ogni larghezza —
+   calc() invece di un semplice vw perché serve un'intercetta negativa che clamp da solo non esprime.
+   Margine di sicurezza verificato 3-6px su 821-1920px */
+.ch-title{font-weight:800;text-transform:uppercase;font-size:clamp(28px,calc(6vw - 8px),92px);line-height:.92;letter-spacing:-.01em;color:var(--ink)}
 .ch-title .ln{display:block;overflow:hidden}
 /* nowrap: gli a capo sono decisi a mano nel markup, una riga per .ln. Senza, su schermi stretti una
    riga lunga si spezza da sola e la maschera che la rivela ne scopre due insieme, rompendo il ritmo */
@@ -684,6 +697,10 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   /* menu: stesso margine laterale degli altri elementi mobile, e area toccabile portata a ~44px */
   .topbar{padding:0 20px}
   .menuBtn{padding:13px 18px}
+  /* immagine a destra del Capitolo 1: sotto gli 820px il blocco titolo+sottotitolo occupa quasi
+     tutta la larghezza — un'immagine che sbordi da destra ci finirebbe sopra. Nascosta finché non
+     si decide un trattamento mobile dedicato (sotto il testo? più piccola in alto? da valutare) */
+  .ch1Img{display:none}
   /* titolo di capitolo: il minimo di 38px della regola base era tarato su righe corte. Con le righe
      attuali la più lunga misura ~10,1 volte il corpo, quindi su telefono va scalata o non entra
      (e con nowrap verrebbe tagliata invece che andare a capo) */
