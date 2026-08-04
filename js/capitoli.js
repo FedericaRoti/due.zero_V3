@@ -312,10 +312,12 @@
       const item=document.createElement('a');
       item.className='svcMobileItem';
       item.dataset.service=s.slug;
+      item.style.backgroundImage="url('img/services/"+s.slug+".jpg')";
       item.innerHTML='<span class="svcMobileNum">'+num+'</span>'+
-        '<span class="svcMobileImg"><img src="img/services/'+s.slug+'.jpg" alt="" loading="lazy"></span>'+
-        '<span class="svcMobileName">'+esc(s.title)+'</span>'+
-        '<span class="svcMobileArrow">→</span>';
+        '<span class="svcMobileContent">'+
+          '<span class="svcMobileName">'+esc(s.title)+'</span>'+
+          '<span class="svcMobileArrow">→</span>'+
+        '</span>';
       svcMobileList.appendChild(item);
     });
 

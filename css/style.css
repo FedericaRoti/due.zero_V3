@@ -390,15 +390,21 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .svcMobileList{display:none;background:var(--black);padding:90px 8vw 100px}
 .svcMobileLabel{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;
   color:var(--red);display:flex;align-items:center;gap:10px;margin-bottom:34px}
-.svcMobileItem{display:flex;align-items:center;gap:16px;padding:18px 0;text-decoration:none;
-  border-top:1px solid rgba(237,237,234,.10)}
-.svcMobileItem:last-child{border-bottom:1px solid rgba(237,237,234,.10)}
-.svcMobileNum{font-family:var(--mono);font-size:11px;color:rgba(237,237,234,.35);flex-shrink:0;min-width:22px}
-.svcMobileImg{width:64px;height:46px;overflow:hidden;flex-shrink:0}
-.svcMobileImg img{width:100%;height:100%;object-fit:cover;display:block}
+/* anteprima: ogni riga diventa un rettangolo con la foto del servizio come sfondo (stessa immagine
+   già usata per le card desktop), invece di numero+miniatura+nome in una riga sottile. Overlay
+   scuro sfumato dal basso (stessa tecnica di .ecoHyperImg in Ecosistema) per leggibilità del testo,
+   che vive nella fascia bassa della card */
+.svcMobileItem{position:relative;display:flex;align-items:flex-end;min-height:38vw;margin-bottom:14px;
+  padding:20px;text-decoration:none;overflow:hidden;background-size:cover;background-position:center}
+.svcMobileItem::after{content:'';position:absolute;inset:0;z-index:0;
+  background:linear-gradient(180deg,rgba(10,10,10,.05) 0%,rgba(10,10,10,.35) 55%,rgba(10,10,10,.88) 100%)}
+.svcMobileItem>*{position:relative;z-index:1}
+.svcMobileNum{position:absolute;top:16px;left:20px;z-index:1;font-family:var(--mono);font-size:11px;
+  color:rgba(237,237,234,.75);text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.svcMobileContent{display:flex;align-items:center;gap:14px;width:100%}
 .svcMobileName{font-family:var(--geo);font-weight:700;text-transform:uppercase;color:#EDEDEA;
-  font-size:clamp(17px,4.6vw,24px);line-height:1.08;flex-grow:1}
-.svcMobileArrow{color:var(--red);font-size:15px;flex-shrink:0}
+  font-size:clamp(19px,5vw,26px);line-height:1.08;flex-grow:1}
+.svcMobileArrow{color:var(--red);font-size:16px;flex-shrink:0}
 @media (max-width:1023px){
   .svcStage{display:none}
   .svcMobileList{display:block}
