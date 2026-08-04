@@ -97,43 +97,43 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* ---- CAPITOLO 1 (chiaro) ---- */
 .chapter1{position:absolute;inset:0;z-index:4;color:var(--ink);opacity:0;pointer-events:none}
-/* immagine a destra — stessa tecnica di .ecoProjectImg (Ecosistema): campo fotografico, non un box,
-   sfumato sul bordo sinistro perché qui il testo vive a sinistra; z-index sopra il pannello carta
-   (1) e sotto titolo/triangolo/legenda (4/6/7), così non compete mai con il testo.
-   Dimensione piena: tocca i tre bordi (top/destra/basso), niente inset verticale come nella prima
-   versione (height:78vh centrata lasciava un margine sopra e sotto, non era un vero pannello a piena
-   altezza). top:0 + height:100% (percentuale di .sticky, che è l'ancestor posizionato) invece di
-   50%+translateY(-50%): più semplice, e la sfumatura arriva un po' più a sinistra (24% invece di 26%
-   su un elemento più largo, 42vw invece di 38vw — l'area visibile in valore assoluto cresce di più
-   del semplice punto percentuale) */
-.ch1Img{position:absolute;right:0;top:0;width:42vw;height:100%;z-index:2;
+/* immagine — pannello a L: braccio verticale a destra (0-70vw escluso) + braccio orizzontale in
+   basso (tutta la larghezza), un solo elemento con clip-path (non due pezzi separati: stesso sfondo,
+   niente cuciture visibili). z-index sopra il pannello carta (1) e sotto titolo/triangolo/legenda
+   (4/6/7). --ch1ArmW/--ch1ArmH sono le uniche due variabili della geometria, usate sia dal clip-path
+   sia dai calcoli di sicurezza del titolo qui sotto: cambiarle qui basta a ridimensionare la L intera */
+.ch1Img{position:absolute;inset:0;z-index:2;
+  --ch1ArmW:30vw;--ch1ArmH:30vh;
+  clip-path:polygon(calc(100% - var(--ch1ArmW)) 0%,100% 0%,100% 100%,0% 100%,0% calc(100% - var(--ch1ArmH)),calc(100% - var(--ch1ArmW)) calc(100% - var(--ch1ArmH)));
   background-image:url('../img/01-DOCTEC.jpg');background-repeat:no-repeat;transform-origin:center;
-  -webkit-mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
-  mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
   opacity:0;pointer-events:none;will-change:transform,filter,background-size,background-position}
 .ch-desc{position:absolute;top:112px;left:38px;max-width:600px;font-family:var(--mono);font-size:18px;line-height:1.6;letter-spacing:.01em;color:rgba(20,20,18,.92)}
 .ch-desc .dw{display:inline-block;opacity:0;transform:translateY(9px)}
-/* blocco titolo+sottotitolo ancorato in basso a sinistra: è il contenitore ad avere la posizione,
-   così il titolo sale da sé quando sotto entra il sottotitolo */
-.ch-block{position:absolute;left:38px;bottom:56px;max-width:calc(100vw - 76px);display:flex;flex-direction:column;gap:30px}
-/* il corpo non è più libero di crescere quanto vuole: con l'immagine a destra (.ch1Img, 42vw, right:0
-   cioè flush al bordo — bordo sinistro dell'immagine a ~58% della viewport), la riga più lunga del
-   titolo ("E SOLUZIONI DIGITALI IN CLOUD", ~10,1 volte il corpo, nowrap) deve stare a sinistra di
-   quel bordo su ogni larghezza — calc() invece di un semplice vw perché serve un'intercetta negativa
-   che clamp da solo non esprime. Ricalcolato quando l'immagine è passata da 38vw a 42vw: margine di
-   sicurezza verificato 3-4px su 821-1440px, molto più largo (14px) oltre, dove il clamp tocca il tetto */
-.ch-title{font-weight:800;text-transform:uppercase;font-size:clamp(26px,calc(5.6vw - 10px),88px);line-height:.92;letter-spacing:-.01em;color:var(--ink)}
+/* blocco titolo+sottotitolo ancorato in basso a sinistra, sopra il braccio orizzontale della L
+   (che ora occupa 30vh da terra): bottom = altezza del braccio + margine di respiro, non più un
+   valore fisso. È il contenitore ad avere la posizione, così il titolo sale da sé quando sotto
+   entra il sottotitolo — vedi anche l'animazione dedicata in capitolo1.js (titleAlone/titleRise) */
+.ch-block{position:absolute;left:38px;bottom:calc(30vh + 40px);max-width:calc(100vw - 76px);display:flex;flex-direction:column;gap:30px}
+/* il corpo resta vincolato dalla larghezza libera a sinistra del braccio verticale della L (ora
+   70vw invece del ~58% di prima: la L libera più spazio orizzontale della vecchia colonna piena
+   altezza) — calc() invece di un semplice vw perché serve un'intercetta negativa che clamp da solo
+   non esprime. Margine di sicurezza verificato 3,9-7,3px su 821-1920px */
+/* min() invece del solo vw: su schermi larghi ma bassi (laptop 13", finestra ridotta) il vincolo
+   di larghezza da solo lasciava crescere il titolo abbastanza da far uscire il blocco dal bordo
+   superiore dello schermo, sotto il menu fisso — verificato: -56px a 1280x700. 9vh vince quando
+   l'altezza è la vera risorsa scarsa, calc(6.6vw-9px) quando lo è la larghezza */
+.ch-title{font-weight:800;text-transform:uppercase;font-size:min(clamp(30px,calc(6.6vw - 9px),136px),9vh);line-height:.92;letter-spacing:-.01em;color:var(--ink)}
 .ch-title .ln{display:block;overflow:hidden}
 /* nowrap: gli a capo sono decisi a mano nel markup, una riga per .ln. Senza, su schermi stretti una
    riga lunga si spezza da sola e la maschera che la rivela ne scopre due insieme, rompendo il ritmo */
 .ch-title .ln i{display:block;font-style:normal;transform:translateY(106%);white-space:nowrap}
-/* sottotitolo: voce mono del sito, ma leggibile accanto a un titolo che ora è più contenuto (124px
-   -> 112px al corpo massimo, per lasciargli spazio senza sacrificare le righe basse). Va a capo da
-   solo (nessun a capo imposto) entro una misura di riga leggibile, e sale da sotto una maschera come
-   il resto del capitolo, ma in blocco unico invece che riga per riga */
-.ch-sub{overflow:hidden;max-width:min(620px,44vw)}   /* lascia libera la metà destra per l'immagine */
+/* sottotitolo: stesso rapporto di scala del titolo (~1,5x rispetto alla versione precedente,
+   quando il titolo arrivava a 88px) così la coppia titolo+sottotitolo resta in proporzione anche
+   ora che il titolo è più grande. Va a capo da solo (nessun a capo imposto) entro una misura di
+   riga leggibile, larghezza allargata coerentemente con la nuova zona libera (70vw) */
+.ch-sub{overflow:hidden;max-width:min(680px,58vw)}
 .ch-sub i{display:block;font-style:normal;font-family:var(--mono);text-transform:uppercase;
-  font-size:clamp(16px,1.7vw,22px);line-height:1.55;letter-spacing:.03em;color:rgba(20,20,18,.68);
+  font-size:min(clamp(24px,2.6vw,33px),4vh);line-height:1.5;letter-spacing:.02em;color:rgba(20,20,18,.68);
   transform:translateY(105%)}
 /* banner che si COSTRUISCE a quadrati */
 .chBanner{position:absolute;z-index:9;opacity:0;display:flex;align-items:center;padding:0 26px}

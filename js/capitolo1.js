@@ -3,6 +3,7 @@
   const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),menuBtn=$('menuBtn'),
         glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),lightPanel=$('lightPanel'),
         chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),chSub=$('chSub'),ch1Img=$('ch1Img'),
+        chBlock=document.querySelector('.ch-block'),
         overlay=$('overlay'),closeBtn=$('closeBtn'),root=document.documentElement,body=document.body,
         preloader=$('preloader'),heroBadges=$('heroBadges');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -72,11 +73,19 @@
     chBanner.style.width=bw+'px'; chBanner.style.height=bannerH+'px';
   }
 
-  let rect0={left:0,top:0}, l0Off=0, l1Off=0, l2Off=0;
+  let rect0={left:0,top:0}, l0Off=0, l1Off=0, l2Off=0, subRiseOffset=0;
   const DOCK={x:38,y:78,scale:.8};    // font grande, quasi metà viewport
   function measure(){
     heroMove.style.transform='none';
     rect0=heroMove.getBoundingClientRect();
+    // quanto scende il blocco titolo+sottotitolo mentre il titolo è "da solo": l'altezza reale del
+    // sottotitolo (che cambia con la larghezza dello schermo, quante righe fa) più lo spazio (gap)
+    // che lo separa dal titolo — letto dal CSS invece di ripetere il valore a mano, per non doverlo
+    // aggiornare in due posti se un giorno cambia
+    if(chSub && chBlock){
+      const gap=parseFloat(getComputedStyle(chBlock).rowGap)||0;
+      subRiseOffset=chSub.offsetHeight+gap;
+    }
     // allineamento sinistro delle 3 righe una volta docked: ciascuna riga è centrata per conto proprio
     // (margin-inline:auto), quindi va spostata verso sinistra della metà della differenza rispetto alla
     // riga più larga delle tre — la riga più larga stessa non si sposta (offset 0), è lei a definire il
@@ -194,6 +203,12 @@
     chapter1.style.opacity=(chOp*chapterOut).toFixed(3);
     chLines.forEach((el,i)=>{ const wp=chLine(i); el.style.transform='translateY('+((1-wp)*106).toFixed(1)+'%)'; });
     if(chSub) chSub.style.transform='translateY('+((1-subIn)*105).toFixed(1)+'%)';
+    // il titolo entra "da solo": il blocco parte spostato in basso esattamente dell'altezza del
+    // sottotitolo (spazio+gap, misurata in measure()), così il titolo occupa la posizione che
+    // avrebbe se il sottotitolo non esistesse. Quando il sottotitolo comincia a rivelarsi (subIn,
+    // stessa finestra) il blocco risale alla sua posizione naturale, liberando lo spazio sotto —
+    // stessa tecnica già usata per il gruppo titolo+sottotitolo di 2.0 Project in Ecosistema
+    if(chBlock) chBlock.style.transform='translateY('+((1-subIn)*subRiseOffset).toFixed(1)+'px)';
 
     if(ch1Img){
       ch1Img.style.opacity=(imgFadeIn*(1-imgExit)).toFixed(3);
