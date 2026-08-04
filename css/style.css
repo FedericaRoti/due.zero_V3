@@ -159,7 +159,11 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(20,20,18,.5);opacity:0}
 .card1b .c1b-head{top:34px}.card1b .c1b-foot{bottom:34px}
 .card1b .c1b-head .idx{color:var(--red)}
-.c1b-text{font-weight:600;text-transform:uppercase;font-size:clamp(22px,3.2vw,48px);line-height:1.22;max-width:640px;letter-spacing:-.005em}
+/* corpo e larghezza ridotti rispetto alla versione precedente (48px/640px): quel dimensionamento
+   era tarato su una citazione breve (3 righe), il testo attuale è un paragrafo di 5 frasi — a
+   48px/640px non ci sarebbe stato nei 76vh della card. Valori verificati con misure reali, non
+   a stima, sulla larghezza effettiva del testo alle soglie 375/768/1280/1920px */
+.c1b-text{font-weight:600;text-transform:uppercase;font-size:clamp(16px,1.9vw,30px);line-height:1.3;max-width:min(82vw,780px);letter-spacing:-.005em}
 .c1b-text .ph{display:block;overflow:hidden}
 .c1b-text .ph i{display:block;font-style:normal;transform:translateY(100%)}
 

@@ -48,7 +48,11 @@
     '0 -1px 0 rgba(255,255,255,'+(0.20*k).toFixed(3)+')'].join(',');
   const cardHeadEl=card1b.querySelector('.c1b-head'), cardFootEl=card1b.querySelector('.c1b-foot'), cardTextEl=$('c1bText');
   // testo della card a BLOCCHI-FRASE (non parola per parola): stesso gesto "riga che si rivela" del titolo capitolo
-  const phrases=['Trasformiamo dati tecnici, manuali, ricambi','e contenuti multilingua in strumenti digitali','chiari, consultabili e sempre coerenti con i processi industriali.'];
+  const phrases=["Da vent'anni affianchiamo l'industria manifatturiera B2B",
+    "nell'intero ciclo di vita della documentazione tecnica e dei contenuti multilingua.",
+    'Metodologia, conformità normativa, un metodo di lavoro unico e software proprietari',
+    'per trasformare i dati di progetto in documenti digitali chiari e innovativi,',
+    'oggi asset strategici integrati nei processi aziendali.'];
   cardTextEl.innerHTML=phrases.map(t=>'<span class="ph"><i>'+t+'</i></span>').join(' ');
   const phLines=[...cardTextEl.querySelectorAll('.ph i')];
 
@@ -126,7 +130,10 @@
     const imgExit   = smooth(sub(s,.74,.86));
     const cardIn    = smooth(sub(s,.72,.88));    // il pannello si apre nella card editoriale, sovrapposto a chapterOut
     const cardHead  = smooth(sub(s,.78,.84));
-    const phLine    = i=>smooth(sub(s,.82+i*.03,.90+i*.03));
+    // 5 frasi invece di 3 (testo più lungo): stagger più stretto (.02 invece di .03) perché
+    // c'è più strada da coprire nella stessa finestra di scroll rimasta — verificato che
+    // anche l'ultima frase completi l'entrata entro s=1.0, con un margine di lettura residuo
+    const phLine    = i=>smooth(sub(s,.84+i*.02,.90+i*.02));
 
     // il menu non è più legato al progresso di questa scena: resta visibile su tutto il documento
     // (viene acceso una volta sola alla fine del preloader, vedi hidePreloader)
