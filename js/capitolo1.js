@@ -219,9 +219,9 @@
       // più coerente con "documentazione tecnica" di tutta la foto
       ch1Img.style.backgroundSize=lerp(300,130,imgCrop).toFixed(0)+'% auto';
       ch1Img.style.backgroundPosition=lerp(23,56,imgCrop).toFixed(1)+'% '+lerp(63,40,imgCrop).toFixed(1)+'%';
-      // niente più -50% in Y: prima serviva a ricentrare un pannello alto 78vh ancorato a top:50%,
-      // ora il pannello è già a piena altezza (top:0, height:100%), l'unico movimento è orizzontale
-      ch1Img.style.transform='translateX('+(lerp(10,0,imgCrop)+lerp(0,16,imgExit)).toFixed(2)+'vw) scale('+(lerp(.6,1,imgCrop)*lerp(1,1.25,imgExit)).toFixed(3)+')';
+      // -50% in Y torna necessario: il pannello è di nuovo ancorato a top:50% (stessa tecnica di
+      // .ecoProjectImg), non più a piena altezza fissa — senza, il pannello scivolerebbe verso il basso
+      ch1Img.style.transform='translate('+(lerp(10,0,imgCrop)+lerp(0,16,imgExit)).toFixed(2)+'vw,-50%) scale('+(lerp(.6,1,imgCrop)*lerp(1,1.25,imgExit)).toFixed(3)+')';
     }
 
     // card editoriale: il pannello carta si apre nella card (scale morph, stesso gesto della palette)
