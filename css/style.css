@@ -99,23 +99,30 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .chapter1{position:absolute;inset:0;z-index:4;color:var(--ink);opacity:0;pointer-events:none}
 /* immagine a destra — stessa tecnica di .ecoProjectImg (Ecosistema): campo fotografico, non un box,
    sfumato sul bordo sinistro perché qui il testo vive a sinistra; z-index sopra il pannello carta
-   (1) e sotto titolo/triangolo/legenda (4/6/7), così non compete mai con il testo */
-.ch1Img{position:absolute;right:-2vw;top:50%;width:38vw;height:78vh;z-index:2;
+   (1) e sotto titolo/triangolo/legenda (4/6/7), così non compete mai con il testo.
+   Dimensione piena: tocca i tre bordi (top/destra/basso), niente inset verticale come nella prima
+   versione (height:78vh centrata lasciava un margine sopra e sotto, non era un vero pannello a piena
+   altezza). top:0 + height:100% (percentuale di .sticky, che è l'ancestor posizionato) invece di
+   50%+translateY(-50%): più semplice, e la sfumatura arriva un po' più a sinistra (24% invece di 26%
+   su un elemento più largo, 42vw invece di 38vw — l'area visibile in valore assoluto cresce di più
+   del semplice punto percentuale) */
+.ch1Img{position:absolute;right:0;top:0;width:42vw;height:100%;z-index:2;
   background-image:url('../img/01-DOCTEC.jpg');background-repeat:no-repeat;transform-origin:center;
-  -webkit-mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 26%);
-  mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 26%);
+  -webkit-mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
+  mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
   opacity:0;pointer-events:none;will-change:transform,filter,background-size,background-position}
 .ch-desc{position:absolute;top:112px;left:38px;max-width:600px;font-family:var(--mono);font-size:18px;line-height:1.6;letter-spacing:.01em;color:rgba(20,20,18,.92)}
 .ch-desc .dw{display:inline-block;opacity:0;transform:translateY(9px)}
 /* blocco titolo+sottotitolo ancorato in basso a sinistra: è il contenitore ad avere la posizione,
    così il titolo sale da sé quando sotto entra il sottotitolo */
 .ch-block{position:absolute;left:38px;bottom:56px;max-width:calc(100vw - 76px);display:flex;flex-direction:column;gap:30px}
-/* il corpo non è più libero di crescere quanto vuole: con l'immagine a destra (.ch1Img, 38vw+2vw di
-   sbordo = bordo sinistro a ~64% della viewport), la riga più lunga del titolo ("E SOLUZIONI DIGITALI
-   IN CLOUD", ~10,1 volte il corpo, nowrap) deve stare a sinistra di quel bordo su ogni larghezza —
-   calc() invece di un semplice vw perché serve un'intercetta negativa che clamp da solo non esprime.
-   Margine di sicurezza verificato 3-6px su 821-1920px */
-.ch-title{font-weight:800;text-transform:uppercase;font-size:clamp(28px,calc(6vw - 8px),92px);line-height:.92;letter-spacing:-.01em;color:var(--ink)}
+/* il corpo non è più libero di crescere quanto vuole: con l'immagine a destra (.ch1Img, 42vw, right:0
+   cioè flush al bordo — bordo sinistro dell'immagine a ~58% della viewport), la riga più lunga del
+   titolo ("E SOLUZIONI DIGITALI IN CLOUD", ~10,1 volte il corpo, nowrap) deve stare a sinistra di
+   quel bordo su ogni larghezza — calc() invece di un semplice vw perché serve un'intercetta negativa
+   che clamp da solo non esprime. Ricalcolato quando l'immagine è passata da 38vw a 42vw: margine di
+   sicurezza verificato 3-4px su 821-1440px, molto più largo (14px) oltre, dove il clamp tocca il tetto */
+.ch-title{font-weight:800;text-transform:uppercase;font-size:clamp(26px,calc(5.6vw - 10px),88px);line-height:.92;letter-spacing:-.01em;color:var(--ink)}
 .ch-title .ln{display:block;overflow:hidden}
 /* nowrap: gli a capo sono decisi a mano nel markup, una riga per .ln. Senza, su schermi stretti una
    riga lunga si spezza da sola e la maschera che la rivela ne scopre due insieme, rompendo il ritmo */
