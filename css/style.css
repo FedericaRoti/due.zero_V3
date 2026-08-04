@@ -597,7 +597,13 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .footerLogo{width:clamp(280px,34vw,640px);height:auto;
   opacity:0;transform:translateY(26px);transition:opacity .9s ease 1.1s,transform .9s ease 1.1s}
 
-.footerInfo{display:flex;flex-wrap:wrap;gap:6vw;padding-top:4vh;
+/* justify-content:space-between: i tre blocchi (Contatti/Sede/Esplora) non hanno flex-grow, quindi
+   restano alla loro larghezza naturale (contenuto corto) invece di riempire la riga — risultato: si
+   accalcavano tutti a sinistra lasciando vuoto un terzo abbondante della larghezza a destra
+   (371px su 1111 disponibili, verificato). space-between li distribuisce sull'intera riga mantenendo
+   ogni colonna alla sua larghezza naturale (niente testo/link stirati in una colonna troppo larga);
+   gap resta come distanza minima di sicurezza se il contenuto è già abbastanza largo da riempirla */
+.footerInfo{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6vw;padding-top:4vh;
   border-top:1px solid rgba(237,237,234,.14)}
 .footerBlock{display:flex;flex-direction:column;gap:10px;min-width:180px;
   opacity:0;transform:translateY(20px);transition:opacity .6s ease 1.3s,transform .6s ease 1.3s}
