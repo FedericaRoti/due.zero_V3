@@ -60,9 +60,10 @@
     const vw=innerWidth,vh=innerHeight, mobile=vw<=820, compact=(vw<=1280||vh<=820);
     const bw=mobile?Math.min(vw*0.86,420):(compact?Math.min(vw*0.43,460):Math.min(vw*0.5,660));
     bannerH=compact?Math.min(Math.max(64,vh*0.08),86):118; bannerBW=bw;
-    // il Capitolo 1 resta l'originale (a destra, a metà altezza): sono gli ALTRI banner
-    // (Cap.02/03/04/05, vedi CSS) ad allinearsi a lui, non il contrario
-    bannerLeft=vw-(mobile?20:38)-bw; bannerTop=vh*0.30;
+    // resta a destra (gli ALTRI banner, Cap.02/03/04/05, si sono allineati a questo lato — vedi CSS),
+    // ma l'altezza (0.30vh, a metà schermo) era troppo bassa rispetto a dove stanno gli altri quattro
+    // (9-11vh, in alto): alzato sugli stessi valori già in uso altrove
+    bannerLeft=vw-(mobile?20:38)-bw; bannerTop=vh*(mobile?0.07:(compact?0.055:0.09));
     chBanner.style.left=bannerLeft+'px'; chBanner.style.top=bannerTop+'px';
     chBanner.style.width=bw+'px'; chBanner.style.height=bannerH+'px';
   }

@@ -188,24 +188,27 @@
       // ben prima che il nero raggiunga la metà del viewport (~.45 con questa finestra)
       if(mapOutro) mapOutro.style.transform='translateY('+lerp(100,0,smooth(sub(s,.40,.50))).toFixed(2)+'%)';
       if(mapChrome) mapChrome.style.opacity=(1-smooth(sub(s,.40,.44))).toFixed(3);
-      // fase 4 [.48,.56]: banner rosso "Capitolo 03 — Servizi" entra con UNA sola traslazione orizzontale da sinistra
-      // (mai un fade), già mentre il nero sta ancora salendo (l'outro finisce a .50) — stesso viewport, nessun vuoto
+      // fase 4 [.52,.60]: banner rosso "Capitolo 03 | Servizi" entra con UNA sola traslazione orizzontale da destra
+      // (mai un fade). Prima iniziava a .48, mentre l'outro (nero, finisce a .50) copriva ancora solo l'80-100%
+      // della mappa: il banner compariva sopra la mappa ancora parzialmente visibile. Ora parte 2 punti dopo la
+      // fine dell'outro, con un margine di sicurezza reale, non solo teorico
       if(ch3Banner){
-        const bannerIn = smooth(sub(s,.48,.56));
+        const bannerIn = smooth(sub(s,.52,.60));
         ch3Banner.style.transform='translateX('+lerp(120,0,bannerIn).toFixed(2)+'%)';
       }
-      // fase 5 [.54,.66]: titolo "Otto servizi. Un processo continuo." in blocco unico — maschera rettangolare
+      // fase 5 [.58,.70]: titolo "Otto servizi. Un processo continuo." in blocco unico — maschera rettangolare
       // sinistra->destra + lieve scale-down, mai un fade — inizia mentre il banner sta ancora entrando
+      // (stessa struttura di prima, solo l'intera sequenza spostata avanti di .04 insieme al banner)
       if(svcOpenH){
-        const headIn = smooth(sub(s,.54,.66));
+        const headIn = smooth(sub(s,.58,.70));
         svcOpenH.style.clipPath='inset(0 '+((1-headIn)*100).toFixed(1)+'% 0 0)';
         svcOpenH.style.transform='scale('+lerp(1.10,1,headIn).toFixed(3)+')';
       }
-      // fase 6 [.64,.70]: sottotitolo — inizia mentre il titolo sta ancora rivelandosi
-      if(svcOpenSub) svcOpenSub.style.opacity=smooth(sub(s,.64,.70)).toFixed(3);
-      // fase 7 [.70,1.0]: hold netto e leggibile — banner, titolo e sottotitolo restano fermi sul nero pieno per
-      // una porzione reale di scroll (oltre una viewport intera), non un fotogramma; l'arco dei servizi (sezione
-      // successiva, separata, senza margin-top negativo) inizia solo dopo la fine di questo hold
+      // fase 6 [.68,.74]: sottotitolo — inizia mentre il titolo sta ancora rivelandosi
+      if(svcOpenSub) svcOpenSub.style.opacity=smooth(sub(s,.68,.74)).toFixed(3);
+      // fase 7 [.74,1.0]: hold netto e leggibile — banner, titolo e sottotitolo restano fermi sul nero pieno per
+      // una porzione reale di scroll (ancora quasi una viewport intera, solo .04 più corta di prima); l'arco dei
+      // servizi (sezione successiva, separata, senza margin-top negativo) inizia solo dopo la fine di questo hold
     }
     if(reduce){
       // niente coreografia: la mappa passa direttamente da contenuta a visibile (CSS statica dedicata), chiusura netta senza outro animato
