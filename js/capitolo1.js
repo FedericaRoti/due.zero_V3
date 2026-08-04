@@ -40,6 +40,7 @@
 
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), sub=(p,a,b)=>clamp((p-a)/(b-a),0,1), smooth=t=>t*t*(3-2*t), lerp=(a,b,t)=>a+(b-a)*t;
   const chLines=[...document.querySelectorAll('.ch-title .ln i')];
+  const chTitleEl=document.querySelector('.ch-title');
   const bt=chBanner.querySelector('.bt');
   const titleBase=document.querySelector('.title.base'), sheenEl=document.querySelector('.title.sheen');
   // ombra materica del titolo: pieno in hero, sfuma a zero entro la fine del docking (k=1 -> effetto pieno, k=0 -> nessuna ombra)
@@ -209,16 +210,27 @@
     // stessa finestra) il blocco risale alla sua posizione naturale, liberando lo spazio sotto —
     // stessa tecnica già usata per il gruppo titolo+sottotitolo di 2.0 Project in Ecosistema
     if(chBlock) chBlock.style.transform='translateY('+((1-subIn)*subRiseOffset).toFixed(1)+'px)';
+    // il titolo è più grande (1.12x) mentre è da solo, e torna alla sua dimensione normale (1x)
+    // in sync con la risalita del blocco — stessa finestra (subIn), stesso principio di pjTitle in
+    // Ecosistema (che cresce quando resta solo in scena). transform-origin:left bottom in CSS: cresce
+    // verso l'alto restando ancorato a sinistra, non si sposta verso l'immagine né sopra il sottotitolo.
+    // Solo sopra gli 820px: sotto quella soglia il corpo mobile del titolo è già tarato al millimetro
+    // per stare su una riga sola (vedi commenti sul clamp mobile) — un ingrandimento in più lo faceva
+    // uscire dal bordo destro dello schermo, tagliato in silenzio dall'overflow:hidden di .sticky
+    // (nessuna barra di scroll a segnalarlo, verificato: 20px di testo invisibile a 375px)
+    if(chTitleEl) chTitleEl.style.transform=innerWidth>820?('scale('+lerp(1.12,1,subIn).toFixed(3)+')'):'none';
 
     if(ch1Img){
       ch1Img.style.opacity=(imgFadeIn*(1-imgExit)).toFixed(3);
       ch1Img.style.filter='blur('+(lerp(6,0,imgCrop)+lerp(0,8,imgExit)).toFixed(2)+'px)';
       // inquadratura scelta guardando la foto, non a caso: parte stretta sul telefono con l'app
       // "2.0 Project" (23%,63% — anche ponte narrativo verso l'Ecosistema, sezione successiva) e si
-      // allarga fino allo schermo con il disegno tecnico esploso della macchina (56%,40%), il soggetto
-      // più coerente con "documentazione tecnica" di tutta la foto
-      ch1Img.style.backgroundSize=lerp(300,130,imgCrop).toFixed(0)+'% auto';
-      ch1Img.style.backgroundPosition=lerp(23,56,imgCrop).toFixed(1)+'% '+lerp(63,40,imgCrop).toFixed(1)+'%';
+      // allarga fino a un'inquadratura MOLTO meno zoomata (130%->106%) e leggermente più in basso
+      // (56%,40% -> 62%,48%): a 130% si vedeva solo lo schermo CAD, tagliando fuori sia il manuale
+      // cartaceo (in basso a destra nella foto) sia lo schermo con il codice (in alto a destra) —
+      // a 106% e con questo centro entrano entrambi nell'inquadratura, non solo il laptop centrale
+      ch1Img.style.backgroundSize=lerp(300,106,imgCrop).toFixed(0)+'% auto';
+      ch1Img.style.backgroundPosition=lerp(23,62,imgCrop).toFixed(1)+'% '+lerp(63,48,imgCrop).toFixed(1)+'%';
       // -50% in Y torna necessario: il pannello è di nuovo ancorato a top:50% (stessa tecnica di
       // .ecoProjectImg), non più a piena altezza fissa — senza, il pannello scivolerebbe verso il basso
       ch1Img.style.transform='translate('+(lerp(10,0,imgCrop)+lerp(0,16,imgExit)).toFixed(2)+'vw,-50%) scale('+(lerp(.6,1,imgCrop)*lerp(1,1.25,imgExit)).toFixed(3)+')';
