@@ -57,24 +57,13 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
   color:rgba(237,237,234,.45);margin-top:14px}
 .pgInfoLabel:first-child{margin-top:0}
 
+/* .pgForm resta sull'iframe (vedi parliamone.html) solo per l'animazione di ingresso condivisa con
+   .pgInfo — i campi veri (label/input/textarea/bottone) vivono ora dentro il form embeddato su
+   duezero.eu, non più qui: le regole .pgField/.pgSubmit sono state rimosse perché non hanno più
+   nessun elemento a cui applicarsi */
 .pgForm{display:flex;flex-direction:column;gap:26px;opacity:0;transform:translateY(20px);
   transition:opacity .6s ease .3s,transform .6s ease .3s}
 .pgContact.revealed .pgForm{opacity:1;transform:translateY(0)}
-.pgField{display:flex;flex-direction:column;gap:8px}
-.pgField label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(237,237,234,.5)}
-.pgField input,.pgField textarea{background:none;border:none;border-bottom:1px solid rgba(237,237,234,.25);
-  color:#EDEDEA;font-family:var(--mono);font-size:15px;padding:8px 2px;outline:none;resize:none;width:100%;
-  transition:border-color .25s ease}
-.pgField input:focus,.pgField textarea:focus{border-color:var(--red)}
-.pgField textarea{min-height:88px}
-.pgSubmit{margin-top:4px;align-self:flex-start;display:inline-flex;align-items:center;gap:12px;
-  background:none;border:none;cursor:pointer;font-family:var(--mono);font-size:14px;letter-spacing:.1em;
-  text-transform:uppercase;color:#EDEDEA;border-bottom:1px solid rgba(237,237,234,.35);padding-bottom:6px;
-  transition:border-color .25s ease}
-.pgSubmit span{color:var(--red);transition:transform .25s ease}
-.pgSubmit:hover{border-color:rgba(237,237,234,.75)}
-.pgSubmit:hover span{transform:translateX(5px)}
 
 /* ================= CHIUSURA — logo + riga mono + legal minimale ================= */
 .pgClose{background:var(--black);padding:9vh 6vw 5vh;text-align:center;

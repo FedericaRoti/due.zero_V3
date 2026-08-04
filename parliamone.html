@@ -45,21 +45,17 @@
       </address>
     </div>
 
-    <form class="pgForm" id="pgForm">
-      <div class="pgField">
-        <label for="pgName">Nome e azienda</label>
-        <input type="text" id="pgName" name="name" autocomplete="name">
-      </div>
-      <div class="pgField">
-        <label for="pgEmail">Email</label>
-        <input type="email" id="pgEmail" name="email" autocomplete="email">
-      </div>
-      <div class="pgField">
-        <label for="pgNeed">Di cosa hai bisogno?</label>
-        <textarea id="pgNeed" name="need"></textarea>
-      </div>
-      <button type="submit" class="pgSubmit">INVIA RICHIESTA <span>→</span></button>
-    </form>
+    <!-- form vero, gestito dal server duezero.eu (stessa logica di Contatti.aspx: reCAPTCHA + email a
+         info@duezero.eu). class="pgForm" solo per riusare l'animazione di ingresso già prevista per
+         questa colonna (.pgContact.revealed .pgForm) — le proprietà flex della classe non hanno
+         effetto su un iframe, sono innocue. L'altezza iniziale (560px) è un valore di partenza:
+         viene corretta subito dopo dal listener in js/parliamone.js via postMessage -->
+    <iframe id="dzContactFrame" class="pgForm"
+            src="https://www.duezero.eu/embed/form-contatti.html"
+            title="Form di contatto Due.Zero"
+            loading="lazy"
+            scrolling="no"
+            style="width:100%;border:0;height:560px;display:block;overflow:hidden;background:transparent"></iframe>
   </div>
 </section>
 

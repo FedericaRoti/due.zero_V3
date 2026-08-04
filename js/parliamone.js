@@ -39,21 +39,14 @@
     $('pgClose').classList.add('revealed');
   }
 
-  // ---- form: solo visivo, nessun backend. Apre un mailto: reale con oggetto fisso e corpo
-  // precompilato dai campi — nessun invio simulato, nessun alert/toast finto ----
-  const pgForm=$('pgForm');
-  pgForm.addEventListener('submit',e=>{
-    e.preventDefault();
-    const name=$('pgName').value.trim();
-    const email=$('pgEmail').value.trim();
-    const need=$('pgNeed').value.trim();
-    const subject='Richiesta dal sito Due.Zero';
-    const bodyLines=[
-      name?('Nome e azienda: '+name):null,
-      email?('Email: '+email):null,
-      need?('Di cosa ha bisogno:\n'+need):null
-    ].filter(Boolean);
-    const body=bodyLines.join('\n\n');
-    window.location.href='mailto:info@duezero.eu?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  // ---- form: ora un iframe verso www.duezero.eu (invio vero, gestito lato server). L'iframe comunica
+  // la propria altezza reale via postMessage — senza, resterebbe fissa a 560px (il valore di partenza
+  // nello style inline), tagliando il form se il contenuto è più alto o lasciando vuoto se più basso.
+  // Controllo sull'origine del messaggio: solo il dominio del form può ridimensionarlo, non chiunque ----
+  addEventListener('message',e=>{
+    if(e.origin!=='https://www.duezero.eu') return;
+    if(!e.data || e.data.dzContactForm!==true) return;
+    const f=$('dzContactFrame');
+    if(f && e.data.height) f.style.height=e.data.height+'px';
   });
 })();
