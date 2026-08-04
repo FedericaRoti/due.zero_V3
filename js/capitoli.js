@@ -192,7 +192,7 @@
       // (mai un fade), già mentre il nero sta ancora salendo (l'outro finisce a .50) — stesso viewport, nessun vuoto
       if(ch3Banner){
         const bannerIn = smooth(sub(s,.48,.56));
-        ch3Banner.style.transform='translateX('+lerp(-120,0,bannerIn).toFixed(2)+'%)';
+        ch3Banner.style.transform='translateX('+lerp(120,0,bannerIn).toFixed(2)+'%)';
       }
       // fase 5 [.54,.66]: titolo "Otto servizi. Un processo continuo." in blocco unico — maschera rettangolare
       // sinistra->destra + lieve scale-down, mai un fade — inizia mentre il banner sta ancora entrando
@@ -414,7 +414,7 @@
       // unico con maschera orizzontale + lieve scale-down, poi sottotitolo dopo una breve pausa ----
       const paperRise=smooth(sub(s,0,.08));
       if(qualityPaper) qualityPaper.style.transform='translateY('+((1-paperRise)*101).toFixed(2)+'%)';
-      if(qualityBanner) qualityBanner.style.transform='translateX('+lerp(-120,0,smooth(sub(s,.05,.13))).toFixed(2)+'%)';
+      if(qualityBanner) qualityBanner.style.transform='translateX('+lerp(120,0,smooth(sub(s,.05,.13))).toFixed(2)+'%)';
       if(qualityH2){
         const headIn=smooth(sub(s,.10,.19));
         qualityH2.style.clipPath='inset(0 '+((1-headIn)*100).toFixed(1)+'% 0 0)';
@@ -554,7 +554,7 @@
         // ha più altezza totale (500vh, prima 380vh) per dare fisicamente più scroll a questa sola scena:
         // scena 2 e 3 mantengono lo stesso ritmo assoluto di prima (le soglie sono spostate in avanti della
         // stessa quantità di scroll aggiunta qui, non riscalate) ----
-        if(newsBanner) newsBanner.style.transform='translateX('+lerp(-120,0,smooth(sub(s,.02,.08))).toFixed(2)+'%)';
+        if(newsBanner) newsBanner.style.transform='translateX('+lerp(120,0,smooth(sub(s,.02,.08))).toFixed(2)+'%)';
         if(newsH2){
           const headIn=smooth(sub(s,.06,.18));
           newsH2.style.clipPath='inset(0 '+((1-headIn)*100).toFixed(1)+'% 0 0)';

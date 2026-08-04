@@ -178,8 +178,15 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* ---- apertura: label in alto-sx, headline enorme in blocco unico (no split text, no stagger) ---- */
 /* ---- banner ricorrente di capitolo, stessa dimensione (larghezza+altezza) del Capitolo 1: linea -> barra piena -> testo ---- */
-.ch2Banner{position:absolute;left:38px;top:11vh;z-index:5;display:flex;align-items:center;width:min(50vw,660px);height:clamp(80px,10vh,118px);padding:0 32px;opacity:0;pointer-events:none}
-.ch2BannerBar{position:absolute;left:0;top:50%;width:0;height:3px;background:var(--red);transform:translateY(-50%);will-change:width,height}
+/* a destra come il banner del Capitolo 1 (chBanner, JS): tutti e cinque i banner di capitolo
+   ora condividono lo stesso lato dello schermo */
+.ch2Banner{position:absolute;right:38px;top:11vh;z-index:5;display:flex;align-items:center;width:min(50vw,660px);height:clamp(80px,10vh,118px);padding:0 32px;opacity:0;pointer-events:none}
+/* stesso taglio d'angolo di chBanner (Cap.01), qui in CSS statico perché questo banner non morfa
+   una forma continua come il triangolo — cresce da linea a rettangolo pieno, ed è quest'ultimo stato
+   (a crescita ultimata) quello per cui il taglio conta davvero; calc() e non %, per due px identici
+   sui due assi — un rettangolo largo 660px e alto 118px con un taglio in percentuale non sarebbe a 45° */
+.ch2BannerBar{position:absolute;left:0;top:50%;width:0;height:3px;background:var(--red);transform:translateY(-50%);will-change:width,height;
+  clip-path:polygon(100% 0,100% calc(100% - 34px),calc(100% - 34px) 100%,0 100%,0 0)}
 .ch2BannerText{position:relative;z-index:1;color:#fff;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:clamp(18px,2.1vw,30px);white-space:nowrap;opacity:0;will-change:transform,opacity}
 .eco-open{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 6vw}
 .eco-open-h{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(64px,10.5vw,180px);line-height:.88;letter-spacing:-.015em;opacity:0;transform:scale(1.06);will-change:transform,opacity,clip-path}
@@ -299,9 +306,13 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    stessa render3(s)/progress unico — compaiono già mentre il nero sta chiudendo la mappa, mai dopo un vuoto nero.
    z-index sopra .mapOutro, così restano leggibili sul nero che sale e poi restano fermi per l'hold finale. ---- */
 .servicesIntroLayer{position:absolute;inset:0;z-index:10;pointer-events:none}
-.ch3Banner{position:absolute;left:38px;top:9vh;display:flex;align-items:center;
+/* a destra come chBanner (Cap.01): entra scivolando da destra (120%->0), non più da sinistra.
+   Stesso taglio d'angolo in basso a destra di chBanner (34px, calc non %: due px identici sui
+   due assi per un vero 45°, qui statico perché il rettangolo non cambia forma come il triangolo) */
+.ch3Banner{position:absolute;right:38px;top:9vh;display:flex;align-items:center;
   width:min(50vw,660px);height:clamp(80px,10vh,118px);padding:0 32px;background:var(--red);
-  transform:translateX(-120%);pointer-events:none;will-change:transform}
+  clip-path:polygon(100% 0,100% calc(100% - 34px),calc(100% - 34px) 100%,0 100%,0 0);
+  transform:translateX(120%);pointer-events:none;will-change:transform}
 .ch3BannerText{font-family:var(--mono);font-size:clamp(18px,2.1vw,30px);letter-spacing:.05em;text-transform:uppercase;color:#fff;white-space:nowrap}
 
 .svc-open{position:absolute;left:6vw;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;
@@ -402,10 +413,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .qualityIntro{position:absolute;inset:0;z-index:2;pointer-events:none;
   display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
   padding:0 6vw;clip-path:inset(0 0 0 0);will-change:clip-path}
-.qualityBanner{position:absolute;left:38px;top:9vh;display:flex;align-items:center;
+/* a destra come chBanner (Cap.01): entra scivolando da destra (120%->0), non più da sinistra.
+   Taglio d'angolo più piccolo di ch2/ch3 (28px non 34px): questo banner è più basso al massimo
+   (90px contro 118px), un taglio identico sarebbe sproporzionato rispetto all'altezza disponibile */
+.qualityBanner{position:absolute;right:38px;top:9vh;display:flex;align-items:center;
   width:min(46vw,560px);height:clamp(64px,8vh,90px);padding:0 28px;background:var(--red);color:#fff;
   font-family:var(--mono);font-size:clamp(15px,1.6vw,22px);letter-spacing:.06em;text-transform:uppercase;
-  transform:translateX(-120%);pointer-events:none;will-change:transform}
+  clip-path:polygon(100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%,0 0);
+  transform:translateX(120%);pointer-events:none;will-change:transform}
 .qualityIntro h2{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;
   font-size:clamp(42px,6.6vw,104px);line-height:.94;letter-spacing:-.01em;max-width:70vw;
   clip-path:inset(0 100% 0 0);transform-origin:center center;will-change:transform,clip-path}
@@ -478,10 +493,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .newsIntro{position:absolute;inset:0;z-index:2;pointer-events:none;
   display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;
   padding:0 6vw 13vh;clip-path:inset(0 0 0 0);will-change:clip-path}
-.newsBanner{position:absolute;left:38px;top:9vh;display:flex;align-items:center;
+/* a destra come chBanner (Cap.01), stesso taglio d'angolo di qualityBanner (28px: stessa altezza massima) */
+.newsBanner{position:absolute;right:38px;top:9vh;display:flex;align-items:center;
   width:min(46vw,560px);height:clamp(64px,8vh,90px);padding:0 28px;background:var(--red);color:#fff;
   font-family:var(--mono);font-size:clamp(15px,1.6vw,22px);letter-spacing:.06em;text-transform:uppercase;
-  transform:translateX(-120%);pointer-events:none;will-change:transform}
+  clip-path:polygon(100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%,0 0);
+  transform:translateX(120%);pointer-events:none;will-change:transform}
 .newsIntro h2{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;
   font-size:clamp(42px,6.6vw,104px);line-height:.94;letter-spacing:-.01em;max-width:52vw;
   clip-path:inset(0 100% 0 0);transform-origin:left center;will-change:transform,clip-path}
@@ -618,7 +635,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .qualityIntro{padding:0 8vw}
   .qualityIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
   .qualityIntro p{max-width:80vw}
-  .qualityBanner{width:min(70vw,420px);left:20px;top:7vh}
+  .qualityBanner{width:min(70vw,420px);right:20px;top:7vh}
   .qualityMethod{padding:0 8vw}
   .qualityCodeMask{width:84vw;height:clamp(90px,17vh,150px)}
   .qualityCode{height:clamp(90px,17vh,150px);font-size:clamp(56px,20vw,120px)}
@@ -635,7 +652,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .newsIntro{padding:0 8vw}
   .newsIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
   .newsIntro p{max-width:80vw}
-  .newsBanner{width:min(70vw,420px);left:20px;top:7vh}
+  .newsBanner{width:min(70vw,420px);right:20px;top:7vh}
 
   .newsEditorial{display:flex;flex-direction:column;justify-content:center;padding:0 8vw;gap:16px}
   .newsList{width:auto;gap:12px}
@@ -717,9 +734,9 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .ch-sub i{font-size:clamp(13px,3.6vw,16px);line-height:1.55;letter-spacing:.03em}
   .chBanner{padding:0 18px}          /* larghezza calcolata in JS: vedi buildBanner() */
   .chBanner .bt{font-size:13px}
-  .ch2Banner{left:20px;width:min(86vw,420px);padding:0 18px}
+  .ch2Banner{right:20px;width:min(86vw,420px);padding:0 18px}
   .ch2BannerText{font-size:13px}
-  .ch3Banner{left:20px;width:min(86vw,420px);padding:0 18px}
+  .ch3Banner{right:20px;width:min(86vw,420px);padding:0 18px}
   .ch3BannerText{font-size:13px}
   /* chrome della mappa: il titolo a sinistra e il bottone a destra si sovrapponevano di pochi px,
      tagliando "Machine Map — Interattiva". Il blocco sinistro ora si ferma prima del bottone e va a capo.

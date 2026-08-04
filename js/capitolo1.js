@@ -60,11 +60,9 @@
     const vw=innerWidth,vh=innerHeight, mobile=vw<=820, compact=(vw<=1280||vh<=820);
     const bw=mobile?Math.min(vw*0.86,420):(compact?Math.min(vw*0.43,460):Math.min(vw*0.5,660));
     bannerH=compact?Math.min(Math.max(64,vh*0.08),86):118; bannerBW=bw;
-    // in alto a sinistra, come i banner degli altri capitoli (left:38px/20px, top 9vh/7vh/5.5vh a
-    // seconda del breakpoint — stessi valori già usati da ch2Banner/ch3Banner/qualityBanner/newsBanner).
-    // Prima finiva sul lato destro a metà altezza: coerente quando l'hero docked occupava lo stesso
-    // angolo in alto a sinistra, ma ora lì arriva anche l'immagine del capitolo, quindi lo spostiamo
-    bannerLeft=mobile?20:38; bannerTop=vh*(mobile?0.07:(compact?0.055:0.09));
+    // il Capitolo 1 resta l'originale (a destra, a metà altezza): sono gli ALTRI banner
+    // (Cap.02/03/04/05, vedi CSS) ad allinearsi a lui, non il contrario
+    bannerLeft=vw-(mobile?20:38)-bw; bannerTop=vh*0.30;
     chBanner.style.left=bannerLeft+'px'; chBanner.style.top=bannerTop+'px';
     chBanner.style.width=bw+'px'; chBanner.style.height=bannerH+'px';
   }
@@ -192,8 +190,12 @@
     if(ch1Img){
       ch1Img.style.opacity=(imgFadeIn*(1-imgExit)).toFixed(3);
       ch1Img.style.filter='blur('+(lerp(6,0,imgCrop)+lerp(0,8,imgExit)).toFixed(2)+'px)';
+      // inquadratura scelta guardando la foto, non a caso: parte stretta sul telefono con l'app
+      // "2.0 Project" (23%,63% — anche ponte narrativo verso l'Ecosistema, sezione successiva) e si
+      // allarga fino allo schermo con il disegno tecnico esploso della macchina (56%,40%), il soggetto
+      // più coerente con "documentazione tecnica" di tutta la foto
       ch1Img.style.backgroundSize=lerp(300,130,imgCrop).toFixed(0)+'% auto';
-      ch1Img.style.backgroundPosition=lerp(46,50,imgCrop).toFixed(1)+'% '+lerp(30,42,imgCrop).toFixed(1)+'%';
+      ch1Img.style.backgroundPosition=lerp(23,56,imgCrop).toFixed(1)+'% '+lerp(63,40,imgCrop).toFixed(1)+'%';
       // niente più -50% in Y: prima serviva a ricentrare un pannello alto 78vh ancorato a top:50%,
       // ora il pannello è già a piena altezza (top:0, height:100%), l'unico movimento è orizzontale
       ch1Img.style.transform='translateX('+(lerp(10,0,imgCrop)+lerp(0,16,imgExit)).toFixed(2)+'vw) scale('+(lerp(.6,1,imgCrop)*lerp(1,1.25,imgExit)).toFixed(3)+')';
