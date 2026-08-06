@@ -119,13 +119,12 @@
   function render(s){
     const reveal    = smooth(sub(s,0,.16));      // chrome intro (triangolo/menu/hint)
     const dock      = smooth(sub(s,.06,.30));    // titolo -> alto sx (il movimento dura fino alla fine, invariato)
-    // riallineamento a sinistra delle righe corte (l0Off/l1Off): finestra separata e molto più stretta di
-    // dock. Prima usava lo stesso dock (.06-.30, 24% dello scroll): le righe corte scivolavano lateralmente
-    // per tutta la durata del movimento diagonale del blocco, un moto composto percepito come una "scia".
-    // Qui si completa nel primo terzo (.06-.14): dopo, le righe viaggiano rigidamente col blocco come già
-    // faceva la riga più larga (l2Off=0, mai spostata) — stesso risultato finale (bordo sinistro comune),
-    // niente più scivolamento visibile per il resto della corsa
-    const alignDock = smooth(sub(s,.06,.14));
+    // riallineamento a sinistra delle righe corte (l0Off/l1Off): scatto istantaneo, non interpolato.
+    // Prima era legato a dock (.06-.30, poi ristretto a .06-.14): qualunque interpolazione, anche breve,
+    // resta un movimento laterale visibile sommato al moto diagonale del blocco — la "scia" segnalata.
+    // Un solo frame di soglia (nessun lerp) elimina il movimento intermedio da percepire: le righe sono
+    // o centrate (s<.10) o già allineate a sinistra (s>=.10), mai a metà strada
+    const alignDock = s<.10 ? 0 : 1;
     const shadowOut = 1-smooth(sub(s,.06,.14));  // ombra/gloss: timeline SEPARATA dal dock, sparisce nel primo terzo del docking
     const tiltFade  = 1-smooth(sub(s,.05,.22));  // dondolio si stabilizza PRIMA del pannello
     const panelRise = smooth(sub(s,.20,.42));    // pannello carta sale
