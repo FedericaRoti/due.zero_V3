@@ -22,7 +22,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
 .pgHero{position:relative;overflow:hidden;background:var(--paper);min-height:92vh;
   display:flex;flex-direction:column;justify-content:center;padding:14vh 6vw 8vh}
 /* piccolo segno rosso: stessa forma/clip-path del triangolo del hero Capitolo 1, statico (nessuna nuova grafica) */
-.pgHeroMark{position:absolute;left:6vw;top:9vh;width:58px;height:47px;background:var(--red);
+.pgHeroMark{position:absolute;left:6vw;top:9vh;width:52px;height:52px;background:var(--red);
   clip-path:polygon(100% 0,100% 100%,0 100%,100% 0)}
 .pgEyebrow{display:block;font-family:var(--mono);color:var(--red);font-size:clamp(12px,1.05vw,14px);
   letter-spacing:.16em;text-transform:uppercase;margin-top:8vh}
@@ -86,7 +86,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
 
 @media (max-width:820px){
   .pgHero{padding:12vh 8vw 7vh}
-  .pgHeroMark{left:8vw;top:7vh;width:44px;height:36px}
+  .pgHeroMark{left:8vw;top:7vh;width:40px;height:40px}
   .pgEyebrow{margin-top:6vh}
   .pgHero h1{font-size:clamp(48px,15vw,84px)}
   .pgHero p{max-width:84vw}
