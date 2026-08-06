@@ -103,11 +103,15 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    o perfino sopra la parte iniziale del fade senza scontrarsi con niente: lì l'immagine è quasi
    trasparente, diventa piena solo dopo il 24% della sua stessa larghezza — stesso principio di eco,
    dove #sceneProject (max-width:620px) convive con .ecoProjectImg (78vw) senza calcoli di sicurezza */
-.ch1Img{position:absolute;right:-10vw;top:50%;width:78vw;height:82vh;z-index:2;
+.ch1Img{position:absolute;inset:-4vh -4vw;z-index:2;
   background-image:url('../img/01-DOCTEC.jpg');background-repeat:no-repeat;transform-origin:center;
-  -webkit-mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
-  mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
   opacity:0;pointer-events:none;will-change:transform,filter,background-size,background-position}
+/* velo chiaro (non scuro come Hyperparts): qui il titolo è testo scuro su carta, non bianco su nero.
+   Stessa curva verticale di .ecoHyperImg ma in tono carta, così il blocco titolo in basso resta leggibile
+   anche a foto piena senza il fade laterale di prima */
+.ch1ImgVeil{position:absolute;inset:-4vh -4vw;z-index:3;
+  background:linear-gradient(180deg,rgba(237,237,234,0) 0%,rgba(237,237,234,.5) 60%,rgba(237,237,234,.86) 100%);
+  opacity:0;pointer-events:none;will-change:opacity}
 .ch-desc{position:absolute;top:112px;left:38px;max-width:600px;font-family:var(--mono);font-size:18px;line-height:1.6;letter-spacing:.01em;color:rgba(20,20,18,.92)}
 .ch-desc .dw{display:inline-block;opacity:0;transform:translateY(9px)}
 /* blocco titolo+sottotitolo ancorato in basso a sinistra: è il contenitore ad avere la posizione,
@@ -202,11 +206,13 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .eco-lbl .idx{color:var(--red)}
 
 /* ---- ponte verso 2.0 PROJECT: campo fotografico immersivo (non un box), emerge da destra, crop ravvicinato -> a fuoco ---- */
-.ecoProjectImg{position:absolute;right:-10vw;top:50%;width:78vw;height:82vh;z-index:1;
+.ecoProjectImg{position:absolute;inset:-4vh -4vw;z-index:1;
   background-image:url('../img/eco_project_bg.jpg');background-repeat:no-repeat;transform-origin:center;
-  -webkit-mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
-  mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 24%);
   opacity:0;pointer-events:none;will-change:transform,filter,background-size,background-position}
+/* stesso velo scuro di .ecoHyperImg: qui il testo è già bianco, stesso schema di leggibilità */
+.ecoProjectVeil{position:absolute;inset:-4vh -4vw;z-index:2;
+  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.55) 62%,rgba(7,12,20,.78) 100%);
+  opacity:0;pointer-events:none;will-change:opacity}
 
 /* ---- 2.0 PROJECT: titolo protagonista, sottotitolo editoriale, riga di supporto mono, CTA reale ---- */
 #sceneProject{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:620px}
@@ -741,7 +747,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   /* immagine a destra del Capitolo 1: sotto gli 820px il blocco titolo+sottotitolo occupa quasi
      tutta la larghezza — un'immagine che sbordi da destra ci finirebbe sopra. Nascosta finché non
      si decide un trattamento mobile dedicato (sotto il testo? più piccola in alto? da valutare) */
-  .ch1Img{display:none}
+  .ch1Img,.ch1ImgVeil{display:none}
   /* titolo di capitolo: il minimo di 38px della regola base era tarato su righe corte. Con le righe
      attuali la più lunga misura ~10,1 volte il corpo, quindi su telefono va scalata o non entra
      (e con nowrap verrebbe tagliata invece che andare a capo) */
@@ -770,7 +776,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 @media (prefers-reduced-motion: reduce){
   .scene2{height:auto;background:var(--paper)}
   .sticky2{position:static;height:auto;overflow:visible;background:none;perspective:none;display:flex;flex-direction:column;gap:76px;padding:110px 38px 90px}
-  .ecoBg,.ecoBridge,.ecoProjectImg,.ecoHyperImg{display:none}
+  .ecoBg,.ecoBridge,.ecoProjectImg,.ecoProjectVeil,.ecoHyperImg{display:none}
   .ch2Banner{position:static;opacity:1;display:inline-flex;width:auto;height:auto;padding:14px 24px;background:var(--red);pointer-events:auto}
   .ch2BannerBar{display:none}
   .ch2BannerText{opacity:1;transform:none}

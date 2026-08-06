@@ -2,7 +2,7 @@
   const $=id=>document.getElementById(id);
   const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),menuBtn=$('menuBtn'),
         glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),lightPanel=$('lightPanel'),
-        chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),chSub=$('chSub'),ch1Img=$('ch1Img'),
+        chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),chSub=$('chSub'),ch1Img=$('ch1Img'),ch1ImgVeil=$('ch1ImgVeil'),
         chBlock=document.querySelector('.ch-block'),
         overlay=$('overlay'),closeBtn=$('closeBtn'),root=document.documentElement,body=document.body,
         preloader=$('preloader'),heroBadges=$('heroBadges');
@@ -119,6 +119,13 @@
   function render(s){
     const reveal    = smooth(sub(s,0,.16));      // chrome intro (triangolo/menu/hint)
     const dock      = smooth(sub(s,.06,.30));    // titolo -> alto sx (il movimento dura fino alla fine, invariato)
+    // riallineamento a sinistra delle righe corte (l0Off/l1Off): finestra separata e molto più stretta di
+    // dock. Prima usava lo stesso dock (.06-.30, 24% dello scroll): le righe corte scivolavano lateralmente
+    // per tutta la durata del movimento diagonale del blocco, un moto composto percepito come una "scia".
+    // Qui si completa nel primo terzo (.06-.14): dopo, le righe viaggiano rigidamente col blocco come già
+    // faceva la riga più larga (l2Off=0, mai spostata) — stesso risultato finale (bordo sinistro comune),
+    // niente più scivolamento visibile per il resto della corsa
+    const alignDock = smooth(sub(s,.06,.14));
     const shadowOut = 1-smooth(sub(s,.06,.14));  // ombra/gloss: timeline SEPARATA dal dock, sparisce nel primo terzo del docking
     const tiltFade  = 1-smooth(sub(s,.05,.22));  // dondolio si stabilizza PRIMA del pannello
     const panelRise = smooth(sub(s,.20,.42));    // pannello carta sale
@@ -160,9 +167,9 @@
     // hero: dock + fade sincronizzato col pannello (non più su una timeline separata)
     const sc=1-(1-DOCK.scale)*dock, tx=(DOCK.x-rect0.left)*dock, ty=(DOCK.y-rect0.top)*dock;
     heroMove.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+sc.toFixed(4)+')';
-    glossWrap.style.setProperty('--l0Shift',(l0Off*dock).toFixed(1)+'px');
-    glossWrap.style.setProperty('--l1Shift',(l1Off*dock).toFixed(1)+'px');
-    glossWrap.style.setProperty('--l2Shift',(l2Off*dock).toFixed(1)+'px');
+    glossWrap.style.setProperty('--l0Shift',(l0Off*alignDock).toFixed(1)+'px');
+    glossWrap.style.setProperty('--l1Shift',(l1Off*alignDock).toFixed(1)+'px');
+    glossWrap.style.setProperty('--l2Shift',(l2Off*alignDock).toFixed(1)+'px');
     heroMove.style.opacity=heroOut.toFixed(3);
     tiltK=tiltFade;
     gloss.style.opacity=shadowOut.toFixed(3);   // riflesso e drop-shadow: spariscono nel primo terzo del docking, non insieme al movimento
@@ -222,6 +229,7 @@
 
     if(ch1Img){
       ch1Img.style.opacity=(imgFadeIn*(1-imgExit)).toFixed(3);
+      if(ch1ImgVeil) ch1ImgVeil.style.opacity=(imgFadeIn*(1-imgExit)).toFixed(3);
       ch1Img.style.filter='blur('+(lerp(6,0,imgCrop)+lerp(0,8,imgExit)).toFixed(2)+'px)';
       // inquadratura scelta guardando la foto, non a caso: parte stretta sul telefono con l'app
       // "2.0 Project" (23%,63% — anche ponte narrativo verso l'Ecosistema, sezione successiva) e si
@@ -231,9 +239,9 @@
       // a 106% e con questo centro entrano entrambi nell'inquadratura, non solo il laptop centrale
       ch1Img.style.backgroundSize=lerp(300,106,imgCrop).toFixed(0)+'% auto';
       ch1Img.style.backgroundPosition=lerp(23,62,imgCrop).toFixed(1)+'% '+lerp(63,48,imgCrop).toFixed(1)+'%';
-      // -50% in Y torna necessario: il pannello è di nuovo ancorato a top:50% (stessa tecnica di
-      // .ecoProjectImg), non più a piena altezza fissa — senza, il pannello scivolerebbe verso il basso
-      ch1Img.style.transform='translate('+(lerp(10,0,imgCrop)+lerp(0,16,imgExit)).toFixed(2)+'vw,-50%) scale('+(lerp(.6,1,imgCrop)*lerp(1,1.25,imgExit)).toFixed(3)+')';
+      // niente più -50% in Y: il box ora copre lo schermo intero via inset (come .ecoHyperImg), non
+      // è più ancorato a top:50% — la Y torna 0, resta solo lo scivolamento orizzontale in ingresso/uscita
+      ch1Img.style.transform='translate('+(lerp(10,0,imgCrop)+lerp(0,16,imgExit)).toFixed(2)+'vw,0) scale('+(lerp(.6,1,imgCrop)*lerp(1,1.25,imgExit)).toFixed(3)+')';
     }
 
     // card editoriale: il pannello carta si apre nella card (scale morph, stesso gesto della palette)

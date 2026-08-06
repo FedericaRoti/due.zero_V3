@@ -4,7 +4,7 @@
   const bgHyper=$('bgHyper'), bgPaper2=$('bgPaper2'),
         ecoBridge=$('ecoBridge'), ch2Banner=$('ch2Banner'), ch2BannerBar=$('ch2BannerBar'), ch2BannerText=$('ch2BannerText'),
         ecoOpenH=$('ecoOpenH'), ecoOpenSub=$('ecoOpenSub'),
-        ecoProjectImg=$('ecoProjectImg'), pjGroup=$('pjGroup'), pjTitle=$('pjTitle'), pjSub=$('pjSub'), pjMono=$('pjMono'), pjCta=$('pjCta'),
+        ecoProjectImg=$('ecoProjectImg'), ecoProjectVeil=$('ecoProjectVeil'), pjGroup=$('pjGroup'), pjTitle=$('pjTitle'), pjSub=$('pjSub'), pjMono=$('pjMono'), pjCta=$('pjCta'),
         hpTitle=$('hpTitle'), hpSub=$('hpSub'), hpMono=$('hpMono'), hpCta=$('hpCta'), ecoHyperImg=$('ecoHyperImg'),
         dcTitle=$('dcTitle'), dcAccent=$('dcAccent'), dcSub=$('dcSub'), dcPara=$('dcPara');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -69,10 +69,12 @@
 
       const pjImgExit = smooth(sub(s,.541,.575));  // dopo l'hold della CTA: il campo Project si espande e perde fuoco, non una dissolvenza
       ecoProjectImg.style.opacity=(imgFadeIn*(1-pjImgExit)).toFixed(3);
+      if(ecoProjectVeil) ecoProjectVeil.style.opacity=(imgFadeIn*(1-pjImgExit)).toFixed(3);
       ecoProjectImg.style.filter='blur('+(lerp(5,0,cropOut)+lerp(0,10,pjImgExit)).toFixed(2)+'px)';
       ecoProjectImg.style.backgroundSize=lerp(340,130,cropOut).toFixed(0)+'% auto';
       ecoProjectImg.style.backgroundPosition=lerp(44,46,cropOut).toFixed(1)+'% '+lerp(22,40,cropOut).toFixed(1)+'%';
-      ecoProjectImg.style.transform='translate('+(lerp(14,0,cropOut)+lerp(0,22,pjImgExit)).toFixed(2)+'vw,-50%) scale('+(lerp(.55,1,cropOut)*lerp(1,1.35,pjImgExit)).toFixed(3)+')';
+      // niente più -50% in Y: il box copre lo schermo intero via inset (come .ecoHyperImg)
+      ecoProjectImg.style.transform='translate('+(lerp(14,0,cropOut)+lerp(0,22,pjImgExit)).toFixed(2)+'vw,0) scale('+(lerp(.55,1,cropOut)*lerp(1,1.35,pjImgExit)).toFixed(3)+')';
 
       pjGroup.style.opacity=(1-projectOut).toFixed(3);
       pjGroup.style.transform='translateY(-'+lerp(0,12,regroup).toFixed(2)+'vh)';
