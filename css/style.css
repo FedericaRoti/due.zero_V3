@@ -33,6 +33,10 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .tilt{position:relative;transform-style:preserve-3d;will-change:transform}
 .gloss-wrap{position:relative;text-align:center;pointer-events:auto;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
 .title{font-family:var(--hero-font);font-weight:400;text-transform:uppercase;font-size:clamp(46px,11.5vw,205px);line-height:.94;letter-spacing:.01em}
+/* NIENTE transition qui: una transizione CSS a tempo fisso parte per conto suo, scollegata dal gesto
+   di scroll — anche se morbida al suo interno, si percepisce come uno scatto perché non segue lo scroll
+   dell'utente in tempo reale. Il riallineamento (--l0Shift/--l1Shift) resta quindi agganciato allo scroll
+   via JS (vedi alignDock in capitolo1.js), l'unico modo per farlo sentire "fluido e sincronizzato" */
 .title .l0,.title .l1,.title .l2{display:block;width:fit-content;margin-inline:auto}
 .title .l0{transform:translateX(var(--l0Shift,0px))}
 .title .l1{transform:translateX(var(--l1Shift,0px))}
@@ -64,19 +68,40 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 .hint{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);z-index:4;font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(237,237,234,.3)}
 
-/* ---- badge hero (visibili solo dopo il preload, spariscono appena si scrolla): due link reali con lo
-   stesso trattamento a bordo sottile già usato per le CTA di 2.0 Project/Hyperparts, in versione minore ---- */
+/* ---- badge hero (visibili solo dopo il preload, spariscono appena si scrolla): due link reali, ora coi
+   loghi ufficiali dei due prodotti al posto del testo — il pulsante/pillola è già disegnato dentro l'SVG
+   stesso, quindi qui restano solo dimensione e il piccolo zoom all'hover, niente più bordo/sfondo propri ---- */
 .heroBadges{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:6;
   display:flex;align-items:center;gap:16px;opacity:0;pointer-events:none;transition:opacity .4s ease}
-.heroBadge{display:inline-flex;align-items:center;gap:9px;padding:10px 20px;border:1px solid rgba(237,237,234,.55);
-  border-radius:999px;background:rgba(237,237,234,.06);font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
-  text-transform:uppercase;color:rgba(237,237,234,.92);text-decoration:none;white-space:nowrap;cursor:pointer;
-  transition:transform .3s cubic-bezier(.2,.7,.2,1),background .3s ease,color .3s ease,border-color .3s ease}
-/* stesso linguaggio delle altre CTA del sito (2.0 Project/Hyperparts/footer): sfondo che si inverte in
-   chiaro all'hover, freccia rossa che scivola — piu lo zoom richiesto */
-.heroBadge:hover{transform:scale(1.08);background:#EDEDEA;color:var(--black);border-color:#EDEDEA}
-.heroBadgeArrow{color:var(--red);transition:transform .25s ease}
-.heroBadge:hover .heroBadgeArrow{transform:translateX(4px)}
+/* chip chiaro dietro al logo intero: nell'SVG solo l'icona ha un suo sfondo, il testo è vettoriale nero
+   senza sfondo (pensato per pagine già chiare) — su questo hero scuro sarebbe illeggibile senza questo chip */
+.heroBadge{display:inline-flex;align-items:center;cursor:pointer;padding:8px 16px;
+  border-radius:999px;background:var(--paper);
+  transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+/* variante "come il titolo centrale": testo dell'SVG già ricolorato chiaro (vedi dzp-logo.svg, --paper
+   sul testo, bianco puro sul punto — stessa gerarchia di .title .dot), quindi qui niente più chip: il
+   logo galleggia sul nero esattamente come fa il titolo, non ha bisogno di un fondo chiaro dietro */
+.heroBadgeGhost{padding:0;background:none;position:relative}
+/* piccolo punto luce sotto il logo: per contrasto fa risaltare di più lo stack di ombre scure sopra
+   (drop-shadow qui sotto) — stessa idea di un faretto da terra, non c'entra con la luce del titolo.
+   Deriva lentamente avanti e indietro invece di restare fermo, un respiro leggero non un lampeggio */
+@keyframes heroBadgeGlowDrift{
+  0%,100%{transform:translateX(-58%) scale(1);opacity:.75}
+  50%{transform:translateX(-42%) scale(1.1);opacity:1}
+}
+.heroBadgeGhost::after{content:'';position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);
+  width:60%;height:16px;background:radial-gradient(ellipse at center,rgba(255,255,255,.4) 0%,rgba(255,255,255,0) 72%);
+  z-index:-1;pointer-events:none;animation:heroBadgeGlowDrift 4.5s ease-in-out infinite}
+/* stessa identica ombra materica del titolo centrale (.title.base text-shadow), qui via drop-shadow
+   perché è un'immagine, non testo — stack di ombre scure via via più diffuse, stesso rilievo "materico",
+   più il tocco di luce dal basso (l'ultima, chiara). Statica: niente sweep dinamico legato al mouse
+   (quello richiederebbe l'SVG inline come testo vero, non un'immagine) */
+.heroBadgeGhost img{filter:
+  drop-shadow(0 1px 0 #0f0f0f) drop-shadow(0 2px 0 #0d0d0d) drop-shadow(0 3px 0 #0b0b0b)
+  drop-shadow(0 4px 0 #090909) drop-shadow(0 5px 0 #070707) drop-shadow(0 8px 14px rgba(0,0,0,.78))
+  drop-shadow(0 -1px 0 rgba(255,255,255,.20))}
+.heroBadge img{display:block;height:clamp(28px,5vw,38px);width:auto}
+.heroBadge:hover{transform:scale(1.08)}
 /* effetto legato al PRIMO scroll (non al caricamento): se lo scroll parte veloce i badge rischiano di
    sparire prima di essere notati, quindi proprio nell'istante in cui iniziano a sfumare fanno un piccolo
    "pop" che cattura l'occhio invece di svanire silenziosamente */

@@ -119,16 +119,20 @@
   function render(s){
     const reveal    = smooth(sub(s,0,.16));      // chrome intro (triangolo/menu/hint)
     const dock      = smooth(sub(s,.06,.30));    // titolo -> alto sx (il movimento dura fino alla fine, invariato)
-    // riallineamento a sinistra delle righe corte (l0Off/l1Off): scatto istantaneo, non interpolato.
-    // Prima era legato a dock (.06-.30, poi ristretto a .06-.14): qualunque interpolazione, anche breve,
-    // resta un movimento laterale visibile sommato al moto diagonale del blocco — la "scia" segnalata.
-    // Un solo frame di soglia (nessun lerp) elimina il movimento intermedio da percepire: le righe sono
-    // o centrate (s<.10) o già allineate a sinistra (s>=.10), mai a metà strada
-    const alignDock = s<.10 ? 0 : 1;
+    // riallineamento a sinistra delle righe corte (l0Off/l1Off): due finestre SFASATE, non più identiche.
+    // Prima usavano lo stesso identico valore (alignDock): le due righe si muovevano sempre in perfetto
+    // sincrono, leggibile come un blocco rigido che scatta, non come due parole che raggiungono ciascuna
+    // il proprio bordo sinistro e si fermano. Qui "Technical" parte un po' dopo "DUE.ZERO" e ciascuna ha
+    // la sua finestra di 7%, così arrivano in momenti leggermente diversi — moto più organico, non in blocco
+    const alignDock0 = smooth(sub(s,.06,.13));
+    const alignDock1 = smooth(sub(s,.09,.16));
     const shadowOut = 1-smooth(sub(s,.06,.14));  // ombra/gloss: timeline SEPARATA dal dock, sparisce nel primo terzo del docking
     const tiltFade  = 1-smooth(sub(s,.05,.22));  // dondolio si stabilizza PRIMA del pannello
     const panelRise = smooth(sub(s,.20,.42));    // pannello carta sale
-    const heroOut   = 1-smooth(sub(s,.32,.50));  // hero sparisce SOLO dopo che il dock è finito (niente più moto+dissolvenza insieme)
+    // hero sparisce PRIMA che la foto di sfondo (ch1Img, imgFadeIn .20-.30) diventi visibile: prima restava
+    // visibile fino al 50% mentre la foto era già piena dal 30%, quindi per un lungo tratto si sovrapponevano
+    // (scritta scura sopra la foto) — ora il fade finisce appena prima che la foto inizi ad apparire
+    const heroOut   = 1-smooth(sub(s,.14,.19));
     const migrate   = smooth(sub(s,.20,.34));    // ponte rosso: triangolo -> linea, parte con la salita del pannello
     const fillBar   = smooth(sub(s,.30,.40));    // la linea diventa barra strutturale, finisce entro la salita del pannello
     const btOp      = smooth(sub(s,.40,.46));    // label "Capitolo 1 — Chi siamo": subito dopo la salita, niente vuoto
@@ -166,9 +170,9 @@
     // hero: dock + fade sincronizzato col pannello (non più su una timeline separata)
     const sc=1-(1-DOCK.scale)*dock, tx=(DOCK.x-rect0.left)*dock, ty=(DOCK.y-rect0.top)*dock;
     heroMove.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+sc.toFixed(4)+')';
-    glossWrap.style.setProperty('--l0Shift',(l0Off*alignDock).toFixed(1)+'px');
-    glossWrap.style.setProperty('--l1Shift',(l1Off*alignDock).toFixed(1)+'px');
-    glossWrap.style.setProperty('--l2Shift',(l2Off*alignDock).toFixed(1)+'px');
+    glossWrap.style.setProperty('--l0Shift',(l0Off*alignDock0).toFixed(1)+'px');
+    glossWrap.style.setProperty('--l1Shift',(l1Off*alignDock1).toFixed(1)+'px');
+    glossWrap.style.setProperty('--l2Shift','0px');
     heroMove.style.opacity=heroOut.toFixed(3);
     tiltK=tiltFade;
     gloss.style.opacity=shadowOut.toFixed(3);   // riflesso e drop-shadow: spariscono nel primo terzo del docking, non insieme al movimento
@@ -187,7 +191,10 @@
     // triangolo rettangolo isoscele (45°/45°/90°) sia piccolo che ingrandito: un solo lato condiviso da
     // larghezza e altezza, non due formule separate — smette di essere un triangolo solo quando comincia
     // davvero a migrare verso la barra (migrate>0), fase in cui il morph in linea/barra è voluto
-    const smSide=65, bgSide=Math.min(innerWidth*.28,innerHeight*.28,300), barW=bannerBW;
+    // partenza = metà esatta del massimo raggiungibile su QUESTO schermo (non più un fisso 65px):
+    // prima il salto piccolo->grande arrivava fino a 4,6x su schermi larghi, e il triangolo iniziale
+    // leggeva come troppo piccolo. Restando proporzionale al massimo, il rapporto è sempre 2x su ogni schermo
+    const bgSide=Math.min(innerWidth*.28,innerHeight*.28,300), smSide=bgSide/2, barW=bannerBW;
     const grow=lerp(smSide,bgSide,reveal);
     const curW=lerp(grow,barW,migrate);
     const curH=lerp(lerp(grow,3,migrate),bannerH,fillBar);
