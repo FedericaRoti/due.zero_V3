@@ -49,11 +49,15 @@
     '0 4px 0 rgba(9,9,9,'+k.toFixed(3)+')','0 5px 0 rgba(7,7,7,'+k.toFixed(3)+')','0 8px 14px rgba(0,0,0,'+(0.78*k).toFixed(3)+')',
     '0 -1px 0 rgba(255,255,255,'+(0.20*k).toFixed(3)+')'].join(',');
   const cardHeadEl=card1b.querySelector('.c1b-head'), cardFootEl=card1b.querySelector('.c1b-foot'), cardTextEl=$('c1bText');
-  // testo della card a BLOCCHI-FRASE (non parola per parola): stesso gesto "riga che si rivela" del titolo capitolo
+  // testo della card a BLOCCHI-FRASE (non parola per parola): stesso gesto "riga che si rivela" del titolo capitolo.
+  // <br class="mobileBreak">: invisibile su desktop (dove il wrap naturale va bene, righe già equilibrate),
+  // attivo solo sotto 820px — lì ogni frase lunga si spezzava dove capitava in base alla larghezza, non in un
+  // punto scelto (2-3 righe irregolari a frase, sensazione di testo schiacciato). Qui il punto è deciso a mano,
+  // in una pausa grammaticale naturale, così la frase si distende su righe più corte e pulite
   const phrases=["Da vent'anni affianchiamo l'industria manifatturiera B2B",
-    "nell'intero ciclo di vita della documentazione tecnica e dei contenuti multilingua.",
-    'Metodologia, conformità normativa, un metodo di lavoro unico e software proprietari',
-    'per trasformare i dati di progetto in documenti digitali chiari e innovativi,',
+    "nell'intero ciclo di vita della documentazione tecnica<br class=\"mobileBreak\"> e dei contenuti multilingua.",
+    'Metodologia, conformità normativa,<br class="mobileBreak"> un metodo di lavoro unico e software proprietari',
+    'per trasformare i dati di progetto<br class="mobileBreak"> in documenti digitali chiari e innovativi,',
     'oggi asset strategici integrati nei processi aziendali.'];
   cardTextEl.innerHTML=phrases.map(t=>'<span class="ph"><i>'+t+'</i></span>').join(' ');
   const phLines=[...cardTextEl.querySelectorAll('.ph i')];
@@ -291,10 +295,43 @@
   },{passive:true});
   addEventListener('resize',measure);
 
+  const menuItems=overlay.querySelectorAll('.menuItem');
+  function closeOverlay(){ overlay.classList.remove('open'); menuItems.forEach(mi=>mi.classList.remove('open')); }
   menuBtn.addEventListener('click',()=>overlay.classList.add('open'));
-  closeBtn.addEventListener('click',()=>overlay.classList.remove('open'));
-  overlay.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>overlay.classList.remove('open')));
-  addEventListener('keydown',e=>{if(e.key==='Escape')overlay.classList.remove('open');});
+  closeBtn.addEventListener('click',closeOverlay);
+  // .menuMain (Ecosistema 4.0/Servizi) è escluso qui apposta: su mobile non deve chiudere il menu/navigare
+  // subito al tap, ha una gestione dedicata sotto (apre il sottomenu la prima volta)
+  overlay.querySelectorAll('a:not(.menuMain)').forEach(a=>a.addEventListener('click',closeOverlay));
+  addEventListener('keydown',e=>{if(e.key==='Escape')closeOverlay();});
+  const isMobileMenu=()=>matchMedia('(max-width:820px)').matches;
+
+  // sottomenu Ecosistema 4.0 / Servizi: desktop a lato con hover + piccolo ritardo alla chiusura (così
+  // muovendosi in diagonale verso il pannello non si chiude prima di arrivarci); mobile ad accordion,
+  // aperto/chiuso toccando la voce stessa (non solo il pulsante [+], troppo piccolo per notarlo —
+  // prima il tocco sul testo navigava subito via, il sottomenu restava scoperto quasi sempre)
+  menuItems.forEach(item=>{
+    const toggle=item.querySelector('.menuToggle');
+    const submenu=item.querySelector('.submenu');
+    const main=item.querySelector('.menuMain');
+    let hideTimer=null;
+    item.addEventListener('mouseenter',()=>{
+      clearTimeout(hideTimer);
+      // il pannello è position:fixed ancorato a destra (vedi CSS): l'altezza esatta va allineata qui
+      // alla voce sotto il mouse, altrimenti resterebbe sempre a top:0 qualunque voce si apra
+      if(submenu && main) submenu.style.top=main.getBoundingClientRect().top+'px';
+      item.classList.add('open');
+    });
+    item.addEventListener('mouseleave',()=>{hideTimer=setTimeout(()=>item.classList.remove('open'),250);});
+    function toggleAccordion(){
+      const isOpen=item.classList.toggle('open');
+      if(toggle) toggle.setAttribute('aria-expanded',isOpen?'true':'false');
+    }
+    if(toggle) toggle.addEventListener('click',toggleAccordion);
+    if(main) main.addEventListener('click',e=>{
+      if(isMobileMenu()){ e.preventDefault(); toggleAccordion(); }
+      else closeOverlay();   // desktop: comportamento invariato, naviga e chiude il menu
+    });
+  });
 
   if(!reduce){
     let raf=null,px=0,py=0;

@@ -5,6 +5,16 @@
 body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 .scene{position:relative;height:760vh}
+/* punti di ancoraggio invisibili per il menu: puntare all'inizio grezzo di queste sezioni (0%) atterra
+   prima che banner/titolo del capitolo siano visibili (la "carta" non è ancora salita, il testo non si
+   è ancora rivelato) — sembra di essere ancora nella scena precedente. Questi marker stanno più avanti,
+   dove banner+titolo del capitolo sono già leggibili, non all'inizio tecnico del contenitore di scroll */
+.chapterAnchor{position:absolute;left:0;width:1px;height:1px;pointer-events:none}
+/* top in vh, non in %: il progresso di scroll di queste sezioni è (scrollY-inizio)/(altezza_sezione-100vh),
+   non /altezza_sezione — un top in percentuale del contenitore ignora quel "-100vh" e atterra più avanti
+   del previsto (verificato: con top:25% su una sezione di 520vh si atterrava già a ritiro del titolo
+   iniziato, invece che a titolo completo). Il valore qui è target_s*(altezza_sezione_vh-100), già calcolato */
+.scene .chapterAnchor{top:448.8vh}
 .sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black)}
 .ambient{position:absolute;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(480px circle at var(--mx) var(--my),rgba(255,255,255,.05),rgba(255,255,255,0) 70%)}
@@ -178,6 +188,43 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .overlay .close{position:absolute;top:20px;right:38px;cursor:pointer;background:none;border:none;color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase}
 .overlay .close .plus{color:var(--red);display:inline-block;transform:rotate(45deg)}
 
+/* ---- sottomenu (Ecosistema 4.0, Servizi): desktop a lato con hover+ritardo (vedi capitolo1.js),
+   mobile ad accordion sotto la voce, aperto dal pulsante [+] dedicato ---- */
+.menuItem{position:relative;display:flex;align-items:baseline;gap:16px}
+.menuItem .menuMain{flex:0 0 auto}
+.menuToggle{display:none}
+/* position:fixed ancorato a destra (non left:100% del link): "Ecosistema 4.0"/"Servizi" hanno larghezza
+   di testo molto variabile (dipende da vw, lingua, zoom) — ancorare a destra della finestra invece che
+   al bordo destro del testo evita che il pannello finisca fuori viewport sugli schermi più stretti.
+   Il top esatto (allineato alla voce sotto il mouse) è impostato da JS in capitolo1.js */
+.overlay .submenu{position:fixed;right:16vw;top:0;
+  display:flex;flex-direction:column;gap:16px;opacity:0;pointer-events:none;
+  transition:opacity .25s ease;white-space:nowrap;text-align:right}
+.menuItem.open .submenu{opacity:1;pointer-events:auto}
+.overlay .submenu a,.overlay .submenu .submenuStatic{font-family:var(--mono);font-size:20px;
+  letter-spacing:.08em;text-transform:uppercase;color:rgba(237,237,234,.5);text-decoration:none;
+  transition:color .2s ease,padding-left .2s ease}
+.overlay .submenu a:hover{color:#EDEDEA;padding-left:8px}
+/* voci non ancora cliccabili (Servizi): pagine dedicate non ancora create, stesso trattamento già
+   usato per Privacy/Cookie in footer — testo statico, più spento, cursor:default */
+.overlay .submenu .submenuStatic{cursor:default;color:rgba(237,237,234,.25)}
+
+@media (max-width:820px){
+  .menuItem{flex-wrap:wrap}
+  .menuToggle{display:inline-flex;align-items:center;justify-content:center;background:none;border:none;
+    cursor:pointer;margin-left:auto;transition:transform .25s ease}
+  .menuToggle .plus{color:var(--red)}
+  .menuItem.open .menuToggle{transform:rotate(45deg)}
+  .overlay .submenu{position:static;left:auto;right:auto;top:auto;text-align:left;flex-basis:100%;
+    width:100%;max-height:0;overflow:hidden;opacity:1;pointer-events:auto;
+    transition:max-height .35s ease,margin-top .35s ease}
+  .menuItem.open .submenu{max-height:420px;margin-top:14px}
+  /* spazio dopo l'accordion aperto: senza, la prossima voce di menu (es. Qualità) arrivava
+     subito attaccata all'ultima riga del sottomenu, col solo gap:6px del menu principale */
+  .menuItem.open{margin-bottom:28px}
+  .overlay .submenu a,.overlay .submenu .submenuStatic{font-size:clamp(15px,3.6vw,22px)}
+}
+
 .after{background:var(--paper);color:var(--ink);min-height:120vh;padding:120px 38px;border-top:1px solid rgba(20,20,18,.1)}
 .after .k{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
 .after p{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(20,20,18,.5);margin-top:16px}
@@ -196,6 +243,9 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .c1b-text{font-weight:600;text-transform:uppercase;font-size:clamp(22px,2.8vw,44px);line-height:1.28;max-width:min(82vw,860px);letter-spacing:-.005em}
 .c1b-text .ph{display:block;overflow:hidden}
 .c1b-text .ph i{display:block;font-style:normal;transform:translateY(100%)}
+/* disattivo di default: attivo solo sotto 820px, vedi media query — su desktop il wrap naturale
+   basta già, non deve andare a capo qui */
+.c1b-text .mobileBreak{display:none}
 
 /* ================= CAPITOLO 2 — ECOSISTEMA (asset reali, no SVG generico) ================= */
 .scene2{position:relative;height:860vh;background:var(--black)}
@@ -446,6 +496,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    la scena si apre in carta calda (--paper) e chiude tornando al nero. Un solo sticky, quattro gesti in
    sequenza (apertura, metodo, tracciabilità, chiusura), ciascuno un layer assoluto nello stesso sticky. */
 .qualitySection{position:relative;height:520vh;background:var(--black);overflow:visible}
+.qualitySection .chapterAnchor{top:100.8vh}
 .qualitySticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black)}
 
 .qualityPaper{position:absolute;inset:0;z-index:1;background:var(--paper);transform:translateY(101%);will-change:transform}
@@ -528,6 +579,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    swap via crop orizzontale sull'immagine e maschera verticale su categoria/estratto — stessa
    tecnica già usata per il pannello Servizi/qualityDefinition), chiusura (nero + invito LinkedIn). */
 .newsSection{position:relative;height:500vh;background:var(--paper);overflow:visible}
+.newsSection .chapterAnchor{top:96vh}
 .newsSticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--paper)}
 
 /* ---- scena 1 — apertura: stesso schema di Cap.04 (banner top-left assoluto, titolo in blocco
@@ -680,6 +732,11 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   /* Capitolo 04 — Qualità: stesso meccanismo scroll-driven, stage più corto, titoli ridotti,
      DQ/IQ/OQ/PQ uno alla volta senza sovrapposizioni (stessa maschera, solo più piccola) */
   .qualitySection{height:460vh}
+  /* l'ancoraggio del menu (chapterAnchor) è in vh assoluti, calcolati sull'altezza DESKTOP (520vh) —
+     qui l'altezza della sezione è diversa (460vh), quindi lo stesso valore corrisponderebbe a un
+     punto di scroll diverso (il titolo arrivava tagliato a metà). Ricalcolato sulla stessa formula,
+     stesso target_s (.24), per la nuova altezza: .24*(460-100)=86.4vh */
+  .qualitySection .chapterAnchor{top:86.4vh}
   .qualityIntro{padding:0 8vw}
   .qualityIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
   .qualityIntro p{max-width:80vw}
@@ -697,7 +754,13 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      (lista con l'attivo in evidenza e i due inattivi ridotti a una riga ellissata, poi immagine, poi
      dettaglio) per garantire che tutto stia dentro i 100vh dello sticky senza sovrapposizioni */
   .newsSection{height:600vh}
-  .newsIntro{padding:0 8vw}
+  /* stesso motivo di .qualitySection sopra: altezza mobile diversa dalla desktop (600vh vs 500vh),
+     stesso target_s (.24) ricalcolato: .24*(600-100)=120vh */
+  .newsSection .chapterAnchor{top:120vh}
+  /* su mobile il titolo si centra invece di restare ancorato in basso a sinistra (come su desktop):
+     lo spazio vuoto sopra, accettabile su schermi larghi, su un telefono (molto più alto che largo)
+     diventava un vuoto enorme prima del titolo — stesso trattamento già usato per qualityIntro */
+  .newsIntro{padding:0 8vw;justify-content:center;align-items:center;text-align:center}
   .newsIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
   .newsIntro p{max-width:80vw}
   .newsBanner{width:min(70vw,420px);right:20px;top:7vh}
@@ -769,10 +832,17 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   /* menu: stesso margine laterale degli altri elementi mobile, e area toccabile portata a ~44px */
   .topbar{padding:0 20px}
   .menuBtn{padding:13px 18px}
-  /* immagine a destra del Capitolo 1: sotto gli 820px il blocco titolo+sottotitolo occupa quasi
-     tutta la larghezza — un'immagine che sbordi da destra ci finirebbe sopra. Nascosta finché non
-     si decide un trattamento mobile dedicato (sotto il testo? più piccola in alto? da valutare) */
-  .ch1Img,.ch1ImgVeil{display:none}
+  /* .ch1Img prima era nascosta qui sotto 820px ("il blocco titolo+sottotitolo occupa quasi tutta la
+     larghezza, un'immagine che sbordi ci finirebbe sopra") — quel problema non c'è più: da quando è
+     full-bleed con inset (non più un riquadro laterale) e ha il velo di leggibilità chiaro sotto il
+     testo, la foto sta dietro a tutto, non "sbrodola" sopra al testo. Resta visibile anche su mobile */
+  /* backgroundSize/backgroundPosition di ch1Img ed ecoProjectImg sono animati da JS con percentuali
+     pensate per un riquadro largo (crop-in sul dettaglio, tarato su proporzioni desktop). Su un riquadro
+     stretto e molto più alto come il mobile, quella percentuale lascia l'immagine troppo bassa: si vede
+     una fascia di foto con carta/nero scoperti sopra e sotto (non "a tutto schermo", o "un quadrato" per
+     2.0 Project). cover forzato (JS scrive lo style inline, serve !important per vincere) riempie sempre
+     il riquadro qualunque sia la proporzione — si perde lo zoom JS, resta il pan (backgroundPosition) */
+  .ch1Img,.ecoProjectImg{background-size:cover !important}
   /* titolo di capitolo: il minimo di 38px della regola base era tarato su righe corte. Con le righe
      attuali la più lunga misura ~10,1 volte il corpo, quindi su telefono va scalata o non entra
      (e con nowrap verrebbe tagliata invece che andare a capo) */
@@ -784,7 +854,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      che su telefono stretto (320px, 5 frasi che vanno su 2-3 righe ciascuna) faceva toccare il
      testo contro intestazione e piè di card — verificato: -17px e -60px di sovrapposizione reale.
      Minimo riportato più vicino al valore originale, solo per questa fascia */
-  .c1b-text{font-size:clamp(16px,4.4vw,19px);line-height:1.3}
+  .c1b-text{font-size:clamp(22px,6vw,28px);line-height:1.32}
+  .c1b-text .mobileBreak{display:block}
   .chBanner{padding:0 18px}          /* larghezza calcolata in JS: vedi buildBanner() */
   .chBanner .bt{font-size:13px}
   .ch2Banner{right:20px;width:min(86vw,420px);padding:0 18px}
