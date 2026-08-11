@@ -76,42 +76,46 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .legend a .n{color:rgba(237,237,234,.28);transition:color .3s}
 .legend a:hover{padding-left:8px;color:#EDEDEA}
 
-.hint{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);z-index:4;font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(237,237,234,.3)}
+/* piccolo richiamo allo scroll: sparisce da solo appena si inizia a scrollare (vedi opacity in JS,
+   legata a "reveal"), quindi non serve nasconderlo a mano dopo il primo movimento. Sotto le icone (non
+   tra titolo e icone come nella prima versione): troppo attaccato al titolo lì, e la nuvoletta di
+   un'icona centrale rischiava comunque di finirci sopra */
+.hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:4;
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(237,237,234,.3)}
+.hintArrow{display:inline-block;color:var(--red);font-size:12px;animation:hintBounce 1.6s ease-in-out infinite}
+/* variante per sfondi chiari (carta), es. la scena Documentation 4.0: il colore di base (bianco
+   trasparente) sarebbe quasi invisibile lì — la freccia resta rossa in entrambi i casi */
+.hintDark{color:rgba(20,20,18,.4)}
+@keyframes hintBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 
-/* ---- badge hero (visibili solo dopo il preload, spariscono appena si scrolla): due link reali, ora coi
-   loghi ufficiali dei due prodotti al posto del testo — il pulsante/pillola è già disegnato dentro l'SVG
-   stesso, quindi qui restano solo dimensione e il piccolo zoom all'hover, niente più bordo/sfondo propri ---- */
+/* ---- badge hero (visibili solo dopo il preload, spariscono appena si scrolla): solo icona, niente
+   nome/testo in permanenza — tolto: con lo sfondo scuro e il font del titolo creava un effetto "nuvola"
+   sopra all'hover. Il nome compare invece in una vera nuvoletta-tooltip al passaggio del mouse (sotto).
+   Ogni icona ha già il suo sfondo chiaro dentro l'SVG, quindi niente chip esterno: galleggia sul nero ---- */
 .heroBadges{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:6;
-  display:flex;align-items:center;gap:16px;opacity:0;pointer-events:none;transition:opacity .4s ease}
-/* chip chiaro dietro al logo intero: nell'SVG solo l'icona ha un suo sfondo, il testo è vettoriale nero
-   senza sfondo (pensato per pagine già chiare) — su questo hero scuro sarebbe illeggibile senza questo chip */
-.heroBadge{display:inline-flex;align-items:center;cursor:pointer;padding:8px 16px;
-  border-radius:999px;background:var(--paper);
-  transition:transform .3s cubic-bezier(.2,.7,.2,1)}
-/* variante "come il titolo centrale": testo dell'SVG già ricolorato chiaro (vedi dzp-logo.svg, --paper
-   sul testo, bianco puro sul punto — stessa gerarchia di .title .dot), quindi qui niente più chip: il
-   logo galleggia sul nero esattamente come fa il titolo, non ha bisogno di un fondo chiaro dietro */
-.heroBadgeGhost{padding:0;background:none;position:relative}
-/* piccolo punto luce sotto il logo: per contrasto fa risaltare di più lo stack di ombre scure sopra
-   (drop-shadow qui sotto) — stessa idea di un faretto da terra, non c'entra con la luce del titolo.
-   Deriva lentamente avanti e indietro invece di restare fermo, un respiro leggero non un lampeggio */
-@keyframes heroBadgeGlowDrift{
-  0%,100%{transform:translateX(-58%) scale(1);opacity:.75}
-  50%{transform:translateX(-42%) scale(1.1);opacity:1}
-}
-.heroBadgeGhost::after{content:'';position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);
-  width:60%;height:16px;background:radial-gradient(ellipse at center,rgba(255,255,255,.4) 0%,rgba(255,255,255,0) 72%);
-  z-index:-1;pointer-events:none;animation:heroBadgeGlowDrift 4.5s ease-in-out infinite}
-/* stessa identica ombra materica del titolo centrale (.title.base text-shadow), qui via drop-shadow
-   perché è un'immagine, non testo — stack di ombre scure via via più diffuse, stesso rilievo "materico",
-   più il tocco di luce dal basso (l'ultima, chiara). Statica: niente sweep dinamico legato al mouse
-   (quello richiederebbe l'SVG inline come testo vero, non un'immagine) */
-.heroBadgeGhost img{filter:
-  drop-shadow(0 1px 0 #0f0f0f) drop-shadow(0 2px 0 #0d0d0d) drop-shadow(0 3px 0 #0b0b0b)
-  drop-shadow(0 4px 0 #090909) drop-shadow(0 5px 0 #070707) drop-shadow(0 8px 14px rgba(0,0,0,.78))
-  drop-shadow(0 -1px 0 rgba(255,255,255,.20))}
-.heroBadge img{display:block;height:clamp(28px,5vw,38px);width:auto}
-.heroBadge:hover{transform:scale(1.08)}
+  display:flex;align-items:center;gap:14px;opacity:0;pointer-events:none;transition:opacity .4s ease}
+.heroBadge{position:relative;display:inline-flex;align-items:center;cursor:pointer}
+/* in attesa di link/pagina reale (Hyper.Lab, Manualistica, Ricambi, Traduzioni): stesso trattamento
+   già usato per il sottomenu Servizi e per Privacy/Cookie in footer — presente ma non cliccabile */
+.heroBadgePending{cursor:default}
+/* lo scale del "dock" (JS) è sull'immagine, non su .heroBadge: così la nuvoletta-tooltip, che è una
+   sorella non figlia dell'immagine, non si ingrandisce/deforma insieme all'icona sotto al mouse */
+.heroBadge img{display:block;height:clamp(40px,7vw,56px);width:auto;transform-origin:center bottom;
+  transition:transform .18s ease-out}
+/* nuvoletta col nome: sopra l'icona, invisibile finché non ci passi sopra col mouse. bottom:calc(100% + Npx)
+   invece di bottom:100%+margin-bottom: risultava troppo vicina all'icona, in parte coperta da essa —
+   un unico valore esplicito per il distacco è più prevedibile che sommare due proprietà diverse */
+/* +40px: l'icona sotto il mouse si ingrandisce fino a 1.55x (effetto dock, transform-origin center
+   bottom) e cresce verso l'alto di ~31px — questo valore lascia comunque ~9px di margine anche a icona
+   al massimo dello zoom, restando più vicina al titolo sopra rispetto alla versione precedente (+48px) */
+.heroBadgeTip{position:absolute;left:50%;bottom:calc(100% + 40px);z-index:2;transform:translateX(-50%) translateY(4px);
+  padding:6px 12px;border-radius:8px;background:var(--paper);color:var(--ink);
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease}
+.heroBadgeTip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:var(--paper)}
+.heroBadge:hover .heroBadgeTip{opacity:1;transform:translateX(-50%) translateY(0)}
 /* effetto legato al PRIMO scroll (non al caricamento): se lo scroll parte veloce i badge rischiano di
    sparire prima di essere notati, quindi proprio nell'istante in cui iniziano a sfumare fanno un piccolo
    "pop" che cattura l'occhio invece di svanire silenziosamente */
@@ -249,6 +253,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* ================= CAPITOLO 2 — ECOSISTEMA (asset reali, no SVG generico) ================= */
 .scene2{position:relative;height:860vh;background:var(--black)}
+.scene2 .chapterAnchor{top:743.28vh}
 .sticky2{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black);perspective:1200px}
 
 /* fondi Hyperparts/Documentation (invariati, gestiti da render2 come prima) */

@@ -1,0 +1,157 @@
+/* Template condiviso per le pagine servizio (Manualistica Tecnica, Cataloghi Ricambi, ...):
+   stesse variabili/reset/topbar/overlay di parliamone.css (pattern "pagina secondaria" del sito),
+   più le sezioni di contenuto specifiche di un articolo servizio. Cambiare qui aggiorna tutte le
+   pagine servizio insieme. */
+:root{--black:#0A0A0A;--paper:#EDEDEA;--ink:#141412;--red:#E2231A;
+  --geo:'Big Shoulders Display',sans-serif;--mono:'IBM Plex Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
+
+/* ---- topbar + menu: pastiglia scura translucida (come style.css), non il testo semplice di
+   parliamone.css — qui il corpo dell'articolo scorre a lungo e può passare proprio sotto l'angolo
+   in alto a destra, serve restare leggibile sopra al testo, non solo sopra la carta vuota ---- */
+.topbar{position:fixed;top:0;left:0;right:0;height:62px;z-index:30;display:flex;align-items:center;
+  justify-content:flex-end;padding:0 38px;pointer-events:none}
+.menuBtn{pointer-events:auto;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  padding:9px 17px;border-radius:999px;background:rgba(10,10,10,.55);border:1px solid rgba(237,237,234,.28);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#EDEDEA;
+  font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+  transition:background .3s ease,border-color .3s ease}
+.menuBtn:hover{background:rgba(10,10,10,.82);border-color:rgba(237,237,234,.55)}
+.menuBtn .plus{color:var(--red)}
+
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(8,8,8,.97);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:center;padding:0 8vw;gap:6px;opacity:0;pointer-events:none;transition:opacity .4s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay a{font-family:var(--geo);font-weight:600;text-transform:uppercase;text-decoration:none;color:#2f2f2f;font-size:clamp(34px,6.5vw,92px);line-height:1.04;transition:color .25s,padding-left .25s;display:flex;gap:20px;align-items:baseline}
+.overlay a .oi{font-family:var(--mono);font-size:13px;color:rgba(237,237,234,.3)}
+.overlay a:hover{color:#EDEDEA;padding-left:14px}.overlay a.cta{color:var(--red)}
+.overlay .close{position:absolute;top:20px;right:38px;cursor:pointer;background:none;border:none;color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.overlay .close .plus{color:var(--red);display:inline-block;transform:rotate(45deg)}
+
+/* sottomenu (identico a style.css): desktop a lato con hover+ritardo, mobile ad accordion (vedi js/servizio.js) */
+.menuItem{position:relative;display:flex;align-items:baseline;gap:16px}
+.menuItem .menuMain{flex:0 0 auto}
+.menuToggle{display:none}
+.overlay .submenu{position:fixed;right:16vw;top:0;
+  display:flex;flex-direction:column;gap:16px;opacity:0;pointer-events:none;
+  transition:opacity .25s ease;white-space:nowrap;text-align:right}
+.menuItem.open .submenu{opacity:1;pointer-events:auto}
+.overlay .submenu a,.overlay .submenu .submenuStatic{font-family:var(--mono);font-size:20px;
+  letter-spacing:.08em;text-transform:uppercase;color:rgba(237,237,234,.5);text-decoration:none;
+  transition:color .2s ease,padding-left .2s ease}
+.overlay .submenu a:hover{color:#EDEDEA;padding-left:8px}
+.overlay .submenu .submenuStatic{cursor:default;color:rgba(237,237,234,.25)}
+
+@media (max-width:820px){
+  .menuItem{flex-wrap:wrap}
+  .menuToggle{display:inline-flex;align-items:center;justify-content:center;background:none;border:none;
+    cursor:pointer;margin-left:auto;transition:transform .25s ease}
+  .menuToggle .plus{color:var(--red)}
+  .menuItem.open .menuToggle{transform:rotate(45deg)}
+  .overlay .submenu{position:static;left:auto;right:auto;top:auto;text-align:left;flex-basis:100%;
+    width:100%;max-height:0;overflow:hidden;opacity:1;pointer-events:auto;
+    transition:max-height .35s ease,margin-top .35s ease}
+  .menuItem.open .submenu{max-height:420px;margin-top:14px}
+  .menuItem.open{margin-bottom:28px}
+  .overlay .submenu a,.overlay .submenu .submenuStatic{font-size:clamp(15px,3.6vw,22px)}
+}
+
+/* ================= HERO — carta calda, stesso trattamento di parliamone.css ================= */
+.svcHero{position:relative;overflow:hidden;background:var(--paper);min-height:62vh;
+  display:flex;flex-direction:column;justify-content:center;padding:15vh 6vw 8vh}
+.svcHeroMark{position:absolute;left:6vw;top:9vh;width:52px;height:52px;background:var(--red);
+  clip-path:polygon(100% 0,100% 100%,0 100%,100% 0)}
+.svcBack{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;
+  letter-spacing:.1em;text-transform:uppercase;color:rgba(20,20,18,.45);text-decoration:none;
+  margin-top:8vh;transition:color .25s,gap .25s;width:fit-content}
+.svcBack:hover{color:var(--red);gap:12px}
+.svcEyebrow{display:block;font-family:var(--mono);color:var(--red);font-size:clamp(12px,1.05vw,14px);
+  letter-spacing:.16em;text-transform:uppercase;margin-top:18px}
+.svcHero h1{margin-top:16px;font-family:var(--geo);font-weight:800;text-transform:uppercase;color:var(--ink);
+  font-size:clamp(42px,6.4vw,96px);line-height:.98;letter-spacing:-.01em;max-width:90vw;
+  clip-path:inset(0 100% 0 0);transition:clip-path 1s cubic-bezier(.4,0,.2,1) .2s}
+.svcAccent{display:block;margin-top:14px;font-family:var(--mono);font-size:clamp(14px,1.5vw,19px);
+  letter-spacing:.04em;color:var(--red);text-transform:uppercase;opacity:0;transform:translateY(10px);
+  transition:opacity .6s ease .35s,transform .6s ease .35s}
+.svcLead{margin-top:26px;max-width:640px;font-family:var(--mono);color:rgba(20,20,18,.75);
+  font-size:clamp(15px,1.3vw,18px);line-height:1.65;opacity:0;transform:translateY(14px);
+  transition:opacity .6s ease .5s,transform .6s ease .5s}
+.svcHero.revealed h1{clip-path:inset(0 0% 0 0)}
+.svcHero.revealed .svcAccent,.svcHero.revealed .svcLead{opacity:1;transform:translateY(0)}
+
+/* ================= CORPO — testo su carta, stessa maschera verticale del reveal contatti ================= */
+.svcSection{position:relative;background:var(--paper);padding:8vh 6vw;
+  clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.4,0,.2,1)}
+.svcSection.revealed{clip-path:inset(0 0 0% 0)}
+.svcSection+.svcSection{padding-top:2vh}
+.svcCol{max-width:680px;margin:0 auto}
+.svcCol p{font-family:var(--mono);font-size:clamp(14px,1.05vw,16px);line-height:1.75;
+  color:rgba(20,20,18,.7);margin-bottom:22px}
+.svcCol p:last-child{margin-bottom:0}
+.svcCallout{border-left:3px solid var(--red);background:rgba(226,35,26,.05);padding:18px 24px;margin-top:6px}
+.svcCallout p{color:rgba(20,20,18,.85);margin-bottom:0}
+
+.svcSectionLabel{display:flex;align-items:center;gap:10px;margin-bottom:5vh}
+.svcSectionLabel .bar{width:26px;height:2px;background:var(--red)}
+.svcSectionLabel span{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(20,20,18,.5)}
+.svcCol h2{font-family:var(--geo);font-weight:800;text-transform:uppercase;color:var(--ink);
+  font-size:clamp(26px,3.2vw,46px);line-height:1.08;letter-spacing:-.005em;margin-bottom:4vh;max-width:16ch}
+.svcCol h3{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--red);margin:5vh 0 14px}
+.svcCol h3:first-of-type{margin-top:1vh}
+
+.svcTagList{display:flex;flex-wrap:wrap;gap:8px;margin:4vh 0}
+.svcTag{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em;
+  color:rgba(20,20,18,.6);background:rgba(20,20,18,.06);border:1px solid rgba(20,20,18,.1);
+  padding:7px 12px;border-radius:2px;white-space:nowrap}
+
+.svcList{list-style:none;display:flex;flex-direction:column;gap:12px}
+.svcList li{font-family:var(--mono);font-size:clamp(14px,1.05vw,16px);line-height:1.6;
+  color:rgba(20,20,18,.7);padding-left:22px;position:relative}
+.svcList li::before{content:'';position:absolute;left:0;top:.6em;width:8px;height:2px;background:var(--red)}
+
+/* ================= CHIUSURA — logo + CTA, identico a parliamone.css con l'aggiunta del bottone ================= */
+.svcClose{background:var(--black);padding:11vh 6vw 5vh;text-align:center;
+  display:flex;flex-direction:column;align-items:center}
+.svcCloseLogo{width:clamp(220px,26vw,420px);height:auto;opacity:0;transform:translateY(20px);
+  transition:opacity .8s ease,transform .8s ease}
+.svcClose.revealed .svcCloseLogo{opacity:1;transform:translateY(0)}
+.svcCloseTag{margin-top:24px;font-family:var(--mono);font-size:clamp(11px,1vw,13px);letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(237,237,234,.5);opacity:0;transition:opacity .8s ease .15s}
+.svcClose.revealed .svcCloseTag{opacity:1}
+.svcCta{margin-top:5vh;display:inline-flex;align-items:center;gap:12px;background:var(--red);color:#fff;
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
+  padding:16px 30px;border-radius:2px;opacity:0;transform:translateY(20px);
+  transition:opacity .8s ease .25s,transform .8s ease .25s,gap .25s ease,background .25s ease}
+.svcClose.revealed .svcCta{opacity:1;transform:translateY(0)}
+.svcCta:hover{gap:18px;background:#c91d15}
+
+/* footer legale minimale — identico a parliamone.css */
+.svcLegalFooter{background:var(--black);padding:5vh 6vw 34px;display:flex;justify-content:center}
+.footerLegal{margin-top:6vh;padding-top:22px;border-top:1px solid rgba(237,237,234,.14);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:24px;width:100%;max-width:900px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:rgba(237,237,234,.5)}
+.footerLegal a{color:rgba(237,237,234,.5);text-decoration:none}
+.footerLegal a:hover{color:var(--red)}
+.footerLegalStatic{cursor:default;color:rgba(237,237,234,.32)}
+
+@media (max-width:820px){
+  .svcHero{padding:12vh 8vw 7vh;min-height:auto}
+  .svcHeroMark{left:8vw;top:7vh;width:40px;height:40px}
+  .svcBack{margin-top:6vh}
+  .svcHero h1{font-size:clamp(36px,10.5vw,64px)}
+  .svcLead{max-width:100%}
+  .svcSection{padding:6vh 8vw}
+  .svcCol h2{max-width:100%}
+  .svcClose{padding:8vh 8vw 4vh}
+  .svcLegalFooter{padding:4vh 8vw 28px}
+  .footerLegal{gap:14px 20px;font-size:10px;justify-content:flex-start}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .svcHero h1{clip-path:inset(0 0% 0 0);transition:none}
+  .svcAccent,.svcLead{opacity:1;transform:none;transition:none}
+  .svcSection{clip-path:inset(0 0 0% 0);transition:none}
+  .svcCloseLogo,.svcCloseTag,.svcCta{opacity:1;transform:none;transition:none}
+}

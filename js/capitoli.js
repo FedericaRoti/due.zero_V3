@@ -6,7 +6,7 @@
         ecoOpenH=$('ecoOpenH'), ecoOpenSub=$('ecoOpenSub'),
         ecoProjectImg=$('ecoProjectImg'), ecoProjectVeil=$('ecoProjectVeil'), pjGroup=$('pjGroup'), pjTitle=$('pjTitle'), pjSub=$('pjSub'), pjMono=$('pjMono'), pjCta=$('pjCta'),
         hpTitle=$('hpTitle'), hpSub=$('hpSub'), hpMono=$('hpMono'), hpCta=$('hpCta'), ecoHyperImg=$('ecoHyperImg'),
-        dcTitle=$('dcTitle'), dcAccent=$('dcAccent'), dcSub=$('dcSub'), dcPara=$('dcPara');
+        dcTitle=$('dcTitle'), dcAccent=$('dcAccent'), dcSub=$('dcSub'), dcPara=$('dcPara'), dcHint=$('dcHint');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), sub=(p,a,b)=>clamp((p-a)/(b-a),0,1), smooth=t=>t*t*(3-2*t), lerp=(a,b,t)=>a+(b-a)*t;
 
@@ -147,11 +147,21 @@
       dcAccent.style.transform='scaleX('+lerp(.2,1,dcAccentIn).toFixed(3)+')';
       dcSub.style.opacity=(dcSubIn*(1-dcRetreat)).toFixed(3);
       dcPara.style.transform='translateY('+lerp(lerp(100,0,dcParaIn),-100,dcParaOut).toFixed(2)+'%)';
+      // stesso richiamo "Scroll" dell'hero, qui perché "Documenti 4.0" ora ci si atterra con un salto
+      // diretto (vedi capitolo1.js): senza aver scrollato fin qui organicamente, non è scontato capire
+      // che si può continuare a scorrere. Stessa opacità di dcSub: appare/sparisce insieme al resto
+      if(dcHint) dcHint.style.opacity=(dcSubIn*(1-dcRetreat)).toFixed(3);
     }
 
     function loop2(){ sP2+=(pRaw2-sP2)*0.08; render2(sP2); requestAnimationFrame(loop2); }
     addEventListener('scroll',readScroll2,{passive:true});
     readScroll2(); loop2();
+
+    // il salto istantaneo dell'icona "Documenti 4.0" (capitolo1.js) sposta scrollY in un frame solo,
+    // ma sP2 è smussato (+=(pRaw2-sP2)*0.08): senza questo, la scena visibile "insegue" per ~1-2s e si
+    // rivede tutta la coreografia di Ecosistema 4.0 anche se lo scroll è già arrivato — sincronizzo sP2
+    // subito al valore reale così render2 parte già dal punto giusto, senza inseguimento
+    window.__snapScene2Instant=function(){ readScroll2(); sP2=pRaw2; render2(sP2); };
   }
 
   // Documentation 4.0 = Machine Map = soglia del Capitolo 03: UN SOLO sticky (mapServicesSticky), UN SOLO progresso
@@ -266,30 +276,25 @@
   // Servizi — card a scroll orizzontale (dalla bozza duezero-scroll, riscritta senza librerie, stessa
   // grammatica sticky delle altre sezioni). Card desktop e lista mobile sono generate dallo stesso array
   // SERVICES: cambiare numero, titoli o testi dei servizi significa modificare solo questi dati.
-  // Le card non hanno href — le pagine servizio non esistono ancora (slug da congelare, vedi
-  // DA-CHIEDERE.md): data-service è il segnaposto del collegamento futuro.
+  // href opzionale: solo i servizi con una pagina reale lo hanno (le altre card restano <a> senza
+  // href, quindi inerti — stesso trattamento "pending" già usato altrove). data-service resta comunque
+  // il riferimento allo slug per ogni card.
   const SERVICES=[
-    {slug:'manualistica-tecnica',title:'Manualistica Tecnica',
+    {slug:'manualistica-tecnica',title:'Manualistica Tecnica',href:'manualistica-tecnica.html',
       desc:"Gestiamo l'intero ciclo di produzione della documentazione tecnica. Manuali chiari ed efficaci che aumentano il prestigio del vostro macchinario garantendo sicurezza all'utente.",
       tags:['Uso e Manutenzione','Istruzioni Montaggio','Redazione Strutturata','Safety First']},
-    {slug:'technical-compliance',title:'Technical Compliance',
-      desc:"Validiamo i vostri macchinari secondo le normative vigenti. Dall'analisi dei rischi alla redazione del fascicolo tecnico, garantiamo conformità agli standard CE.",
-      tags:['Marcatura CE','Analisi dei Rischi','Fascicolo Tecnico','Risk Assessment']},
-    {slug:'traduzioni-multilingue',title:'Traduzioni Multilingue',
-      desc:"Oltre 500 traduttori madrelingua specializzati nei settori industriali. Strumenti CAT di ultima generazione per garantire precisione terminologica globale.",
-      tags:['500+ Native Pros','CAT Tools Support','ISO 17100 Verified','Technical Glossaries']},
     {slug:'cataloghi-ricambi',title:'Cataloghi Ricambi',
       desc:"Trasformiamo i vostri cataloghi cartacei in potenti strumenti di vendita digitale. Gestione ricambi interattiva per facilitare l'ordine corretto e il service post-vendita.",
       tags:['Interactive Parts','After Sales Portals','Spare Parts Strategy','Cloud Management']},
-    {slug:'soluzioni-creative',title:'Soluzioni Creative',
+    {slug:'traduzioni-multilingue',title:'Traduzioni Multilingue',
+      desc:"Oltre 500 traduttori madrelingua specializzati nei settori industriali. Strumenti CAT di ultima generazione per garantire precisione terminologica globale.",
+      tags:['500+ Native Pros','CAT Tools Support','ISO 17100 Verified','Technical Glossaries']},
+    {slug:'technical-compliance',title:'Technical Compliance',
+      desc:"Validiamo i vostri macchinari secondo le normative vigenti. Dall'analisi dei rischi alla redazione del fascicolo tecnico, garantiamo conformità agli standard CE.",
+      tags:['Marcatura CE','Analisi dei Rischi','Fascicolo Tecnico','Risk Assessment']},
+    {slug:'soluzioni-creative',title:'Marketing Industriale',
       desc:"Studiamo e creiamo soluzioni di comunicazione per il settore industriale. Dai loghi alle schede prodotto, curiamo ogni dettaglio per una comunicazione di alto impatto.",
       tags:['Industrial Branding','Web Design','Depliants & Brochures','Event Strategy']},
-    {slug:'foto-video-training',title:'Foto & Video Training',
-      desc:"Supporti multimediali per meeting e istruzioni di montaggio. Shooting industriali e video training specialistici per trasferire la conoscenza in maniera visiva ed efficace.",
-      tags:['Industrial Shooting','Video Commercials','Montaggio Istruzioni','Multimedia Support']},
-    {slug:'modellazione-rendering',title:'Modellazione & Rendering',
-      desc:"Dalla modellazione 3D al rendering fotorealistico. Lo strumento migliore per vendere i tuoi macchinari prima ancora di averli costruiti.",
-      tags:['Technical Illustration','3D Modelling','Computer Grafica HQ','VR Ready Assets']},
     {slug:'soluzioni-software',title:'Soluzioni Software 2.0',
       desc:"Analizziamo le vostre esigenze e realizziamo soluzioni software su misura per la gestione della documentazione tecnica. Efficienza digitale per l'industria moderna.",
       tags:['Project Configurator','Technical Web Apps','Process Automation','Cloud Distribution']}
@@ -303,6 +308,7 @@
       const card=document.createElement('a');
       card.className='service-card';
       card.dataset.service=s.slug;
+      if(s.href) card.href=s.href; // senza href l'<a> resta inerte: stesso trattamento "pending" già usato altrove
       card.style.backgroundImage="url('img/services/"+s.slug+".jpg')";
       card.innerHTML='<div class="sc-num">'+num+'</div>'+
         '<h3 class="sc-title">'+esc(s.title)+'</h3>'+
@@ -314,6 +320,7 @@
       const item=document.createElement('a');
       item.className='svcMobileItem';
       item.dataset.service=s.slug;
+      if(s.href) item.href=s.href;
       item.style.backgroundImage="url('img/services/"+s.slug+".jpg')";
       item.innerHTML='<span class="svcMobileNum">'+num+'</span>'+
         '<span class="svcMobileContent">'+

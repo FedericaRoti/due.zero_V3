@@ -90,18 +90,42 @@
       <span class="c1b-foot">due.zero | documentazione tecnica industriale</span>
     </div>
 
-    <div class="hint" id="hint"></div>
+    <div class="hint" id="hint"><span class="hintArrow" aria-hidden="true">↓</span> Scroll</div>
 
-    <!-- badge progetti: visibili solo dopo il preload, spariscono appena si scrolla (non collegati per ora) -->
+    <!-- badge progetti: visibili solo dopo il preload, spariscono appena si scrolla. Ricambi e Traduzioni
+         non hanno ancora una pagina/link reale: span non cliccabile, stesso trattamento già usato per
+         il sottomenu Servizi e per Privacy/Cookie in footer -->
     <div class="heroBadges" id="heroBadges">
-      <a class="heroBadge heroBadgeGhost" href="https://www.duezero.eu/DueZeroProject/Default.aspx" target="_blank" rel="noopener noreferrer"><img src="img/dzp-logo.svg" alt="2.0 Project"></a>
-      <a class="heroBadge" href="https://hyperparts.it/" target="_blank" rel="noopener noreferrer"><img src="img/hyp-logo.svg" alt="Hyperparts"></a>
+      <a class="heroBadge" href="https://hyperparts.it/" target="_blank" rel="noopener noreferrer">
+        <span class="heroBadgeTip">Hyper.Parts</span><img src="img/hyperparts.svg" alt="Hyper.Parts">
+      </a>
+      <a class="heroBadge" href="https://hyperlab.azurewebsites.net/Identity/Account/Login" target="_blank" rel="noopener noreferrer">
+        <span class="heroBadgeTip">Hyper.Lab</span><img src="img/hyperlab.svg" alt="Hyper.Lab">
+      </a>
+      <a class="heroBadge" href="#doc40Start" id="badgeDoc40">
+        <span class="heroBadgeTip">Documenti 4.0</span><img src="img/doc40.svg" alt="Documenti 4.0">
+      </a>
+      <a class="heroBadge" href="https://www.duezero.eu/DueZeroProject/Default.aspx" target="_blank" rel="noopener noreferrer">
+        <span class="heroBadgeTip">2.0 Project</span><img src="img/project20.svg" alt="2.0 Project">
+      </a>
+      <a class="heroBadge" href="manualistica-tecnica.html">
+        <span class="heroBadgeTip">Manualistica</span><img src="img/manualistica.svg" alt="Manualistica">
+      </a>
+      <span class="heroBadge heroBadgePending">
+        <span class="heroBadgeTip">Ricambi</span><img src="img/ricambi.svg" alt="Ricambi">
+      </span>
+      <span class="heroBadge heroBadgePending">
+        <span class="heroBadgeTip">Traduzioni</span><img src="img/traduzioni.svg" alt="Traduzioni">
+      </span>
     </div>
   </div>
 </div>
 
 <!-- ================= CAPITOLO 2 — ECOSISTEMA (asset reali) ================= -->
 <div class="scene2" id="scene2">
+  <!-- titolo "Documentation 4.0" completo (non a metà rivelazione) qui: s~.978 su tutta la timeline
+       di questa scena (.902 titolo pieno, .959 sottotitolo pieno, .986 inizia il ritiro) -->
+  <div class="chapterAnchor" id="doc40Start" aria-hidden="true"></div>
   <div class="sticky2" id="sticky2">
     <!-- Ponte Cap.1 -> Cap.2: il perimetro della card finale si espande e diventa il campo nero -->
     <div class="ecoBridge" id="ecoBridge" aria-hidden="true"></div>
@@ -148,6 +172,8 @@
       <span class="dc-accent" id="dcAccent" aria-hidden="true"></span>
       <p class="dc-sub" id="dcSub">Ogni macchina resta visibile.</p>
       <p class="dc-text"><i id="dcPara">Matricole, stato e documentazione aggiornata. In un'unica mappa.</i></p>
+      <!-- sfondo chiaro qui (carta), non nero come nell'hero: serve la variante scura del richiamo -->
+      <div class="hint hintDark" id="dcHint" aria-hidden="true"><span class="hintArrow">↓</span> Scroll</div>
     </div>
   </div>
 </div>
@@ -207,7 +233,7 @@
         <span class="ch3BannerText" id="ch3BannerText">Capitolo 03 | Servizi</span>
       </div>
       <div class="svc-open" id="svcOpen">
-        <h2 class="svc-open-h" id="svcOpenH">Otto servizi.<br>Un processo continuo.</h2>
+        <h2 class="svc-open-h" id="svcOpenH">Sei servizi.<br>Un processo continuo.</h2>
         <p class="svc-open-sub" id="svcOpenSub">Ogni competenza entra nello stesso processo.</p>
       </div>
     </div>
@@ -230,7 +256,7 @@
           <p class="svcHeadTitle">Specialisti<br>dell'industria</p>
         </div>
         <div class="svcProgressWrap">
-          <span class="svcCounter" id="svcCounter">1 / 08</span>
+          <span class="svcCounter" id="svcCounter">1 / 06</span>
           <div class="svcProgressTrack"><div class="svcProgressBar" id="svcProgressBar"></div></div>
         </div>
       </div>
@@ -402,13 +428,11 @@
     <div class="submenu">
       <!-- non ancora cliccabili: ogni servizio avrà una pagina dedicata non ancora creata (stesso
            trattamento già usato per Privacy/Cookie in footer: span statico, non un link a vuoto) -->
-      <span class="submenuStatic">Manualistica Tecnica</span>
-      <span class="submenuStatic">Technical Compliance</span>
-      <span class="submenuStatic">Traduzioni Multilingue</span>
+      <a href="manualistica-tecnica.html">Manualistica Tecnica</a>
       <span class="submenuStatic">Cataloghi Ricambi</span>
-      <span class="submenuStatic">Soluzioni Creative</span>
-      <span class="submenuStatic">Foto &amp; Video Training</span>
-      <span class="submenuStatic">Modellazione &amp; Rendering</span>
+      <span class="submenuStatic">Traduzioni Multilingue</span>
+      <span class="submenuStatic">Technical Compliance</span>
+      <span class="submenuStatic">Marketing Industriale</span>
       <span class="submenuStatic">Soluzioni Software 2.0</span>
     </div>
   </div>

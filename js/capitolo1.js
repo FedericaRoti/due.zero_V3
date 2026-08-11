@@ -8,7 +8,8 @@
         preloader=$('preloader'),heroBadges=$('heroBadges');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if(window.Lenis && !reduce){ const lenis=new Lenis({lerp:0.09,smoothWheel:true}); (function raf(t){lenis.raf(t);requestAnimationFrame(raf);})(); }
+  let lenisInstance=null;
+  if(window.Lenis && !reduce){ lenisInstance=new Lenis({lerp:0.09,smoothWheel:true}); (function raf(t){lenisInstance.raf(t);requestAnimationFrame(raf);})(); }
 
   // ---- preloader: schermata nera/rossa coerente col resto del sito, sparisce quando font+pagina sono pronti.
   // Tempo minimo di visione (400ms) per evitare un flash su connessioni veloci. I due badge hero diventano
@@ -331,6 +332,44 @@
       if(isMobileMenu()){ e.preventDefault(); toggleAccordion(); }
       else closeOverlay();   // desktop: comportamento invariato, naviga e chiude il menu
     });
+  });
+
+  // effetto "dock" sui badge hero (stesso principio del dock di macOS): passando il mouse, l'icona sotto
+  // il cursore si ingrandisce di più, le vicine di meno, in una curva che cala con la distanza — così lo
+  // zoom "cade" da un'icona all'altra come un'unica onda continua invece di ogni icona che salta per conto
+  // suo. Già pronto per quando le icone diventeranno 5: la curva si applica a quante ce ne sono, non c'è
+  // un numero scritto a mano
+  if(heroBadges && !reduce){
+    // lo scale va sull'<img>, non su .heroBadge: la nuvoletta-tooltip è una sorella dell'immagine
+    // (non sua figlia), quindi non si ingrandisce/deforma insieme all'icona sotto al mouse
+    const badgeImgs=[...heroBadges.querySelectorAll('.heroBadge img')];
+    const SIGMA=70;   // ampiezza dell'onda in px: quanto lontano si sente ancora l'ingrandimento del vicino
+    const PEAK=.55;   // scale extra al centro (1 + PEAK = 1.55x sotto al cursore)
+    heroBadges.addEventListener('mousemove',e=>{
+      badgeImgs.forEach(img=>{
+        const r=img.getBoundingClientRect(), cx=r.left+r.width/2;
+        const d=e.clientX-cx;
+        const s=1+PEAK*Math.exp(-(d*d)/(2*SIGMA*SIGMA));
+        img.style.transform='scale('+s.toFixed(3)+')';
+      });
+    });
+    heroBadges.addEventListener('mouseleave',()=>{ badgeImgs.forEach(img=>{ img.style.transform='scale(1)'; }); });
+  }
+
+  // "Documenti 4.0" salta subito al punto giusto, senza scorrere visibilmente attraverso tutto il
+  // Capitolo 1 e mezzo Ecosistema per arrivarci (la destinazione è molto lontana dall'hero) — stesso
+  // link, ma con Lenis in modalità "immediate" invece del suo scroll animato di default.
+  // Lo scrollY salta in un frame, ma sP (qui) e sP2 (capitoli.js) sono smussati: senza risincronizzarli
+  // subito, la scena "insegue" per 1-2s e si rivede tutta la coreografia in mezzo anche se lo scroll
+  // è già arrivato — quindi dopo il salto forzo anche sP al valore reale e sincronizzo scene2
+  const badgeDoc40=$('badgeDoc40');
+  if(badgeDoc40) badgeDoc40.addEventListener('click',e=>{
+    e.preventDefault();
+    const target=document.getElementById('doc40Start');
+    if(lenisInstance) lenisInstance.scrollTo(target,{immediate:true});
+    else if(target) target.scrollIntoView();
+    readScroll(); sP=pRaw; render(sP);
+    if(window.__snapScene2Instant) window.__snapScene2Instant();
   });
 
   if(!reduce){
