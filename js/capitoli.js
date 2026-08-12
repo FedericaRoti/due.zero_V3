@@ -4,8 +4,8 @@
   const bgHyper=$('bgHyper'), bgPaper2=$('bgPaper2'),
         ecoBridge=$('ecoBridge'), ch2Banner=$('ch2Banner'), ch2BannerBar=$('ch2BannerBar'), ch2BannerText=$('ch2BannerText'),
         ecoOpenH=$('ecoOpenH'), ecoOpenSub=$('ecoOpenSub'),
-        ecoProjectImg=$('ecoProjectImg'), ecoProjectVeil=$('ecoProjectVeil'), pjGroup=$('pjGroup'), pjTitle=$('pjTitle'), pjSub=$('pjSub'), pjMono=$('pjMono'), pjCta=$('pjCta'),
-        hpTitle=$('hpTitle'), hpSub=$('hpSub'), hpMono=$('hpMono'), hpCta=$('hpCta'), ecoHyperImg=$('ecoHyperImg'),
+        ecoProjectImg=$('ecoProjectImg'), ecoProjectVeil=$('ecoProjectVeil'), pjGroup=$('pjGroup'), pjTitle=$('pjTitle'), pjSub=$('pjSub'), pjDesc=$('pjDesc'), pjCta=$('pjCta'),
+        hpTitle=$('hpTitle'), hpSub=$('hpSub'), hpDesc=$('hpDesc'), hpCta=$('hpCta'), ecoHyperImg=$('ecoHyperImg'),
         dcTitle=$('dcTitle'), dcAccent=$('dcAccent'), dcSub=$('dcSub'), dcPara=$('dcPara'), dcHint=$('dcHint');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), sub=(p,a,b)=>clamp((p-a)/(b-a),0,1), smooth=t=>t*t*(3-2*t), lerp=(a,b,t)=>a+(b-a)*t;
@@ -28,14 +28,20 @@
       const brR=Math.round(lerp(237,10,bridgeBlacken)), brG=Math.round(lerp(237,10,bridgeBlacken)), brB=Math.round(lerp(234,10,bridgeBlacken));
       ecoBridge.style.background='rgb('+brR+','+brG+','+brB+')';
 
-      // ---- Apertura Ecosistema [.144,.234]: banner di capitolo (linea -> barra piena -> testo) -> headline in blocco unico -> pausa breve -> secondario ----
+      // ---- Apertura Ecosistema [.144,.270]: banner di capitolo (linea -> barra piena -> testo) -> titolo
+      // da solo, centrato -> hold -> il titolo sparisce del tutto -> il sottotitolo entra da solo nello
+      // stesso spazio, a sua volta protagonista (mai in scena insieme: non devono mai confondersi) ----
       const lineGrow     = smooth(sub(s,.144,.156));  // linea rossa sottile che si estende in larghezza
       const barFill      = smooth(sub(s,.153,.168));  // la linea si ispessisce in barra piena (stessa logica del Capitolo 1)
       const bannerTextIn = smooth(sub(s,.164,.180));  // testo mono, entra a barra quasi completata
       const headIn  = smooth(sub(s,.160,.216));   // scala + opacity soltanto: MAI split text, MAI translateY dal basso, MAI stagger
-      const subIn   = smooth(sub(s,.222,.234));   // entra solo dopo la breve pausa dalla headline
-
-      // ---- pausa di lettura [.234,.270]: nessuna variabile qui, la scena resta ferma ----
+      // hold da solo [.216,.230]: nessuna variabile, il titolo resta fermo e leggibile
+      const titleOut = smooth(sub(s,.230,.240));  // il titolo esce di scena (solo opacity, nessuno shrink):
+                                                    // deve sparire prima che il sottotitolo prenda il suo posto
+      const subIn    = smooth(sub(s,.240,.256));  // il sottotitolo entra da solo (max-height + opacity) nello spazio liberato
+      // hold finale [.256,.270]: molto più lungo del semplice ingresso — il sottotitolo ha due frasi,
+      // deve restare leggibile fermo prima che inizi il ritiro verso 2.0 Project (altrimenti si legge
+      // solo la prima frase e la scena successiva sembra già sovrapporsi)
 
       // ---- Ponte verso 2.0 PROJECT [.270,.36]: la headline si ritrae con crop/maschera, emerge l'immagine ----
       const retreat = smooth(sub(s,.270,.36));    // gesto dominante: clip-path, non un fade
@@ -44,10 +50,11 @@
       ch2BannerBar.style.height=lerp(3,100,barFill).toFixed(1)+'%';
       ch2BannerText.style.opacity=bannerTextIn.toFixed(3);
       ch2BannerText.style.transform='translateY('+((1-bannerTextIn)*8).toFixed(1)+'px)';
-      ecoOpenH.style.opacity=(headIn*(1-retreat)).toFixed(3);
+      ecoOpenH.style.opacity=(headIn*(1-titleOut)*(1-retreat)).toFixed(3);
       ecoOpenH.style.transform='scale('+lerp(1.06,1,headIn).toFixed(3)+')';
       ecoOpenH.style.clipPath='inset(0 '+(retreat*100).toFixed(1)+'% 0 0)';
       ecoOpenSub.style.opacity=(subIn*(1-retreat)).toFixed(3);
+      ecoOpenSub.style.maxHeight=lerp(0,260,subIn).toFixed(0)+'px';
 
       const imgFadeIn = smooth(sub(s,.270,.300)); // opacity solo come supporto rapido, il resto è leggibile senza
       const cropOut   = retreat;                  // stessa progressione della headline: il crop del testo genera l'entrata dell'immagine
@@ -58,11 +65,11 @@
       const subInPj  = smooth(sub(s,.358,.380));   // sottotitolo, leggera coda sul titolo
       // hold leggibile [.380,.402]: nessuna variabile qui, il gruppo resta fermo e leggibile
       // B. riallineamento [.402,.432]: il gruppo titolo+sottotitolo sale, un solo gesto continuo legato allo scroll;
-      //    la scritta "2.0 PROJECT" aumenta di dimensione in vista della seconda parte (riga mono + CTA)
+      //    la scritta "2.0 PROJECT" aumenta di dimensione in vista della seconda parte (descrizione + CTA)
       const regroup   = smooth(sub(s,.402,.432));
-      const titleGrow = smooth(sub(s,.402,.434));  // risolto esattamente quando entra la riga mono
-      // C. informazione [.434,.452] e CTA [.462,.482], solo dopo il riallineamento, con pausa breve fra le due
-      const monoIn   = smooth(sub(s,.434,.452));
+      const titleGrow = smooth(sub(s,.402,.434));  // risolto esattamente quando entra la descrizione
+      // C. descrizione [.434,.452] e CTA [.462,.482], solo dopo il riallineamento, con pausa breve fra le due
+      const descIn   = smooth(sub(s,.434,.452));
       const ctaIn    = smooth(sub(s,.462,.482));
       // hold reale della CTA [.482,.527] (~0.045): frame Project stabile e cliccabile, poi uscita di scena
       const projectOut = smooth(sub(s,.527,.541));
@@ -81,8 +88,8 @@
       pjTitle.style.opacity=titleIn.toFixed(3);
       pjTitle.style.transform='translateY('+((1-titleIn)*18).toFixed(1)+'px) scale('+lerp(1,1.2,titleGrow).toFixed(3)+')';
       pjSub.style.opacity=subInPj.toFixed(3);
-      pjMono.style.opacity=(monoIn*(1-projectOut)).toFixed(3);
-      pjMono.style.transform='translateY('+((1-monoIn)*10).toFixed(1)+'px)';
+      pjDesc.style.opacity=(descIn*(1-projectOut)).toFixed(3);
+      pjDesc.style.transform='translateY('+((1-descIn)*10).toFixed(1)+'px)';
       pjCta.style.opacity=(ctaIn*(1-projectOut)).toFixed(3);
       pjCta.style.pointerEvents=(ctaIn>.6 && projectOut<.5)?'auto':'none';
 
@@ -96,12 +103,12 @@
       const hpImgFadeIn = smooth(sub(s,.547,.581));  // crossfade fra le due immagini, sovrapposto al gesto di pjImgExit
       const hpZoomOut   = smooth(sub(s,.541,.635));  // crop ravvicinato e sfocato sul monitor -> arretra fino a tavolo/persone/schermo
 
-      // ---- HYPERPARTS: titolo dominante (parola intera via maschera laterale) -> hold -> si riduce per lasciare spazio -> sottotitolo -> riga mono -> pausa -> CTA -> hold reale ----
+      // ---- HYPERPARTS: titolo dominante (parola intera via maschera laterale) -> hold -> si riduce per lasciare spazio -> sottotitolo -> descrizione -> pausa -> CTA -> hold reale ----
       const hpTitleWipe  = smooth(sub(s,.610,.660));
       // hold leggibile [.660,.685]: nessuna variabile qui, il titolo resta fermo e dominante
       const hpTitleShift = smooth(sub(s,.685,.713));  // il titolo si riduce leggermente e lascia spazio al sottotitolo
       const hpSubIn      = smooth(sub(s,.715,.737));
-      const hpMonoIn     = smooth(sub(s,.743,.761));
+      const hpDescIn     = smooth(sub(s,.743,.761));
       // pausa breve [.761,.773]
       const hpCtaIn      = smooth(sub(s,.773,.793));
       // hold reale della CTA [.793,.824]: CTA e titolo restano fermi e cliccabili, Documentation non parte prima
@@ -113,8 +120,8 @@
       hpTitle.style.transform='translateY(-'+lerp(0,7,hpTitleShift).toFixed(2)+'vh) scale('+(lerp(1.05,1,hpTitleWipe)*lerp(1,.85,hpTitleShift)).toFixed(3)+')';
       hpSub.style.opacity=(hpSubIn*(1-hpOut)).toFixed(3);
       hpSub.style.transform='translateX('+((1-hpSubIn)*-10).toFixed(1)+'px)';
-      hpMono.style.opacity=(hpMonoIn*(1-hpOut)).toFixed(3);
-      hpMono.style.transform='translateY('+((1-hpMonoIn)*10).toFixed(1)+'px)';
+      hpDesc.style.opacity=(hpDescIn*(1-hpOut)).toFixed(3);
+      hpDesc.style.transform='translateY('+((1-hpDescIn)*10).toFixed(1)+'px)';
       hpCta.style.opacity=(hpCtaIn*(1-hpOut)).toFixed(3);
       hpCta.style.pointerEvents=(hpCtaIn>.6 && hpOut<.5)?'auto':'none';
 

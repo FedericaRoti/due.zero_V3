@@ -252,8 +252,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .c1b-text .mobileBreak{display:none}
 
 /* ================= CAPITOLO 2 — ECOSISTEMA (asset reali, no SVG generico) ================= */
-.scene2{position:relative;height:860vh;background:var(--black)}
-.scene2 .chapterAnchor{top:743.28vh}
+/* 940vh, non più 860: la sola apertura (titolo da solo -> sparisce -> sottotitolo da solo) aveva
+   pochissimo spazio assoluto di scroll per essere letta, anche dando le fosse quasi tutto il budget
+   relativo disponibile — 80vh in più qui allungano l'intera timeline del capitolo in proporzione,
+   senza toccare nessuna soglia sub(s,...) esistente */
+.scene2{position:relative;height:940vh;background:var(--black)}
+.scene2 .chapterAnchor{top:821.52vh}
 .sticky2{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black);perspective:1200px}
 
 /* fondi Hyperparts/Documentation (invariati, gestiti da render2 come prima) */
@@ -277,9 +281,21 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .ch2BannerBar{position:absolute;left:0;top:50%;width:0;height:3px;background:var(--red);transform:translateY(-50%);will-change:width,height;
   clip-path:polygon(100% 0,100% calc(100% - 34px),calc(100% - 34px) 100%,0 100%,0 0)}
 .ch2BannerText{position:relative;z-index:1;color:#fff;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:clamp(18px,2.1vw,30px);white-space:nowrap;opacity:0;will-change:transform,opacity}
-.eco-open{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 6vw}
-.eco-open-h{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(64px,10.5vw,180px);line-height:.88;letter-spacing:-.015em;opacity:0;transform:scale(1.06);will-change:transform,opacity,clip-path}
-.eco-open-sub{margin-top:30px;color:rgba(237,237,234,.8);font-family:var(--mono);font-size:clamp(14px,1.35vw,18px);letter-spacing:.06em;max-width:520px;opacity:0}
+/* centrato per davvero (nessun padding-top artificiale: sposterebbe il centro visivo verso il basso,
+   non è accettabile — il banner resta dov'è in tutti i capitoli, non si tocca). La clearance dal
+   banner arriva invece dalla dimensione del titolo: un tetto più basso del clamp fa sì che il blocco
+   di 4 righe, centrato nell'intero viewport, non lo raggiunga mai */
+/* 24px fissi (non proporzionali al banner): a schermi larghi il font del titolo, pur ridotto, lascia
+   solo pochi px di margine dal banner — questo è un cuscinetto di sicurezza minimo, non un rientro
+   proporzionale come prima. Sugli schermi normali è impercettibile (il titolo è comunque più corto) */
+.eco-open{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:24px 6vw 0}
+.eco-open-h{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(56px,8.6vw,142px);line-height:.86;letter-spacing:-.015em;opacity:0;transform:scale(1.06);will-change:transform,opacity,clip-path}
+/* max-height parte da 0 (animato da JS via titleShift/subIn): il sottotitolo non riserva spazio finché
+   il titolo non si è ristretto per fargli posto, altrimenti resterebbe comunque nel flusso anche a
+   opacity:0 e rialzerebbe il blocco centrato fin sotto al banner */
+/* font più grande del solito eco-open-sub: qui non condivide più la scena col titolo, è lui il protagonista del momento */
+/* max-width molto più largo di prima (600px): meno righe, frasi più lunghe, come richiesto */
+.eco-open-sub{margin-top:30px;color:rgba(237,237,234,.88);font-family:var(--mono);font-size:clamp(17px,1.7vw,23px);line-height:1.55;letter-spacing:.04em;max-width:900px;opacity:0;max-height:0;overflow:hidden}
 
 /* ---- label comune (mono, piccola) — posizione/colore per scena ---- */
 .eco-lbl{position:absolute;z-index:4;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:0;pointer-events:none}
@@ -289,18 +305,22 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .ecoProjectImg{position:absolute;inset:-4vh -4vw;z-index:1;
   background-image:url('../img/eco_project_bg.jpg');background-repeat:no-repeat;transform-origin:center;
   opacity:0;pointer-events:none;will-change:transform,filter,background-size,background-position}
-/* stesso velo scuro di .ecoHyperImg: qui il testo è già bianco, stesso schema di leggibilità */
+/* stesso velo scuro di .ecoHyperImg: qui il testo è già bianco, stesso schema di leggibilità.
+   Oscuramento concentrato nella fascia bassa (dove vive il testo, ora più alta per la descrizione):
+   il resto della foto, sopra, resta quasi come prima — non è un velo uniforme più scuro */
 .ecoProjectVeil{position:absolute;inset:-4vh -4vw;z-index:2;
-  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.55) 62%,rgba(7,12,20,.78) 100%);
+  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.35) 45%,rgba(7,12,20,.62) 65%,rgba(7,12,20,.88) 100%);
   opacity:0;pointer-events:none;will-change:opacity}
 
-/* ---- 2.0 PROJECT: titolo protagonista, sottotitolo editoriale, riga di supporto mono, CTA reale ---- */
-#sceneProject{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:620px}
+/* ---- 2.0 PROJECT: titolo protagonista, sottotitolo editoriale, descrizione estesa, CTA reale ---- */
+#sceneProject{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:700px}
 /* gruppo "2.0 PROJECT + sottotitolo": si riallinea (sale) dopo il hold, un solo gesto continuo legato allo scroll */
 .pj-group{display:flex;flex-direction:column;gap:14px;transform-origin:left bottom;will-change:transform}
 .pj-title{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(40px,6.8vw,104px);line-height:.92;letter-spacing:-.01em;opacity:0;transform:translateY(18px);transform-origin:left center;pointer-events:none;will-change:transform,opacity}
 .pj-sub{color:#EDEDEA;font-family:var(--geo);font-weight:600;text-transform:uppercase;font-size:clamp(17px,2.1vw,28px);line-height:1.24;letter-spacing:-.005em;max-width:480px;opacity:0;pointer-events:none}
-.pj-mono{color:rgba(237,237,234,.62);font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:0;pointer-events:none}
+/* descrizione: testo corrente leggibile, non più il tag mono in maiuscolo di prima */
+/* text-shadow: leggibilità garantita indipendentemente dalla foto sotto, senza dover scurire il velo oltre la fascia bassa */
+.pj-desc{color:rgba(237,237,234,.92);text-shadow:0 1px 4px rgba(0,0,0,.65);font-family:var(--mono);font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.01em;opacity:0;pointer-events:none}
 .pj-cta{display:inline-flex;align-items:center;gap:10px;margin-top:4px;padding:11px 20px;border:1px solid rgba(237,237,234,.42);
   color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
   opacity:0;transform:translateX(0);pointer-events:none;transition:transform .3s ease,background-color .3s ease,color .3s ease,border-color .3s ease}
@@ -309,15 +329,16 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .pj-cta:hover .plus{color:var(--red)}
 
 /* ---- HYPERPARTS: campo fotografico immersivo (tavolo di lavoro reale), titolo dominante con maschera laterale ---- */
+/* stesso principio del velo di 2.0 Project: oscuramento concentrato in basso, non un velo uniforme */
 .ecoHyperImg{position:absolute;inset:-4vh -4vw;z-index:1;
-  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.55) 62%,rgba(7,12,20,.78) 100%),url('../img/eco_hyperparts_bg.jpg');
+  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.35) 45%,rgba(7,12,20,.62) 65%,rgba(7,12,20,.88) 100%),url('../img/eco_hyperparts_bg.jpg');
   background-repeat:no-repeat;background-position:center,center 30%;background-size:cover,cover;
   transform-origin:50% 30%;opacity:0;pointer-events:none;will-change:transform,filter,clip-path}
 
-#sceneHyper{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:660px}
+#sceneHyper{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:760px}
 .hp-title{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(48px,8vw,132px);line-height:.90;letter-spacing:-.01em;opacity:0;clip-path:inset(0 100% 0 0);transform-origin:left center;pointer-events:none;will-change:transform,opacity,clip-path}
 .hp-sub{color:#EDEDEA;font-family:var(--geo);font-weight:600;text-transform:uppercase;font-size:clamp(17px,2.1vw,28px);line-height:1.24;letter-spacing:-.005em;max-width:520px;opacity:0;pointer-events:none}
-.hp-mono{color:rgba(237,237,234,.62);font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:0;pointer-events:none}
+.hp-desc{color:rgba(237,237,234,.92);text-shadow:0 1px 4px rgba(0,0,0,.65);font-family:var(--mono);font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.01em;opacity:0;pointer-events:none}
 .hp-cta{display:inline-flex;align-items:center;gap:10px;margin-top:4px;padding:11px 20px;border:1px solid rgba(255,211,0,.4);
   color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
   opacity:0;transform:translateY(0);pointer-events:none;transition:transform .3s ease,background-color .3s ease,color .3s ease,border-color .3s ease}
@@ -332,7 +353,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .dc-sub{color:var(--ink);font-family:var(--geo);font-weight:600;text-transform:uppercase;font-size:clamp(17px,2.1vw,28px);line-height:1.24;letter-spacing:-.005em;max-width:640px;opacity:0}
 /* riga mono: stessa grammatica editoriale delle altre righe del prototipo — wrapper overflow:hidden + riga intera
    che entra/esce in verticale (translateY), mai parola per parola, mai rotazioni o scatti */
-.dc-text{margin-top:18px;max-width:480px;overflow:hidden}
+.dc-text{margin-top:18px;max-width:680px;overflow:hidden}
 .dc-text i{display:block;font-style:normal;color:rgba(20,20,18,.62);font-family:var(--mono);font-size:clamp(13px,1.2vw,15px);line-height:1.6;transform:translateY(100%);will-change:transform}
 
 /* Documentation 4.0 È la Machine Map, e la Machine Map è anche la soglia del Capitolo 03 — UN SOLO sticky, UN SOLO
@@ -883,18 +904,18 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .ch2BannerText{opacity:1;transform:none}
   .eco-open{position:static;color:var(--ink)}
   .eco-open-h{opacity:1;transform:none;clip-path:none;color:var(--ink)}
-  .eco-open-sub{opacity:1;color:rgba(20,20,18,.65)}
+  .eco-open-sub{opacity:1;max-height:none;color:rgba(20,20,18,.65)}
   .eco-lbl{
     position:static;display:block;opacity:1;transform:none;filter:none;clip-path:none;text-align:left;max-width:640px}
   #sceneProject{position:static;display:flex;flex-direction:column;align-items:flex-start;gap:14px;color:var(--ink)}
   .pj-group{transform:none}
-  .pj-title,.pj-sub,.pj-mono{opacity:1;transform:none;color:var(--ink);pointer-events:auto}
-  .pj-mono{color:rgba(20,20,18,.6)}
+  .pj-title,.pj-sub,.pj-desc{opacity:1;transform:none;color:var(--ink);pointer-events:auto}
+  .pj-desc{color:rgba(20,20,18,.6)}
   .pj-cta{opacity:1;pointer-events:auto;color:var(--ink);border-color:rgba(20,20,18,.35)}
   .pj-cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
   #sceneHyper{position:static;display:flex;flex-direction:column;align-items:flex-start;gap:14px;background:#070c14;color:#EDEDEA;padding:32px;max-width:none}
-  .hp-title,.hp-sub,.hp-mono{opacity:1;transform:none;clip-path:none;color:#EDEDEA;pointer-events:auto}
-  .hp-mono{color:rgba(237,237,234,.6)}
+  .hp-title,.hp-sub,.hp-desc{opacity:1;transform:none;clip-path:none;color:#EDEDEA;pointer-events:auto}
+  .hp-desc{color:rgba(237,237,234,.6)}
   .hp-cta{opacity:1;pointer-events:auto}
   #sceneDoc{position:static;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:10px;color:var(--ink);pointer-events:auto;padding:0}
   .dc-title,.dc-sub,.dc-text,.dc-accent{opacity:1;transform:none;clip-path:none}
