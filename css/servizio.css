@@ -56,9 +56,17 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
   .overlay .submenu a,.overlay .submenu .submenuStatic{font-size:clamp(15px,3.6vw,22px)}
 }
 
-/* ================= HERO — carta calda, stesso trattamento di parliamone.css ================= */
+/* ================= HERO — carta calda, stesso trattamento di parliamone.css =================
+   Due colonne: testo (svcHeroText) e immagine di copertina fissa (svcHeroVisual) — l'ancora
+   visiva "in alto a destra" richiesta per la testata dell'articolo. */
 .svcHero{position:relative;overflow:hidden;background:var(--paper);min-height:62vh;
-  display:flex;flex-direction:column;justify-content:center;padding:15vh 6vw 8vh}
+  display:grid;grid-template-columns:1.15fr 1fr;align-items:center;column-gap:5vw;
+  padding:15vh 6vw 8vh}
+.svcHeroText{min-width:0}
+.svcHeroVisual{position:relative;align-self:stretch;overflow:hidden;min-height:38vh;
+  opacity:0;transform:scale(1.04);transition:opacity 1s ease .3s,transform 1.2s cubic-bezier(.4,0,.2,1) .3s}
+.svcHeroVisual img{width:100%;height:100%;object-fit:cover;display:block}
+.svcHero.revealed .svcHeroVisual{opacity:1;transform:scale(1)}
 .svcHeroMark{position:absolute;left:6vw;top:9vh;width:52px;height:52px;background:var(--red);
   clip-path:polygon(100% 0,100% 100%,0 100%,100% 0)}
 .svcBack{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;
@@ -79,12 +87,28 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
 .svcHero.revealed h1{clip-path:inset(0 0% 0 0)}
 .svcHero.revealed .svcAccent,.svcHero.revealed .svcLead{opacity:1;transform:translateY(0)}
 
+/* ================= LAYOUT CORPO — colonna principale + sidebar =================
+   svcMain (svcIntro+svcBody) a sinistra, svcSidebar a destra: la "colonna di destra" con la
+   gallery random richiesta, sotto l'ancora visiva della testata. Su mobile collassa a una riga
+   (vedi media query) — niente sticky per ora, mantiene la sezione più semplice. */
+.svcLayout{display:grid;grid-template-columns:minmax(0,1fr) 300px;column-gap:5vw;
+  max-width:1400px;margin:0 auto;padding:0 6vw}
+.svcMain{min-width:0}
+
+/* padding-bottom simmetrico al top: quando il corpo testo è più corto della sidebar (pagine con
+   meno paragrafi), la sidebar diventa la colonna più alta della grid e l'ultima immagine finiva
+   incollata al fondo, senza il margine "sollevato" delle pagine con testo più lungo */
+.svcSidebar{display:flex;flex-direction:column;gap:3vh;padding-top:8vh;padding-bottom:8vh}
+.svcSidebarImg{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:rgba(20,20,18,.05);
+  opacity:0;transition:opacity .6s ease}
+.svcSidebarImg.loaded{opacity:1}
+
 /* ================= CORPO — testo su carta, stessa maschera verticale del reveal contatti ================= */
-.svcSection{position:relative;background:var(--paper);padding:8vh 6vw;
+.svcSection{position:relative;background:var(--paper);padding:8vh 0;
   clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.4,0,.2,1)}
 .svcSection.revealed{clip-path:inset(0 0 0% 0)}
 .svcSection+.svcSection{padding-top:2vh}
-.svcCol{max-width:680px;margin:0 auto}
+.svcCol{max-width:680px}
 .svcCol p{font-family:var(--mono);font-size:clamp(14px,1.05vw,16px);line-height:1.75;
   color:rgba(20,20,18,.7);margin-bottom:22px}
 .svcCol p:last-child{margin-bottom:0}
@@ -110,6 +134,9 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
 .svcList li{font-family:var(--mono);font-size:clamp(14px,1.05vw,16px);line-height:1.6;
   color:rgba(20,20,18,.7);padding-left:22px;position:relative}
 .svcList li::before{content:'';position:absolute;left:0;top:.6em;width:8px;height:2px;background:var(--red)}
+/* niente peso 700 nel mono self-hosted (solo 400/500): l'etichetta si distingue col colore, non
+   con un bold sintetico che renderebbe male */
+.svcList li strong{font-weight:500;color:var(--ink)}
 
 /* ================= CHIUSURA — logo + CTA, identico a parliamone.css con l'aggiunta del bottone ================= */
 .svcClose{background:var(--black);padding:11vh 6vw 5vh;text-align:center;
@@ -137,12 +164,17 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
 .footerLegalStatic{cursor:default;color:rgba(237,237,234,.32)}
 
 @media (max-width:820px){
-  .svcHero{padding:12vh 8vw 7vh;min-height:auto}
+  .svcHero{grid-template-columns:1fr;padding:12vh 8vw 7vh;min-height:auto}
+  .svcHeroVisual{order:-1;margin:0 -8vw 4vh;min-height:auto;aspect-ratio:16/10}
   .svcHeroMark{left:8vw;top:7vh;width:40px;height:40px}
   .svcBack{margin-top:6vh}
   .svcHero h1{font-size:clamp(36px,10.5vw,64px)}
   .svcLead{max-width:100%}
-  .svcSection{padding:6vh 8vw}
+  .svcLayout{grid-template-columns:1fr;padding:0 8vw}
+  .svcSidebar{order:-1;flex-direction:row;overflow-x:auto;gap:4vw;padding:4vh 0 1vh;
+    -webkit-overflow-scrolling:touch}
+  .svcSidebarImg{flex:0 0 62vw}
+  .svcSection{padding:6vh 0}
   .svcCol h2{max-width:100%}
   .svcClose{padding:8vh 8vw 4vh}
   .svcLegalFooter{padding:4vh 8vw 28px}
@@ -152,6 +184,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
 @media (prefers-reduced-motion: reduce){
   .svcHero h1{clip-path:inset(0 0% 0 0);transition:none}
   .svcAccent,.svcLead{opacity:1;transform:none;transition:none}
+  .svcHeroVisual{opacity:1;transform:none;transition:none}
   .svcSection{clip-path:inset(0 0 0% 0);transition:none}
+  .svcSidebarImg{opacity:1;transition:none}
   .svcCloseLogo,.svcCloseTag,.svcCta{opacity:1;transform:none;transition:none}
 }

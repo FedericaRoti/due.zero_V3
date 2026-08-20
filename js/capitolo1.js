@@ -1,11 +1,10 @@
 (function(){
   const $=id=>document.getElementById(id);
   const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),menuBtn=$('menuBtn'),
-        glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),lightPanel=$('lightPanel'),
+        glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),
         chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),chSub=$('chSub'),ch1Img=$('ch1Img'),ch1ImgVeil=$('ch1ImgVeil'),
-        chBlock=document.querySelector('.ch-block'),
         overlay=$('overlay'),closeBtn=$('closeBtn'),root=document.documentElement,body=document.body,
-        preloader=$('preloader'),heroBadges=$('heroBadges');
+        preloader=$('preloader'),heroBadges=$('heroBadges'),heroEco=$('heroEco');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let lenisInstance=null;
@@ -51,15 +50,16 @@
     '0 -1px 0 rgba(255,255,255,'+(0.20*k).toFixed(3)+')'].join(',');
   const cardHeadEl=card1b.querySelector('.c1b-head'), cardFootEl=card1b.querySelector('.c1b-foot'), cardTextEl=$('c1bText');
   // testo della card a BLOCCHI-FRASE (non parola per parola): stesso gesto "riga che si rivela" del titolo capitolo.
-  // <br class="mobileBreak">: invisibile su desktop (dove il wrap naturale va bene, righe già equilibrate),
-  // attivo solo sotto 820px — lì ogni frase lunga si spezzava dove capitava in base alla larghezza, non in un
-  // punto scelto (2-3 righe irregolari a frase, sensazione di testo schiacciato). Qui il punto è deciso a mano,
-  // in una pausa grammaticale naturale, così la frase si distende su righe più corte e pulite
-  const phrases=["Da vent'anni affianchiamo l'industria manifatturiera B2B",
-    "nell'intero ciclo di vita della documentazione tecnica<br class=\"mobileBreak\"> e dei contenuti multilingua.",
-    'Metodologia, conformità normativa,<br class="mobileBreak"> un metodo di lavoro unico e software proprietari',
-    'per trasformare i dati di progetto<br class="mobileBreak"> in documenti digitali chiari e innovativi,',
-    'oggi asset strategici integrati nei processi aziendali.'];
+  // ogni voce dell'array è una riga (.ph è display:block, va a capo da sola) — gli a capo qui sono
+  // esattamente quelli indicati dal capo (foto del testo), non affidati al wrap naturale del contenitore
+  const phrases=["Siamo l'ufficio tecnico documentazione che affianca",
+    "l'industria manifatturiera e il settore terziario B2B.",
+    'Con il nostro ecosistema di servizi e il metodo 2.0 Project',
+    "governiamo l'intero ciclo di vita dei contenuti tecnici.",
+    'Metodologia, conformità normativa e software proprietari',
+    'trasformano i dati di progetto in asset strategici digitali,',
+    'garantendo efficienza operativa e rigorosa precisione',
+    'in ogni singola fase della catena industriale.'];
   cardTextEl.innerHTML=phrases.map(t=>'<span class="ph"><i>'+t+'</i></span>').join(' ');
   const phLines=[...cardTextEl.querySelectorAll('.ph i')];
 
@@ -79,19 +79,11 @@
     chBanner.style.width=bw+'px'; chBanner.style.height=bannerH+'px';
   }
 
-  let rect0={left:0,top:0}, l0Off=0, l1Off=0, l2Off=0, subRiseOffset=0;
+  let rect0={left:0,top:0}, l0Off=0, l1Off=0, l2Off=0;
   const DOCK={x:38,y:78,scale:.8};    // font grande, quasi metà viewport
   function measure(){
     heroMove.style.transform='none';
     rect0=heroMove.getBoundingClientRect();
-    // quanto scende il blocco titolo+sottotitolo mentre il titolo è "da solo": l'altezza reale del
-    // sottotitolo (che cambia con la larghezza dello schermo, quante righe fa) più lo spazio (gap)
-    // che lo separa dal titolo — letto dal CSS invece di ripetere il valore a mano, per non doverlo
-    // aggiornare in due posti se un giorno cambia
-    if(chSub && chBlock){
-      const gap=parseFloat(getComputedStyle(chBlock).rowGap)||0;
-      subRiseOffset=chSub.offsetHeight+gap;
-    }
     // allineamento sinistro delle 3 righe una volta docked: ciascuna riga è centrata per conto proprio
     // (margin-inline:auto), quindi va spostata verso sinistra della metà della differenza rispetto alla
     // riga più larga delle tre — la riga più larga stessa non si sposta (offset 0), è lei a definire il
@@ -116,49 +108,54 @@
 
   // ---- UNA sola progressione di scroll + UNO smoothing, per tutte le micro-scene del Capitolo 1 ----
   let pRaw=0, sP=0;
+  // true mentre il mouse è sopra un'icona hero: attenua la label sopra (vedi render) per liberare
+  // spazio alla nuvoletta-tooltip senza doverle tenere lontane (che vanificherebbe il raggruppamento)
+  let badgeHovered=false;
   function readScroll(){
     const denom=Math.max(1,scene.offsetHeight-innerHeight);
     pRaw=clamp((scrollY-scene.offsetTop)/denom,0,1);
   }
 
   function render(s){
-    const reveal    = smooth(sub(s,0,.16));      // chrome intro (triangolo/menu/hint)
-    const dock      = smooth(sub(s,.06,.30));    // titolo -> alto sx (il movimento dura fino alla fine, invariato)
+    const reveal    = smooth(sub(s,0,.119));      // chrome intro (triangolo/menu/hint)
+    const dock      = smooth(sub(s,.0451,.2235));    // titolo -> alto sx (il movimento dura fino alla fine, invariato)
     // riallineamento a sinistra delle righe corte (l0Off/l1Off): due finestre SFASATE, non più identiche.
     // Prima usavano lo stesso identico valore (alignDock): le due righe si muovevano sempre in perfetto
     // sincrono, leggibile come un blocco rigido che scatta, non come due parole che raggiungono ciascuna
     // il proprio bordo sinistro e si fermano. Qui "Technical" parte un po' dopo "DUE.ZERO" e ciascuna ha
     // la sua finestra di 7%, così arrivano in momenti leggermente diversi — moto più organico, non in blocco
-    const alignDock0 = smooth(sub(s,.06,.13));
-    const alignDock1 = smooth(sub(s,.09,.16));
-    const shadowOut = 1-smooth(sub(s,.06,.14));  // ombra/gloss: timeline SEPARATA dal dock, sparisce nel primo terzo del docking
-    const tiltFade  = 1-smooth(sub(s,.05,.22));  // dondolio si stabilizza PRIMA del pannello
-    const panelRise = smooth(sub(s,.20,.42));    // pannello carta sale
-    // hero sparisce PRIMA che la foto di sfondo (ch1Img, imgFadeIn .20-.30) diventi visibile: prima restava
-    // visibile fino al 50% mentre la foto era già piena dal 30%, quindi per un lungo tratto si sovrapponevano
-    // (scritta scura sopra la foto) — ora il fade finisce appena prima che la foto inizi ad apparire
-    const heroOut   = 1-smooth(sub(s,.14,.19));
-    const migrate   = smooth(sub(s,.20,.34));    // ponte rosso: triangolo -> linea, parte con la salita del pannello
-    const fillBar   = smooth(sub(s,.30,.40));    // la linea diventa barra strutturale, finisce entro la salita del pannello
-    const btOp      = smooth(sub(s,.40,.46));    // label "Capitolo 1 — Chi siamo": subito dopo la salita, niente vuoto
-    const chOp      = smooth(sub(s,.42,.46));    // ch-title entra, in parallelo al label
-    const chLine    = i=>smooth(sub(s,.44+i*.025,.52+i*.025));   // l'ultima riga completa l'entrata a ~.60
-    const subIn     = smooth(sub(s,.60,.66));    // sottotitolo: entra appena il titolo ha finito, in blocco unico
-    // le tappe successive sono spostate avanti di .02 rispetto a prima: il sottotitolo consuma parte
-    // della pausa di lettura, e senza questo scarto resterebbe leggibile troppo poco
-    const chapterOut= 1-smooth(sub(s,.74,.86));  // pausa di lettura completa (.66→.74) con titolo e sottotitolo fermi
-    // immagine a destra: stessa tecnica di ecoProjectImg in Ecosistema (crop ravvicinato -> a fuoco).
-    // Entra PRIMA del titolo (in parallelo alla salita del pannello carta, .20-.42), così il titolo
-    // non arriva su una scena vuota; esce in sync con chapterOut, quando la card prende il posto
-    const imgCrop   = smooth(sub(s,.20,.42));
-    const imgFadeIn = smooth(sub(s,.20,.30));
-    const imgExit   = smooth(sub(s,.74,.86));
-    const cardIn    = smooth(sub(s,.72,.88));    // il pannello si apre nella card editoriale, sovrapposto a chapterOut
-    const cardHead  = smooth(sub(s,.78,.84));
-    // 5 frasi invece di 3 (testo più lungo): stagger più stretto (.02 invece di .03) perché
-    // c'è più strada da coprire nella stessa finestra di scroll rimasta — verificato che
-    // anche l'ultima frase completi l'entrata entro s=1.0, con un margine di lettura residuo
-    const phLine    = i=>smooth(sub(s,.84+i*.02,.90+i*.02));
+    const alignDock0 = smooth(sub(s,.0451,.0975));
+    const alignDock1 = smooth(sub(s,.0676,.119));
+    const shadowOut = 1-smooth(sub(s,.0451,.1043));  // ombra/gloss: timeline SEPARATA dal dock, sparisce nel primo terzo del docking
+    const tiltFade  = 1-smooth(sub(s,.0373,.1637));  // dondolio si stabilizza PRIMA del pannello
+    // hero sparisce prima che il titolo del capitolo compaia
+    const heroOut   = 1-smooth(sub(s,.1043,.1416));
+    // triangolo->barra->banner->titolo: compresso a ~metà scroll rispetto a prima (era .149-.4252,
+    // quasi 254vh quasi tutti neri con solo la formetta rossa in un angolo — sensazione di "quadrato
+    // nero" durante lo scroll). Stessa sequenza, stesso easing, solo più veloce da percorrere; tutto
+    // ciò che segue (immagine/sottotitolo/pausa/card) è poi traslato indietro della stessa quantità
+    // risparmiata, cosi il loro ritmo relativo resta identico a prima
+    const migrate   = smooth(sub(s,.149,.2019));    // ponte rosso: triangolo -> linea
+    const fillBar   = smooth(sub(s,.1868,.2245));   // la linea diventa barra strutturale
+    const btOp      = smooth(sub(s,.2245,.2472));   // label "Capitolo 1 — Chi siamo": subito prima del titolo
+    // ---- apertura allineata al Capitolo 2: nero -> titolo da solo (centrato) -> immagine (già alla sua
+    // inquadratura finale, solo dissolvenza) -> sottotitolo (titoletto + elenco, blocco unico) -> pausa
+    // di lettura -> il pannello carta sale (nero->carta) mentre tutto il resto esce -> card editoriale ----
+    const chOp      = smooth(sub(s,.2322,.2472));   // ch-title entra, in parallelo al label
+    const chLine    = i=>smooth(sub(s,.2398+i*.0094,.2702+i*.0094));   // l'ultima riga completa l'entrata a ~.289
+    const imgFadeIn = smooth(sub(s,.3078,.3688));   // immagine: solo dissolvenza, nessun crop/scale
+    const subIn     = smooth(sub(s,.4178,.4668));   // sottotitolo: entra dopo l'immagine, in blocco unico
+    // pausa di lettura reale (.4668-.5448) con titolo+immagine+sottotitolo tutti fermi e leggibili —
+    // poi tutto esce insieme, lasciando il nero naturale della scena dietro alla card editoriale (che ha
+    // già il proprio sfondo carta/bordo/ombra, identici a ecoBridge in apertura di Capitolo 2). Prima
+    // saliva qui un pannello carta a schermo intero: creava un salto netto bianco->nero proprio
+    // all'inizio del Capitolo 2, letto come un "quadrato bianco" che compariva dal nulla — rimosso
+    const chapterOut= 1-smooth(sub(s,.5448,.5938));
+    const imgExit   = smooth(sub(s,.5448,.5938));
+    const cardIn    = smooth(sub(s,.5938,.7128));   // il pannello si apre nella card editoriale
+    const cardHead  = smooth(sub(s,.6388,.6828));
+    // 5 frasi, stagger .015 tra una e l'altra: l'ultima completa l'entrata entro s=1.0 con margine residuo
+    const phLine    = i=>smooth(sub(s,.6828+i*.015,.7278+i*.015));
 
     // il menu non è più legato al progresso di questa scena: resta visibile su tutto il documento
     // (viene acceso una volta sola alla fine del preloader, vedi hidePreloader)
@@ -170,6 +167,7 @@
       const badgesShown=preloadDone && s<.03;
       heroBadges.style.opacity=badgesShown?'1':'0';
       heroBadges.style.pointerEvents=badgesShown?'auto':'none'; // hover/click solo mentre sono davvero visibili
+      if(heroEco) heroEco.style.opacity=badgesShown?(badgeHovered?'0.45':'1'):'0';
     }
 
     // hero: dock + fade sincronizzato col pannello (non più su una timeline separata)
@@ -188,9 +186,6 @@
 
     legend.style.opacity=(Math.min(1,reveal)*heroOut).toFixed(3);
     legend.style.transform='scale('+(1+dock*0.18).toFixed(3)+')';
-
-    lightPanel.style.transform='translateY('+((1-panelRise)*101).toFixed(2)+'%)';
-    body.classList.toggle('light', panelRise>.4);
 
     // triangolo -> linea -> barra: un solo elemento DOM, un solo gesto continuo (clip-path morph)
     // triangolo rettangolo isoscele (45°/45°/90°) sia piccolo che ingrandito: un solo lato condiviso da
@@ -221,38 +216,19 @@
 
     chapter1.style.opacity=(chOp*chapterOut).toFixed(3);
     chLines.forEach((el,i)=>{ const wp=chLine(i); el.style.transform='translateY('+((1-wp)*106).toFixed(1)+'%)'; });
+    // titolo un po' più grande finché è da solo, poi si restringe all'arrivo dell'immagine (sync con
+    // imgFadeIn) fino al rapporto 9/9.5 = .9474 — la stessa dimensione di prima, già verificata. Solo
+    // su desktop: su mobile il titolo ha già una sua size ridotta propria
+    if(chTitleEl) chTitleEl.style.transform=(innerWidth<=820)?'none':'scale('+lerp(1,.9474,imgFadeIn).toFixed(4)+')';
+    // sottotitolo (titoletto + elenco) come blocco unico, stessa maschera+scorrimento delle altre
+    // righe del prototipo — entra tutto insieme, non voce per voce
     if(chSub) chSub.style.transform='translateY('+((1-subIn)*105).toFixed(1)+'%)';
-    // il titolo entra "da solo": il blocco parte spostato in basso esattamente dell'altezza del
-    // sottotitolo (spazio+gap, misurata in measure()), così il titolo occupa la posizione che
-    // avrebbe se il sottotitolo non esistesse. Quando il sottotitolo comincia a rivelarsi (subIn,
-    // stessa finestra) il blocco risale alla sua posizione naturale, liberando lo spazio sotto —
-    // stessa tecnica già usata per il gruppo titolo+sottotitolo di 2.0 Project in Ecosistema
-    if(chBlock) chBlock.style.transform='translateY('+((1-subIn)*subRiseOffset).toFixed(1)+'px)';
-    // il titolo è più grande (1.12x) mentre è da solo, e torna alla sua dimensione normale (1x)
-    // in sync con la risalita del blocco — stessa finestra (subIn), stesso principio di pjTitle in
-    // Ecosistema (che cresce quando resta solo in scena). transform-origin:left bottom in CSS: cresce
-    // verso l'alto restando ancorato a sinistra, non si sposta verso l'immagine né sopra il sottotitolo.
-    // Solo sopra gli 820px: sotto quella soglia il corpo mobile del titolo è già tarato al millimetro
-    // per stare su una riga sola (vedi commenti sul clamp mobile) — un ingrandimento in più lo faceva
-    // uscire dal bordo destro dello schermo, tagliato in silenzio dall'overflow:hidden di .sticky
-    // (nessuna barra di scroll a segnalarlo, verificato: 20px di testo invisibile a 375px)
-    if(chTitleEl) chTitleEl.style.transform=innerWidth>820?('scale('+lerp(1.12,1,subIn).toFixed(3)+')'):'none';
 
+    // immagine: solo dissolvenza, già alla sua inquadratura finale (fissata in CSS) — nessun
+    // crop/scale/blur animato, come richiesto ("a tutta grandezza già")
     if(ch1Img){
       ch1Img.style.opacity=(imgFadeIn*(1-imgExit)).toFixed(3);
       if(ch1ImgVeil) ch1ImgVeil.style.opacity=(imgFadeIn*(1-imgExit)).toFixed(3);
-      ch1Img.style.filter='blur('+(lerp(6,0,imgCrop)+lerp(0,8,imgExit)).toFixed(2)+'px)';
-      // inquadratura scelta guardando la foto, non a caso: parte stretta sul telefono con l'app
-      // "2.0 Project" (23%,63% — anche ponte narrativo verso l'Ecosistema, sezione successiva) e si
-      // allarga fino a un'inquadratura MOLTO meno zoomata (130%->106%) e leggermente più in basso
-      // (56%,40% -> 62%,48%): a 130% si vedeva solo lo schermo CAD, tagliando fuori sia il manuale
-      // cartaceo (in basso a destra nella foto) sia lo schermo con il codice (in alto a destra) —
-      // a 106% e con questo centro entrano entrambi nell'inquadratura, non solo il laptop centrale
-      ch1Img.style.backgroundSize=lerp(300,106,imgCrop).toFixed(0)+'% auto';
-      ch1Img.style.backgroundPosition=lerp(23,62,imgCrop).toFixed(1)+'% '+lerp(63,48,imgCrop).toFixed(1)+'%';
-      // niente più -50% in Y: il box ora copre lo schermo intero via inset (come .ecoHyperImg), non
-      // è più ancorato a top:50% — la Y torna 0, resta solo lo scivolamento orizzontale in ingresso/uscita
-      ch1Img.style.transform='translate('+(lerp(10,0,imgCrop)+lerp(0,16,imgExit)).toFixed(2)+'vw,0) scale('+(lerp(.6,1,imgCrop)*lerp(1,1.25,imgExit)).toFixed(3)+')';
     }
 
     // card editoriale: il pannello carta si apre nella card (scale morph, stesso gesto della palette)
@@ -340,20 +316,34 @@
   // suo. Già pronto per quando le icone diventeranno 5: la curva si applica a quante ce ne sono, non c'è
   // un numero scritto a mano
   if(heroBadges && !reduce){
-    // lo scale va sull'<img>, non su .heroBadge: la nuvoletta-tooltip è una sorella dell'immagine
+    // lo scale va sull'<svg>, non su .heroBadge: la pillola-tooltip è una sorella dell'icona
     // (non sua figlia), quindi non si ingrandisce/deforma insieme all'icona sotto al mouse
-    const badgeImgs=[...heroBadges.querySelectorAll('.heroBadge img')];
-    const SIGMA=70;   // ampiezza dell'onda in px: quanto lontano si sente ancora l'ingrandimento del vicino
-    const PEAK=.55;   // scale extra al centro (1 + PEAK = 1.55x sotto al cursore)
+    const badgeImgs=[...heroBadges.querySelectorAll('.heroBadge svg')];
+    // 1.25 sotto al cursore, ~1.15 sulla vicina immediata, ~1.03 su quella dopo ancora: onda che si
+    // propaga su più icone (non solo la prima vicina) restando comunque sotto la soglia di sovrapposizione
+    const SIGMA=60;   // ampiezza dell'onda in px: quanto lontano si sente ancora l'ingrandimento del vicino
+    const PEAK=.25;   // scale extra al centro (1 + PEAK = 1.25x sotto al cursore)
+    // target = dove dovrebbe stare la scala in base al mouse ORA; current = dove sta davvero, insegue
+    // target con lo stesso smoothing via RAF usato altrove (tilt, scroll) — niente CSS transition:
+    // quella si interrompe e riparte ad ogni mousemove (molto frequenti), da lì la sensazione meccanica
+    const waveTarget=badgeImgs.map(()=>1), waveCurrent=badgeImgs.map(()=>1);
     heroBadges.addEventListener('mousemove',e=>{
-      badgeImgs.forEach(img=>{
+      badgeImgs.forEach((img,i)=>{
         const r=img.getBoundingClientRect(), cx=r.left+r.width/2;
         const d=e.clientX-cx;
-        const s=1+PEAK*Math.exp(-(d*d)/(2*SIGMA*SIGMA));
-        img.style.transform='scale('+s.toFixed(3)+')';
+        waveTarget[i]=1+PEAK*Math.exp(-(d*d)/(2*SIGMA*SIGMA));
       });
     });
-    heroBadges.addEventListener('mouseleave',()=>{ badgeImgs.forEach(img=>{ img.style.transform='scale(1)'; }); });
+    heroBadges.addEventListener('mouseleave',()=>{ waveTarget.fill(1); });
+    heroBadges.addEventListener('mouseenter',()=>{ badgeHovered=true; });
+    heroBadges.addEventListener('mouseleave',()=>{ badgeHovered=false; });
+    (function waveLoop(){
+      badgeImgs.forEach((img,i)=>{
+        waveCurrent[i]+=(waveTarget[i]-waveCurrent[i])*0.18;
+        img.style.transform='scale('+waveCurrent[i].toFixed(3)+')';
+      });
+      requestAnimationFrame(waveLoop);
+    })();
   }
 
   // "Documenti 4.0" salta subito al punto giusto, senza scorrere visibilmente attraverso tutto il

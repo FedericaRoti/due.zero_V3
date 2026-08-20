@@ -4,8 +4,8 @@
   const bgHyper=$('bgHyper'), bgPaper2=$('bgPaper2'),
         ecoBridge=$('ecoBridge'), ch2Banner=$('ch2Banner'), ch2BannerBar=$('ch2BannerBar'), ch2BannerText=$('ch2BannerText'),
         ecoOpenH=$('ecoOpenH'), ecoOpenSub=$('ecoOpenSub'),
-        ecoProjectImg=$('ecoProjectImg'), ecoProjectVeil=$('ecoProjectVeil'), pjGroup=$('pjGroup'), pjTitle=$('pjTitle'), pjSub=$('pjSub'), pjDesc=$('pjDesc'), pjCta=$('pjCta'),
-        hpTitle=$('hpTitle'), hpSub=$('hpSub'), hpDesc=$('hpDesc'), hpCta=$('hpCta'), ecoHyperImg=$('ecoHyperImg'),
+        ecoProjectImg=$('ecoProjectImg'), ecoProjectVeil=$('ecoProjectVeil'), pjGroup=$('pjGroup'), pjTitle=$('pjTitle'), pjSub=$('pjSub'), pjDesc=$('pjDesc'), pjCtaRow=$('pjCtaRow'),
+        hpGroup=$('hpGroup'), hpTitle=$('hpTitle'), hpSub=$('hpSub'), hpDesc=$('hpDesc'), hpCtaRow=$('hpCtaRow'), ecoHyperImg=$('ecoHyperImg'),
         dcTitle=$('dcTitle'), dcAccent=$('dcAccent'), dcSub=$('dcSub'), dcPara=$('dcPara'), dcHint=$('dcHint');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), sub=(p,a,b)=>clamp((p-a)/(b-a),0,1), smooth=t=>t*t*(3-2*t), lerp=(a,b,t)=>a+(b-a)*t;
@@ -16,9 +16,18 @@
     function readScroll2(){ const denom=Math.max(1,scene2.offsetHeight-innerHeight); pRaw2=clamp((scrollY-scene2.offsetTop)/denom,0,1); }
 
     function render2(s){
-      // ---- Ponte Cap.1 -> Cap.2 [0,.144]: il perimetro della card si espande (0-.072), poi il campo carta diventa nero (.072-.144) ----
-      const bridgeExpand = smooth(sub(s,0,.072));
-      const bridgeBlacken = smooth(sub(s,.072,.144));
+      // ---- Ponte Cap.1 -> Cap.2 [0,.144]: il perimetro della card si espande MENTRE il campo carta
+      // diventa nero, stessa finestra (prima erano in sequenza: espande 0-.072, poi annerisce .072-.144 —
+      // a metà ponte lo schermo era già pieno ma ancora tutto bianco). Sovrapposte, non è mai né grande
+      // né chiara insieme. In più: lo sticky del Capitolo 1 si sblocca nativamente nelle ultime 100vh del
+      // suo scroll (la card "sale" fuori campo) — in quella finestra sticky2/ecoBridge sbirciano già dal
+      // basso nella loro posizione naturale, PRIMA che "s" (legato all'inizio della Scena 2) inizi a
+      // muoversi: restavano bianchi e fermi per tutta quella finestra, il vero "quadrato bianco" segnalato.
+      // preBridge segue lo scroll reale (non smussato, come lo svincolo nativo stesso) e anticipa lì
+      // l'espansione/annerimento, così la card sta già scurendosi mentre sbircia dal basso ----
+      const preBridge = smooth(clamp((scrollY-(scene2.offsetTop-innerHeight))/innerHeight,0,1));
+      const bridgeExpand = Math.max(preBridge, smooth(sub(s,0,.144)));
+      const bridgeBlacken = Math.max(preBridge, smooth(sub(s,0,.144)));
       ecoBridge.style.top=lerp(12,0,bridgeExpand).toFixed(2)+'vh';
       ecoBridge.style.left=lerp(6,0,bridgeExpand).toFixed(2)+'vw';
       ecoBridge.style.right=lerp(6,0,bridgeExpand).toFixed(2)+'vw';
@@ -28,53 +37,56 @@
       const brR=Math.round(lerp(237,10,bridgeBlacken)), brG=Math.round(lerp(237,10,bridgeBlacken)), brB=Math.round(lerp(234,10,bridgeBlacken));
       ecoBridge.style.background='rgb('+brR+','+brG+','+brB+')';
 
-      // ---- Apertura Ecosistema [.144,.270]: banner di capitolo (linea -> barra piena -> testo) -> titolo
-      // da solo, centrato -> hold -> il titolo sparisce del tutto -> il sottotitolo entra da solo nello
-      // stesso spazio, a sua volta protagonista (mai in scena insieme: non devono mai confondersi) ----
-      const lineGrow     = smooth(sub(s,.144,.156));  // linea rossa sottile che si estende in larghezza
-      const barFill      = smooth(sub(s,.153,.168));  // la linea si ispessisce in barra piena (stessa logica del Capitolo 1)
-      const bannerTextIn = smooth(sub(s,.164,.180));  // testo mono, entra a barra quasi completata
-      const headIn  = smooth(sub(s,.160,.216));   // scala + opacity soltanto: MAI split text, MAI translateY dal basso, MAI stagger
-      // hold da solo [.216,.230]: nessuna variabile, il titolo resta fermo e leggibile
-      const titleOut = smooth(sub(s,.230,.240));  // il titolo esce di scena (solo opacity, nessuno shrink):
-                                                    // deve sparire prima che il sottotitolo prenda il suo posto
-      const subIn    = smooth(sub(s,.240,.256));  // il sottotitolo entra da solo (max-height + opacity) nello spazio liberato
-      // hold finale [.256,.270]: molto più lungo del semplice ingresso — il sottotitolo ha due frasi,
-      // deve restare leggibile fermo prima che inizi il ritiro verso 2.0 Project (altrimenti si legge
-      // solo la prima frase e la scena successiva sembra già sovrapporsi)
+      // ---- Apertura Ecosistema [0,.19]: banner di capitolo (linea -> barra piena -> testo) -> titolo
+      // da solo, centrato -> hold -> il titolo si rimpicciolisce (resta visibile, come l'apertura del
+      // Capitolo 1) -> l'elenco puntato entra sotto -> hold reale (4 punti da leggere, coerenza col
+      // Capitolo 1 richiesta esplicitamente — qui niente immagine, quindi si resta su nero pieno) ----
+      const lineGrow     = smooth(sub(s,0,.012));  // linea rossa sottile che si estende in larghezza
+      const barFill      = smooth(sub(s,.009,.024));  // la linea si ispessisce in barra piena (stessa logica del Capitolo 1)
+      const bannerTextIn = smooth(sub(s,.020,.036));  // testo mono, entra a barra quasi completata
+      const headIn  = smooth(sub(s,.016,.072));   // scala + opacity soltanto: MAI split text, MAI translateY dal basso, MAI stagger
+      // hold da solo [.072,.086]: nessuna variabile, il titolo resta fermo e leggibile
+      const titleShrink = smooth(sub(s,.086,.108));  // il titolo si rimpicciolisce (scale, non fade): resta
+                                                        // visibile in alto, esattamente come il titolo del Capitolo 1
+                                                        // quando arriva l'immagine — qui non c'è immagine, ma la
+                                                        // logica "il titolo lascia spazio restando leggibile" è la stessa
+      const subIn    = smooth(sub(s,.104,.140));  // l'elenco entra sotto, leggera sovrapposizione con lo shrink
+      // hold finale [.140,.19]: molto più lungo del semplice ingresso — 4 punti elenco da leggere,
+      // deve restare fermo prima che inizi il ritiro verso 2.0 Project (altrimenti si legge solo
+      // metà elenco e la scena successiva sembra già sovrapposta)
 
-      // ---- Ponte verso 2.0 PROJECT [.270,.36]: la headline si ritrae con crop/maschera, emerge l'immagine ----
-      const retreat = smooth(sub(s,.270,.36));    // gesto dominante: clip-path, non un fade
+      // ---- Ponte verso 2.0 PROJECT [.19,.28]: titolo+elenco si ritirano con crop/maschera, emerge l'immagine ----
+      const retreat = smooth(sub(s,.19,.28));    // gesto dominante: clip-path, non un fade
       ch2Banner.style.opacity=(1-retreat).toFixed(3);
       ch2BannerBar.style.width=(lineGrow*100).toFixed(1)+'%';
       ch2BannerBar.style.height=lerp(3,100,barFill).toFixed(1)+'%';
       ch2BannerText.style.opacity=bannerTextIn.toFixed(3);
       ch2BannerText.style.transform='translateY('+((1-bannerTextIn)*8).toFixed(1)+'px)';
-      ecoOpenH.style.opacity=(headIn*(1-titleOut)*(1-retreat)).toFixed(3);
-      ecoOpenH.style.transform='scale('+lerp(1.06,1,headIn).toFixed(3)+')';
+      ecoOpenH.style.opacity=(headIn*(1-retreat)).toFixed(3);
+      ecoOpenH.style.transform='scale('+(lerp(1.06,1,headIn)*lerp(1,.62,titleShrink)).toFixed(3)+')';
       ecoOpenH.style.clipPath='inset(0 '+(retreat*100).toFixed(1)+'% 0 0)';
       ecoOpenSub.style.opacity=(subIn*(1-retreat)).toFixed(3);
-      ecoOpenSub.style.maxHeight=lerp(0,260,subIn).toFixed(0)+'px';
+      ecoOpenSub.style.maxHeight=lerp(0,400,subIn).toFixed(0)+'px';
 
-      const imgFadeIn = smooth(sub(s,.270,.300)); // opacity solo come supporto rapido, il resto è leggibile senza
+      const imgFadeIn = smooth(sub(s,.19,.22)); // opacity solo come supporto rapido, il resto è leggibile senza
       const cropOut   = retreat;                  // stessa progressione della headline: il crop del testo genera l'entrata dell'immagine
 
       // ---- primo frame di 2.0 PROJECT, 5 stati distinti ----
-      // A. entrata (titolo -> sottotitolo) + hold leggibile [.335,.402]
-      const titleIn  = smooth(sub(s,.335,.360));   // il titolo entra quando l'immagine è già leggibile
-      const subInPj  = smooth(sub(s,.358,.380));   // sottotitolo, leggera coda sul titolo
-      // hold leggibile [.380,.402]: nessuna variabile qui, il gruppo resta fermo e leggibile
-      // B. riallineamento [.402,.432]: il gruppo titolo+sottotitolo sale, un solo gesto continuo legato allo scroll;
+      // A. entrata (titolo -> sottotitolo) + hold leggibile [.191,.258]
+      const titleIn  = smooth(sub(s,.255,.280));   // il titolo entra quando l'immagine è già leggibile
+      const subInPj  = smooth(sub(s,.278,.300));   // sottotitolo, leggera coda sul titolo
+      // hold leggibile [.300,.322]: nessuna variabile qui, il gruppo resta fermo e leggibile
+      // B. riallineamento [.322,.352]: il gruppo titolo+sottotitolo sale, un solo gesto continuo legato allo scroll;
       //    la scritta "2.0 PROJECT" aumenta di dimensione in vista della seconda parte (descrizione + CTA)
-      const regroup   = smooth(sub(s,.402,.432));
-      const titleGrow = smooth(sub(s,.402,.434));  // risolto esattamente quando entra la descrizione
-      // C. descrizione [.434,.452] e CTA [.462,.482], solo dopo il riallineamento, con pausa breve fra le due
-      const descIn   = smooth(sub(s,.434,.452));
-      const ctaIn    = smooth(sub(s,.462,.482));
-      // hold reale della CTA [.482,.527] (~0.045): frame Project stabile e cliccabile, poi uscita di scena
-      const projectOut = smooth(sub(s,.527,.541));
+      const regroup   = smooth(sub(s,.322,.352));
+      const titleGrow = smooth(sub(s,.322,.354));  // risolto esattamente quando entra la descrizione
+      // C. descrizione [.354,.372] e CTA [.382,.402], solo dopo il riallineamento, con pausa breve fra le due
+      const descIn   = smooth(sub(s,.354,.372));
+      const ctaIn    = smooth(sub(s,.382,.402));
+      // hold reale della CTA [.402,.447] (~0.045): frame Project stabile e cliccabile, poi uscita di scena
+      const projectOut = smooth(sub(s,.447,.461));
 
-      const pjImgExit = smooth(sub(s,.541,.575));  // dopo l'hold della CTA: il campo Project si espande e perde fuoco, non una dissolvenza
+      const pjImgExit = smooth(sub(s,.461,.495));  // dopo l'hold della CTA: il campo Project si espande e perde fuoco, non una dissolvenza
       ecoProjectImg.style.opacity=(imgFadeIn*(1-pjImgExit)).toFixed(3);
       if(ecoProjectVeil) ecoProjectVeil.style.opacity=(imgFadeIn*(1-pjImgExit)).toFixed(3);
       ecoProjectImg.style.filter='blur('+(lerp(5,0,cropOut)+lerp(0,10,pjImgExit)).toFixed(2)+'px)';
@@ -84,68 +96,80 @@
       ecoProjectImg.style.transform='translate('+(lerp(14,0,cropOut)+lerp(0,22,pjImgExit)).toFixed(2)+'vw,0) scale('+(lerp(.55,1,cropOut)*lerp(1,1.35,pjImgExit)).toFixed(3)+')';
 
       pjGroup.style.opacity=(1-projectOut).toFixed(3);
-      pjGroup.style.transform='translateY(-'+lerp(0,12,regroup).toFixed(2)+'vh)';
+      pjGroup.style.transform='translateY(-'+lerp(0,6,regroup).toFixed(2)+'vh)';  // dimezzato (12->6vh): lo spazio percepito verso la descrizione era troppo largo
       pjTitle.style.opacity=titleIn.toFixed(3);
       pjTitle.style.transform='translateY('+((1-titleIn)*18).toFixed(1)+'px) scale('+lerp(1,1.2,titleGrow).toFixed(3)+')';
       pjSub.style.opacity=subInPj.toFixed(3);
       pjDesc.style.opacity=(descIn*(1-projectOut)).toFixed(3);
       pjDesc.style.transform='translateY('+((1-descIn)*10).toFixed(1)+'px)';
-      pjCta.style.opacity=(ctaIn*(1-projectOut)).toFixed(3);
-      pjCta.style.pointerEvents=(ctaIn>.6 && projectOut<.5)?'auto':'none';
+      pjCtaRow.style.opacity=(ctaIn*(1-projectOut)).toFixed(3);
+      pjCtaRow.style.pointerEvents=(ctaIn>.6 && projectOut<.5)?'auto':'none';
 
       // ---- fondo Hyperparts — quando inizia la transizione verso Documentation, il fondo carta Due.Zero prende il sopravvento ----
-      const cGroup = smooth(sub(s,.545,.615));
-      const dGroup = smooth(sub(s,.830,.880));
+      const cGroup = smooth(sub(s,.465,.535));
+      const dGroup = smooth(sub(s,.750,.800));
       bgHyper.style.opacity=(cGroup*(1-dGroup)).toFixed(3);
       bgPaper2.style.opacity=dGroup.toFixed(3);
 
-      // ---- Transizione Project -> Hyperparts [.541,.635]: da un accesso individuale a un tavolo di lavoro condiviso ----
-      const hpImgFadeIn = smooth(sub(s,.547,.581));  // crossfade fra le due immagini, sovrapposto al gesto di pjImgExit
-      const hpZoomOut   = smooth(sub(s,.541,.635));  // crop ravvicinato e sfocato sul monitor -> arretra fino a tavolo/persone/schermo
+      // ---- Transizione Project -> Hyperparts [.461,.555]: da un accesso individuale a un tavolo di lavoro condiviso ----
+      const hpImgFadeIn = smooth(sub(s,.467,.501));  // crossfade fra le due immagini, sovrapposto al gesto di pjImgExit
+      const hpZoomOut   = smooth(sub(s,.461,.555));  // crop ravvicinato e sfocato sul monitor -> arretra fino a tavolo/persone/schermo
 
-      // ---- HYPERPARTS: titolo dominante (parola intera via maschera laterale) -> hold -> si riduce per lasciare spazio -> sottotitolo -> descrizione -> pausa -> CTA -> hold reale ----
-      const hpTitleWipe  = smooth(sub(s,.610,.660));
-      // hold leggibile [.660,.685]: nessuna variabile qui, il titolo resta fermo e dominante
-      const hpTitleShift = smooth(sub(s,.685,.713));  // il titolo si riduce leggermente e lascia spazio al sottotitolo
-      const hpSubIn      = smooth(sub(s,.715,.737));
-      const hpDescIn     = smooth(sub(s,.743,.761));
-      // pausa breve [.761,.773]
-      const hpCtaIn      = smooth(sub(s,.773,.793));
-      // hold reale della CTA [.793,.824]: CTA e titolo restano fermi e cliccabili, Documentation non parte prima
+      // ---- HYPERPARTS: titolo dominante (parola intera via maschera laterale) -> sottotitolo attaccato subito
+      // dopo (come in 2.0 Project: stagger stretto, non più un hold-poi-restringi-poi-entra separato) ->
+      // hold insieme -> descrizione -> pausa -> CTA -> hold reale ----
+      const hpTitleWipe  = smooth(sub(s,.530,.580));
+      const hpSubIn      = smooth(sub(s,.576,.601));  // parte quando il titolo è quasi rivelato, come subInPj su titleIn
+      // hold titolo+sottotitolo insieme [.601,.625]
+      const hpRegroup    = smooth(sub(s,.625,.650));  // il gruppo sale un poco, stesso gesto/stessa misura (6vh) di
+                                                        // pjGroup in Project — prima mancava, la descrizione arrivava
+                                                        // attaccata subito sotto senza nessuno spazio percepibile
+      const hpDescIn     = smooth(sub(s,.663,.681));
+      // pausa breve [.681,.693]
+      const hpCtaIn      = smooth(sub(s,.693,.713));
+      // hold reale della CTA [.713,.744]: CTA e titolo restano fermi e cliccabili, Documentation non parte prima
 
       // ---- uscita di Hyperparts (testo/CTA), solo quando inizia la transizione verso Documentation, mai durante ingresso o hold ----
-      const hpOut = smooth(sub(s,.824,.865));
+      const hpOut = smooth(sub(s,.744,.785));
+      hpGroup.style.transform='translateY(-'+lerp(0,6,hpRegroup).toFixed(2)+'vh)';
       hpTitle.style.opacity=(hpTitleWipe*(1-hpOut)).toFixed(3);
       hpTitle.style.clipPath='inset(0 '+((1-hpTitleWipe)*100).toFixed(1)+'% 0 0)';
-      hpTitle.style.transform='translateY(-'+lerp(0,7,hpTitleShift).toFixed(2)+'vh) scale('+(lerp(1.05,1,hpTitleWipe)*lerp(1,.85,hpTitleShift)).toFixed(3)+')';
+      hpTitle.style.transform='scale('+lerp(1.05,1,hpTitleWipe).toFixed(3)+')';
       hpSub.style.opacity=(hpSubIn*(1-hpOut)).toFixed(3);
       hpSub.style.transform='translateX('+((1-hpSubIn)*-10).toFixed(1)+'px)';
       hpDesc.style.opacity=(hpDescIn*(1-hpOut)).toFixed(3);
       hpDesc.style.transform='translateY('+((1-hpDescIn)*10).toFixed(1)+'px)';
-      hpCta.style.opacity=(hpCtaIn*(1-hpOut)).toFixed(3);
-      hpCta.style.pointerEvents=(hpCtaIn>.6 && hpOut<.5)?'auto':'none';
+      hpCtaRow.style.opacity=(hpCtaIn*(1-hpOut)).toFixed(3);
+      hpCtaRow.style.pointerEvents=(hpCtaIn>.6 && hpOut<.5)?'auto':'none';
 
-      // ---- Transizione Hyperparts -> Documentation 4.0 [.824,.880]: il campo luminoso del monitor si espande fino al viewport ----
+      // ---- Transizione Hyperparts -> Documentation 4.0 [.744,.800]: il campo luminoso del monitor si espande fino al viewport ----
       // gesto unico: crop (zoom sul punto luminoso), maschera (iride che si chiude), trasformazione (scale); il fondo vira da scuro a carta (sopra)
-      const hpToDocT = smooth(sub(s,.824,.880));
+      const hpToDocT = smooth(sub(s,.744,.800));
       ecoHyperImg.style.opacity=(hpImgFadeIn*(1-hpToDocT)).toFixed(3);
       ecoHyperImg.style.filter='blur('+(lerp(9,0,hpZoomOut)+lerp(0,16,hpToDocT)).toFixed(2)+'px)';
       ecoHyperImg.style.transform='scale('+(lerp(1.28,1,hpZoomOut)*lerp(1,2.6,hpToDocT)).toFixed(3)+')';
       ecoHyperImg.style.clipPath='circle('+lerp(150,8,hpToDocT).toFixed(1)+'% at 50% 18%)';
 
-      // ---- DOCUMENTATION 4.0 [.880,1.0]: soglia testuale, fondo carta, titolo dominante centrato — poi si ritira: non è un'appendice, è la soglia della Machine Map ----
-      const dcTitleIn    = smooth(sub(s,.880,.902));  // blocco che si rivela tramite maschera centrale + leggero scale: mai split-text, mai dal basso
-      // hold leggibile [.902,.923]: nessuna variabile qui, il titolo resta fermo e dominante
-      const dcAccentIn   = smooth(sub(s,.897,.912));  // piccolo accento rosso strutturale, non decorativo
-      const dcTitleShift = smooth(sub(s,.923,.940));  // il titolo si compatta e si alza leggermente, lascia spazio sotto
-      const dcSubIn      = smooth(sub(s,.943,.959));
-      const dcRetreat    = smooth(sub(s,.986,1.0));  // titolo, sottotitolo e accento: ritiro delicato invariato — non devono restare sopra la mappa
-      // ---- riga mono [.959,1.0]: STESSA grammatica editoriale delle altre righe del prototipo (vedi .c1b-text .ph/.ph i) —
+      // ---- DOCUMENTATION 4.0 [.800,.920]: soglia testuale, fondo carta, titolo dominante centrato — poi si ritira: non è un'appendice, è la soglia della Machine Map.
+      // Finisce a .920 (non più 1.0): tutta la timeline è traslata indietro di .144+.064 rispetto
+      // all'originale (vedi apertura del ponte e apertura Ecosistema, sopra), quindi resta un hold
+      // statico reale da .920 a 1.0 prima che la Scena 3 (Machine Map) prenda il sopravvento — stesso
+      // principio già accettato per la card editoriale di fine Capitolo 1 ----
+      const dcTitleIn    = smooth(sub(s,.800,.822));  // blocco che si rivela tramite maschera centrale + leggero scale: mai split-text, mai dal basso
+      // hold leggibile [.822,.843]: nessuna variabile qui, il titolo resta fermo e dominante
+      const dcAccentIn   = smooth(sub(s,.817,.832));  // piccolo accento rosso strutturale, non decorativo
+      const dcTitleShift = smooth(sub(s,.843,.860));  // il titolo si compatta e si alza leggermente, lascia spazio sotto
+      const dcSubIn      = smooth(sub(s,.863,.879));
+      // ritiro (titolo+accento+sottotitolo+paragrafo, tutti insieme) spostato in fondo — vedi dcParaOut:
+      // prima correva .906-.920, praticamente subito dopo l'ingresso del paragrafo (hold di soli .01,
+      // ~8vh di scroll: spariva quasi subito, segnalato come "troppo veloce")
+      const dcRetreat    = smooth(sub(s,.960,.976));  // titolo, sottotitolo e accento: ritiro delicato invariato — non devono restare sopra la mappa
+      // ---- riga mono: STESSA grammatica editoriale delle altre righe del prototipo (vedi .c1b-text .ph/.ph i) —
       // wrapper overflow:hidden + riga intera che entra con translateY(100%->0), resta leggibile in hold, esce con
-      // translateY(0->-100%). Nessuna rotazione, nessuno spostamento laterale, nessuno scatto. ----
-      const dcParaIn     = smooth(sub(s,.959,.974));  // ingresso: riga intera dal basso
-      // hold leggibile [.974,.984]: nessuna variabile qui, la riga resta ferma
-      const dcParaOut    = smooth(sub(s,.984,1.0));   // uscita: stessa maschera verticale, verso l'alto
+      // translateY(0->-100%). Nessuna rotazione, nessuno spostamento laterale, nessuno scatto.
+      // hold reale ora [.894,.960] (~62vh): prima era [.894,.904], appena 8vh — il vero bug segnalato ----
+      const dcParaIn     = smooth(sub(s,.879,.894));  // ingresso: riga intera dal basso
+      const dcParaOut    = smooth(sub(s,.960,.976));   // uscita: stessa maschera verticale, verso l'alto — sincronizzata con dcRetreat
 
       dcTitle.style.opacity=(dcTitleIn*(1-dcRetreat)).toFixed(3);
       dcTitle.style.clipPath='inset(0 '+((1-dcTitleIn)*50).toFixed(1)+'% 0 '+((1-dcTitleIn)*50).toFixed(1)+'%)';
@@ -288,23 +312,23 @@
   // il riferimento allo slug per ogni card.
   const SERVICES=[
     {slug:'manualistica-tecnica',title:'Manualistica Tecnica',href:'manualistica-tecnica.html',
-      desc:"Gestiamo l'intero ciclo di produzione della documentazione tecnica. Manuali chiari ed efficaci che aumentano il prestigio del vostro macchinario garantendo sicurezza all'utente.",
-      tags:['Uso e Manutenzione','Istruzioni Montaggio','Redazione Strutturata','Safety First']},
-    {slug:'cataloghi-ricambi',title:'Cataloghi Ricambi',
-      desc:"Trasformiamo i vostri cataloghi cartacei in potenti strumenti di vendita digitale. Gestione ricambi interattiva per facilitare l'ordine corretto e il service post-vendita.",
-      tags:['Interactive Parts','After Sales Portals','Spare Parts Strategy','Cloud Management']},
-    {slug:'traduzioni-multilingue',title:'Traduzioni Multilingue',
-      desc:"Oltre 500 traduttori madrelingua specializzati nei settori industriali. Strumenti CAT di ultima generazione per garantire precisione terminologica globale.",
-      tags:['500+ Native Pros','CAT Tools Support','ISO 17100 Verified','Technical Glossaries']},
-    {slug:'technical-compliance',title:'Technical Compliance',
-      desc:"Validiamo i vostri macchinari secondo le normative vigenti. Dall'analisi dei rischi alla redazione del fascicolo tecnico, garantiamo conformità agli standard CE.",
-      tags:['Marcatura CE','Analisi dei Rischi','Fascicolo Tecnico','Risk Assessment']},
-    {slug:'soluzioni-creative',title:'Marketing Industriale',
-      desc:"Studiamo e creiamo soluzioni di comunicazione per il settore industriale. Dai loghi alle schede prodotto, curiamo ogni dettaglio per una comunicazione di alto impatto.",
-      tags:['Industrial Branding','Web Design','Depliants & Brochures','Event Strategy']},
-    {slug:'soluzioni-software',title:'Soluzioni Software 2.0',
-      desc:"Analizziamo le vostre esigenze e realizziamo soluzioni software su misura per la gestione della documentazione tecnica. Efficienza digitale per l'industria moderna.",
-      tags:['Project Configurator','Technical Web Apps','Process Automation','Cloud Distribution']}
+      sub:"Ingegnerizzazione della documentazione per macchine automatiche",
+      desc:"Traduciamo la complessità del tuo macchinario in manuali d'uso, manutenzione e HMI chiari, strutturati e conformi al nuovo Regolamento Macchine. Riduci il time-to-market e proteggi la tua responsabilità di Fabbricante con il nostro workflow industriale certificato."},
+    {slug:'cataloghi-ricambi',title:'Cataloghi Ricambi',href:'cataloghi-ricambi.html',
+      sub:"Gestione ricambi e post-vendita Industry 4.0: la piattaforma Hyper.Parts",
+      desc:"Trasforma il tuo After Sales in un centro di profitto. Con la piattaforma interattiva Hyper.Parts e il servizio integrato Due.Zero, offri ai tuoi clienti la consultazione 3D delle tavole ricambi da web e mobile, incrementando la vendita di parti originali."},
+    {slug:'traduzioni-multilingue',title:'Traduzioni Multilingue',href:'traduzioni-multilingue.html',
+      sub:"Traduzioni tecniche multilingue, localizzazione certificata ISO 17100 e post-editing ISO 18587",
+      desc:"Servizi di traduzione specialistica per l'industria meccanica e l'automazione. Integriamo la traduzione umana certificata ISO 17100 con i processi di post-editing umano ISO 18587 (Light e Full) su contenuti generati da traduzione automatica (MT/AI), garantendo rigore terminologico, massima velocità ed export globale."},
+    {slug:'technical-compliance',title:'Technical Compliance',href:'technical-compliance.html',
+      sub:"Technical Compliance e marcature CE: consulenza normativa e Risk Assessment",
+      desc:"Guida completa verso la conformità normativa: valutazione dei rischi (UNI EN ISO 12100), calcolo del Performance Level (ISO 13849) e predisposizione del fascicolo tecnico per garantire la sicurezza del macchinario e la marcatura CE."},
+    {slug:'soluzioni-creative',title:'Marketing Industriale',href:'soluzioni-creative.html',
+      sub:"Marketing industriale B2B, eventi fieristici e digital communication per B2B/OEM",
+      desc:"Comunica il valore della tua tecnologia con un approccio specialistico. Realizziamo render 3D, video tecnici, allestimenti e contenuti multimediali per le principali fiere mondiali dell'automazione (Interpack, Cibus Tec, IPACK-IMA). Sviluppiamo portali web e piani editoriali LinkedIn ad alto valore ingegneristico."},
+    {slug:'soluzioni-software',title:'Soluzioni Software 2.0',href:'soluzioni-software.html',
+      sub:"Soluzioni software custom, gestionali avanzati e digitalizzazione dei processi industriali",
+      desc:"Dalla gestione della documentazione tecnica allo sviluppo di software gestionali customizzati per l'intera organizzazione aziendale. Sfruttiamo la nostra visione strategica e l'intelligenza artificiale per creare piattaforme su misura (es. HyperLab) compliant con le norme ISO 9001 e ISO/IEC 17025."}
   ];
   const svcStage=$('svcStage'), svcTrack=$('svcTrack'), svcMobileList=$('svcMobileList'),
         svcCounter=$('svcCounter'), svcProgressBar=$('svcProgressBar');
@@ -316,11 +340,11 @@
       card.className='service-card';
       card.dataset.service=s.slug;
       if(s.href) card.href=s.href; // senza href l'<a> resta inerte: stesso trattamento "pending" già usato altrove
-      card.style.backgroundImage="url('img/services/"+s.slug+".jpg')";
-      card.innerHTML='<div class="sc-num">'+num+'</div>'+
+      card.innerHTML='<div class="sc-bg" style="background-image:url(\'img/services/'+s.slug+'.jpg\')"></div>'+
+        '<div class="sc-num">'+num+'</div>'+
         '<h3 class="sc-title">'+esc(s.title)+'</h3>'+
+        '<p class="sc-sub">'+esc(s.sub)+'</p>'+
         '<p class="sc-desc">'+esc(s.desc)+'</p>'+
-        '<div class="sc-tags">'+s.tags.map(t=>'<span class="sc-tag">'+esc(t)+'</span>').join('')+'</div>'+
         '<div class="sc-cta">Dettagli servizio <span>→</span></div>'+
         '<div class="sc-link-icon">↗</div>';
       svcTrack.appendChild(card);
@@ -346,8 +370,27 @@
       function measureSvc(){
         svcActive=innerWidth>=1024;
         if(!svcActive){ svcStage.style.height=''; svcTrack.style.transform=''; return; }
+        // margine dinamico prima della prima card e dopo l'ultima: con soli 38px fissi, la prima e
+        // l'ultima card non arrivavano MAI al centro del viewport durante lo scroll (restavano sempre
+        // a sinistra/destra del centro) — non si "accendevano" mai da sole, solo con l'hover reale.
+        // Serve uno spazio pari a metà della differenza fra viewport e larghezza card, cosi la prima
+        // card può centrarsi appena iniziato lo scroll e l'ultima appena prima che finisca
+        const cardW=svcCards[0] ? svcCards[0].offsetWidth : 380;
+        const edgePad=Math.max(38,(innerWidth-cardW)/2);
+        svcTrack.style.paddingLeft=edgePad+'px';
+        svcTrack.style.paddingRight=edgePad+'px';
+        // svcTravel misurato dalla posizione REALE dell'ultima card (non da scrollWidth): con
+        // scrollWidth-innerWidth l'ultima card restava sempre ~un edgePad a destra del centro,
+        // non si centrava mai a fine corsa — scrollWidth non corrispondeva esattamente alla
+        // geometria effettiva. Azzero temporaneamente il transform per misurare la posizione
+        // "a riposo", poi lo ripristino (il prossimo frame di renderSvc lo correggerà comunque)
+        const prevTransform=svcTrack.style.transform;
+        svcTrack.style.transform='translateX(0px)';
+        const lastCard=svcCards[svcCards.length-1];
+        const lastRect=lastCard.getBoundingClientRect();
+        svcTravel=Math.max(1, lastRect.left+lastRect.width/2-innerWidth/2);
+        svcTrack.style.transform=prevTransform;
         // 1px di scroll = 1px di corsa orizzontale: lo stage è alto quanto viewport + corsa
-        svcTravel=Math.max(1,svcTrack.scrollWidth-innerWidth);
         svcStage.style.height=(innerHeight+svcTravel)+'px';
       }
       function renderSvc(p){
@@ -355,15 +398,21 @@
         svcTrack.style.transform='translateX('+(-p*svcTravel).toFixed(1)+'px)';
         if(svcProgressBar) svcProgressBar.style.width=(p*100).toFixed(2)+'%';
         if(svcCounter) svcCounter.textContent=(Math.min(SERVICES.length,Math.round(p*(SERVICES.length-1))+1))+' / '+String(SERVICES.length).padStart(2,'0');
-        // spotlight: piena opacità al centro del viewport, attenuata ai lati; l'hover vince sempre
+        // spotlight: piena opacità al centro del viewport, attenuata ai lati; l'hover vince sempre.
+        // La card più vicina al centro riceve anche .active — stesso trattamento dell'hover reale
+        // (bordo rosso, overlay bianco, zoom immagine): passa da una card all'altra scrollando,
+        // richiesto dal capo, non solo al passaggio del mouse
         const viewCenter=innerWidth/2;
+        let closestCard=null, closestDist=Infinity;
         svcCards.forEach(card=>{
           if(card._hovered){ card.style.opacity='1'; return; }
           const r=card.getBoundingClientRect();
           const dist=Math.abs(r.left+r.width/2-viewCenter);
           const k=Math.max(0,1-dist/(innerWidth*0.55));
           card.style.opacity=(0.28+k*0.72).toFixed(2);
+          if(dist<closestDist){ closestDist=dist; closestCard=card; }
         });
+        svcCards.forEach(card=>{ card.classList.toggle('active', card===closestCard); });
       }
       svcCards.forEach(card=>{
         card.addEventListener('mouseenter',()=>{ card._hovered=true; card.style.opacity='1'; });
@@ -421,7 +470,7 @@
     // quattro tappe con rampa + hold (a differenza dell'arco Servizi, qui l'hold leggibile per sigla è
     // esplicitamente richiesto): 3 transizioni per 4 sigle, stesso principio "N-1 passi per N elementi"
     function qualityCodePos(s){
-      const START=.32, END=.66, STEPS=qCount-1, stepW=(END-START)/STEPS;
+      const START=.269, END=.756, STEPS=qCount-1, stepW=(END-START)/STEPS;
       let sum=0;
       for(let k=0;k<STEPS;k++){
         const start=START+k*stepW, rampEnd=start+stepW*0.60;
@@ -433,48 +482,52 @@
     function renderQuality(s){
       // ---- scena 1 — apertura [.00,.25]: carta sale piena (niente fade), poi banner, poi titolo in blocco
       // unico con maschera orizzontale + lieve scale-down, poi sottotitolo dopo una breve pausa ----
-      const paperRise=smooth(sub(s,0,.08));
+      const paperRise=smooth(sub(s,0,.061));
       if(qualityPaper) qualityPaper.style.transform='translateY('+((1-paperRise)*101).toFixed(2)+'%)';
-      if(qualityBanner) qualityBanner.style.transform='translateX('+lerp(120,0,smooth(sub(s,.05,.13))).toFixed(2)+'%)';
+      if(qualityBanner) qualityBanner.style.transform='translateX('+lerp(120,0,smooth(sub(s,.038,.098))).toFixed(2)+'%)';
       if(qualityH2){
-        const headIn=smooth(sub(s,.10,.19));
+        const headIn=smooth(sub(s,.076,.144));
         qualityH2.style.clipPath='inset(0 '+((1-headIn)*100).toFixed(1)+'% 0 0)';
         qualityH2.style.transform='scale('+lerp(1.06,1,headIn).toFixed(3)+')';
       }
-      if(qualityP) qualityP.style.opacity=smooth(sub(s,.20,.25)).toFixed(3);
+      if(qualityP) qualityP.style.opacity=smooth(sub(s,.151,.189)).toFixed(3);
+      // hold di lettura vero: prima il ritiro iniziava esattamente dove finiva l'ingresso del
+      // sottotitolo, zero pausa — spariva subito, "troppo veloce" segnalato. Inserita una pausa reale
       if(qualityIntro){
-        const introOut=smooth(sub(s,.25,.31)); // il titolo iniziale si ritrae tramite crop
+        const introOut=smooth(sub(s,.220,.263)); // il titolo iniziale si ritrae tramite crop
         qualityIntro.style.clipPath='inset(0 0 0 '+(introOut*100).toFixed(1)+'%)';
       }
 
-      // ---- scena 2 — metodo [.30,.74]: la maschera dei codici e la definizione entrano con una semplice
+      // ---- scena 2 — metodo: la maschera dei codici e la definizione entrano con una semplice
       // dissolvenza (non un crop: un crop orizzontale relativo al viewport ritarderebbe la comparsa di un
       // testo ancorato a sinistra, creando un vuoto), poi riga eyebrow, poi DQ/IQ/OQ/PQ una alla volta con
-      // hold leggibile; infine il metodo esce tramite crop, come richiesto, prima della tracciabilità ----
-      if(qualityCodeMaskEl) qualityCodeMaskEl.style.opacity=smooth(sub(s,.26,.31)).toFixed(3);
-      if(qualityDefinition) qualityDefinition.style.opacity=smooth(sub(s,.26,.31)).toFixed(3);
-      if(qualityEyebrow) qualityEyebrow.style.opacity=smooth(sub(s,.29,.34)).toFixed(3);
+      // hold leggibile — il ciclo dei quattro codici (vedi qualityCodePos) ha ora +135vh reali di corsa,
+      // il doppio di prima: "molto molto veloce" segnalato, restava a malapena ~34vh a codice; infine il
+      // metodo esce tramite crop, come richiesto, prima della tracciabilità ----
+      if(qualityCodeMaskEl) qualityCodeMaskEl.style.opacity=smooth(sub(s,.227,.263)).toFixed(3);
+      if(qualityDefinition) qualityDefinition.style.opacity=smooth(sub(s,.227,.263)).toFixed(3);
+      if(qualityEyebrow) qualityEyebrow.style.opacity=smooth(sub(s,.248,.284)).toFixed(3);
       if(qualityCodeStrip){
         const pos=qualityCodePos(s);
         qualityCodeStrip.style.transform='translateY(-'+(pos*(100/qCount)).toFixed(2)+'%)';
         setQualityDefinition(clamp(Math.round(pos),0,qCount-1));
       }
       if(qualityMethod){
-        const methodOut=smooth(sub(s,.67,.74)); // il metodo esce tramite crop
+        const methodOut=smooth(sub(s,.764,.814)); // il metodo esce tramite crop
         qualityMethod.style.clipPath='inset(0 0 0 '+(methodOut*100).toFixed(1)+'%)';
       }
 
-      // ---- scena 3 — tracciabilità [.61,.87]: entra dal basso come un foglio tecnico (solo translateY,
+      // ---- scena 3 — tracciabilità: entra dal basso come un foglio tecnico (solo translateY,
       // niente ombra/card) — la risalita parte presto e generosa, così è già ben visibile quando il metodo
       // sparisce (evita qualunque vuoto nel mezzo); il testo domina, poi metadati e firma dopo una pausa ----
-      if(qualityRecord) qualityRecord.style.transform='translateY('+lerp(100,0,smooth(sub(s,.61,.76))).toFixed(2)+'%)';
-      if(qualityMeta) qualityMeta.style.opacity=smooth(sub(s,.80,.87)).toFixed(3);
+      if(qualityRecord) qualityRecord.style.transform='translateY('+lerp(100,0,smooth(sub(s,.685,.828))).toFixed(2)+'%)';
+      if(qualityMeta) qualityMeta.style.opacity=smooth(sub(s,.856,.907)).toFixed(3);
 
-      // ---- scena 4 — chiusura [.90,1]: un campo nero (il layer stesso) sale sopra la carta, poi titolo,
+      // ---- scena 4 — chiusura: un campo nero (il layer stesso) sale sopra la carta, poi titolo,
       // poi CTA — nessun box pieno, solo testo ----
-      if(qualityFinal) qualityFinal.style.transform='translateY('+lerp(100,0,smooth(sub(s,.90,.96))).toFixed(2)+'%)';
-      if(qualityFinalH) qualityFinalH.style.opacity=smooth(sub(s,.94,.98)).toFixed(3);
-      if(qualityCta) qualityCta.style.opacity=smooth(sub(s,.97,1.0)).toFixed(3);
+      if(qualityFinal) qualityFinal.style.transform='translateY('+lerp(100,0,smooth(sub(s,.929,.971))).toFixed(2)+'%)';
+      if(qualityFinalH) qualityFinalH.style.opacity=smooth(sub(s,.957,.986)).toFixed(3);
+      if(qualityCta) qualityCta.style.opacity=smooth(sub(s,.979,1.0)).toFixed(3);
     }
 
     // risposta diretta allo scroll, nessuno smoothing artificiale — stesso principio già richiesto e
@@ -489,137 +542,23 @@
   }
 
   // ================= CAPITOLO 05 — NEWS =================
-  // Editoriale, non feed social e non griglia di card. A differenza delle sezioni precedenti, qui la lista
-  // (newsList) nasce vuota in HTML e va costruita da JS: la costruzione gira SEMPRE, anche in reduced-motion,
-  // perché è lì che vive anche il fallback statico (immagine+estratto+CTA per ogni articolo, non solo per
-  // quello attivo — senza scroll il pannello condiviso a destra non avrebbe senso). Solo la regia scroll-driven
-  // (renderNews) resta dietro il guard !reduce, come per le altre sezioni.
-  const newsSection=$('newsSection'), newsSticky=$('newsSticky');
-  if(newsSection && newsSticky){
-    const NEWS_ITEMS=[
-      {number:'01',category:'ECOSISTEMA',title:'DALLA DOCUMENTAZIONE AL DATO CONNESSO.',
-        excerpt:'Strumenti, matricole e contenuti tecnici possono restare allineati lungo tutto il ciclo di vita della macchina.',
-        image:'img/news/news_01.jpg',cta:'LEGGI L’INSIGHT'},
-      {number:'02',category:'METODO',title:'UN MANUALE NON È MAI SOLO UN MANUALE.',
-        excerpt:'Progettazione, immagini, terminologia e validazione: la qualità nasce quando ogni parte parla la stessa lingua.',
-        image:'img/news/news_02.jpg',cta:'LEGGI L’INSIGHT'},
-      {number:'03',category:'INNOVAZIONE',title:'VEDERE PRIMA. DECIDERE MEGLIO.',
-        excerpt:'Rendering, illustrazioni e contenuti multimediali rendono comprensibile un prodotto prima ancora della sua consegna.',
-        image:'img/news/news_03.jpg',cta:'LEGGI L’INSIGHT'}
-    ];
-    const newsListEl=$('newsList'), newsImage=$('newsImage'), newsMeta=$('newsMeta'),
-          newsExcerpt=$('newsExcerpt'), newsCta=$('newsCta');
-
-    // ogni riga porta titolo/categoria/numero per la vista scroll-driven e, nascosto via CSS (mostrato
-    // solo in reduced-motion), il proprio fallback statico completo — stesso principio di data-def per Qualità
-    const newsListItems=NEWS_ITEMS.map((item,i)=>{
-      const row=document.createElement('div');
-      row.className='newsListItem'+(i===0?' active':'');
-      row.dataset.i=i;
-      row.innerHTML=
-        '<div class="newsListHead"><span class="newsListNum">'+item.number+'</span>'+
-        '<span class="newsListCategory">'+item.category+'</span></div>'+
-        '<h3>'+item.title+'</h3>'+
-        '<div class="newsListStatic">'+
-          '<img src="'+item.image+'" alt="">'+
-          '<p>'+item.excerpt+'</p>'+
-          '<button type="button" class="newsCtaStatic" data-news-index="'+i+'">'+item.cta+' <span>→</span></button>'+
-        '</div>';
-      if(newsListEl) newsListEl.appendChild(row);
-      return row;
-    });
-
-    // pannello condiviso già coerente con il primo articolo dal primo frame: nessun crossfade spurio
-    if(newsImage) newsImage.src=NEWS_ITEMS[0].image;
-    if(newsMeta) newsMeta.textContent=NEWS_ITEMS[0].category;
-    if(newsExcerpt) newsExcerpt.textContent=NEWS_ITEMS[0].excerpt;
-    if(newsCta) newsCta.dataset.newsIndex=0;
-
-    if(!reduce){
-      let newsActiveIdx=0;
-      function setActiveNews(idx){
-        if(idx===newsActiveIdx) return;
-        newsActiveIdx=idx;
-        newsListItems.forEach((el,i)=>el.classList.toggle('active',i===idx));
-        if(newsImage){
-          newsImage.style.clipPath='inset(0 0 0 100%)'; // crop orizzontale, non fade lungo
-          setTimeout(()=>{
-            newsImage.src=NEWS_ITEMS[idx].image;
-            void newsImage.offsetWidth;
-            newsImage.style.clipPath='inset(0 0 0 0%)';
-          },480);
-        }
-        if(newsMeta) newsMeta.style.clipPath='inset(0 0 100% 0)';
-        if(newsExcerpt) newsExcerpt.style.clipPath='inset(0 0 100% 0)';
-        setTimeout(()=>{
-          if(newsMeta){ newsMeta.textContent=NEWS_ITEMS[idx].category; void newsMeta.offsetWidth; newsMeta.style.clipPath='inset(0 0 0% 0)'; }
-          if(newsExcerpt){ newsExcerpt.textContent=NEWS_ITEMS[idx].excerpt; void newsExcerpt.offsetWidth; newsExcerpt.style.clipPath='inset(0 0 0% 0)'; }
-        },190);
-        if(newsCta) newsCta.dataset.newsIndex=idx;
+  // Ridotta alla sola apertura (contenuti editoriali non ancora pronti): non più tre scene sticky in
+  // sequenza, quindi stesso meccanismo del Footer sotto — reveal one-shot quando la sezione raggiunge
+  // il viewport, non uno scroll-jack continuo.
+  const newsSection=$('newsSection');
+  if(newsSection && !reduce){
+    let newsRevealed=false;
+    function checkNewsReveal(){
+      if(newsRevealed) return;
+      const r=newsSection.getBoundingClientRect();
+      if(r.top<innerHeight*0.85){
+        newsRevealed=true;
+        newsSection.classList.add('revealed');
+        removeEventListener('scroll',checkNewsReveal);
       }
-
-      const newsIntro=$('newsIntro'),
-            newsBanner=newsIntro&&newsIntro.querySelector('.newsBanner'),
-            newsH2=newsIntro&&newsIntro.querySelector('h2'),
-            newsP=newsIntro&&newsIntro.querySelector('p'),
-            newsEditorial=$('newsEditorial'),
-            newsVisualEl=$('newsVisual'), newsDetailEl=$('newsDetail'),
-            newsFinal=$('newsFinal'), newsFinalP=newsFinal&&newsFinal.querySelector('p'),
-            linkedinCta=newsFinal&&newsFinal.querySelector('.linkedinCta');
-
-      function renderNews(s){
-        // ---- scena 1 — apertura [.00,.35]: rallentata su richiesta (il titolo non faceva in tempo a essere
-        // letto — l'uscita partiva addirittura prima che la maschera del titolo finisse di aprirsi). Ora:
-        // banner, poi titolo con rivelazione più lenta, poi sottotitolo, poi una pausa di lettura vera e
-        // propria (nessuna animazione tra .25 e .30) prima che la scena si ritragga tramite crop. La sezione
-        // ha più altezza totale (500vh, prima 380vh) per dare fisicamente più scroll a questa sola scena:
-        // scena 2 e 3 mantengono lo stesso ritmo assoluto di prima (le soglie sono spostate in avanti della
-        // stessa quantità di scroll aggiunta qui, non riscalate) ----
-        if(newsBanner) newsBanner.style.transform='translateX('+lerp(120,0,smooth(sub(s,.02,.08))).toFixed(2)+'%)';
-        if(newsH2){
-          const headIn=smooth(sub(s,.06,.18));
-          newsH2.style.clipPath='inset(0 '+((1-headIn)*100).toFixed(1)+'% 0 0)';
-          newsH2.style.transform='scale('+lerp(1.06,1,headIn).toFixed(3)+')';
-        }
-        if(newsP) newsP.style.opacity=smooth(sub(s,.20,.25)).toFixed(3);
-        if(newsIntro){
-          const introOut=smooth(sub(s,.30,.35));
-          newsIntro.style.clipPath='inset(0 0 0 '+(introOut*100).toFixed(1)+'%)';
-        }
-
-        // ---- scena 2 — editoriale [.364,.784]: lista/immagine/dettaglio entrano in dissolvenza (overlap con
-        // l'uscita dell'apertura, nessun vuoto — stessa lezione già imparata per Cap.04), poi l'indice attivo
-        // avanza 0->1->2 in tre zone uguali; il cambio di articolo è gestito via classi CSS (transizione,
-        // non valore continuo legato allo scroll). Soglie invariate in vh rispetto a prima, solo spostate
-        // in avanti per lasciare posto alla scena 1 più lunga ----
-        const editIn=smooth(sub(s,.322,.364));
-        if(newsListEl) newsListEl.style.opacity=editIn.toFixed(3);
-        if(newsVisualEl) newsVisualEl.style.opacity=editIn.toFixed(3);
-        if(newsDetailEl) newsDetailEl.style.opacity=editIn.toFixed(3);
-
-        const zone=(.784-.364)/3;
-        setActiveNews(clamp(Math.floor((s-.364)/zone),0,2));
-
-        if(newsEditorial){
-          const editOut=smooth(sub(s,.784,.826));
-          newsEditorial.style.clipPath='inset(0 0 0 '+(editOut*100).toFixed(1)+'%)';
-        }
-
-        // ---- scena 3 — chiusura: il nero sale presto e generoso, già completamente assestato prima che
-        // l'editoriale finisca di sparire (stesso principio anti-vuoto già verificato per Cap.04), poi
-        // invito e CTA LinkedIn — soglie invariate in vh rispetto a prima, solo spostate in avanti ----
-        if(newsFinal) newsFinal.style.transform='translateY('+lerp(100,0,smooth(sub(s,.686,.798))).toFixed(2)+'%)';
-        if(newsFinalP) newsFinalP.style.opacity=smooth(sub(s,.805,.833)).toFixed(3);
-        if(linkedinCta) linkedinCta.style.opacity=smooth(sub(s,.826,.868)).toFixed(3);
-      }
-
-      function readScrollN(){
-        const denom=Math.max(1,newsSection.offsetHeight-innerHeight);
-        renderNews(clamp((scrollY-newsSection.offsetTop)/denom,0,1));
-      }
-      addEventListener('scroll',readScrollN,{passive:true});
-      readScrollN();
     }
+    addEventListener('scroll',checkNewsReveal,{passive:true});
+    checkNewsReveal();
   }
 
   // ================= FOOTER =================

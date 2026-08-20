@@ -7,7 +7,7 @@
 <meta name="description" content="Trasformiamo dati tecnici, manuali, ricambi e contenuti multilingua in strumenti digitali chiari, consultabili e coerenti con i processi industriali. Bologna, dal 2008.">
 <meta name="theme-color" content="#0A0A0A">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="preload" href="fonts/BebasNeue-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Questrial-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/BigShouldersDisplay-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/IBMPlexMono-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
@@ -35,7 +35,6 @@
   <div class="chapterAnchor" id="chapter1Start" aria-hidden="true"></div>
   <div class="sticky" id="sticky">
     <div class="ambient" id="ambient"></div>
-    <div class="lightPanel" id="lightPanel"></div>
 
     <!-- CAPITOLO 1 -->
     <!-- immagine a destra: stessa tecnica di .ecoProjectImg in Ecosistema — campo fotografico ampio
@@ -54,7 +53,16 @@
           <span class="ln"><i>DOCUMENTAZIONE TECNICA</i></span>
           <span class="ln"><i>E SOLUZIONI DIGITALI IN CLOUD</i></span>
         </div>
-        <p class="ch-sub"><i id="chSub">Partner per PMI e industria nella gestione completa del flusso documentale dedicato alla manifattura industriale.</i></p>
+        <div class="ch-sub">
+          <div class="ch-subInner" id="chSub">
+            <ul class="ch-subList">
+              <li>Traduzioni specializzate e post-editing AI</li>
+              <li>Cataloghi ricambi interattivi e piattaforma Hyper.Parts</li>
+              <li>Software tailor-made e marketing industriale B2B</li>
+              <li>Documentazione Tecnica 4.0 e Compliance Normativa</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
     <!-- banner che si costruisce a quadrati -->
@@ -79,7 +87,7 @@
       <div class="lh">Indice | contenuti</div>
       <a href="#chapter1Start" id="legFirst"><span class="n">01</span><span>Chi siamo</span></a>
       <a href="#scene2"><span class="n">02</span><span>Ecosistema</span></a>
-      <a href="#servizi"><span class="n">03</span><span>Servizi</span></a>
+      <a href="#servizi"><span class="n">03</span><span>Cosa Facciamo</span></a>
       <a href="#qualityStart"><span class="n">04</span><span>Qualità</span></a>
       <a href="#newsStart"><span class="n">05</span><span>News</span></a>
     </nav>
@@ -87,35 +95,522 @@
     <div class="card1b" id="card1b">
       <span class="c1b-head"><span class="idx">01</span> | Chi siamo</span>
       <p class="c1b-text" id="c1bText">Da vent'anni affianchiamo l'industria manifatturiera B2B nell'intero ciclo di vita della documentazione tecnica e dei contenuti multilingua. Metodologia, conformità normativa, un metodo di lavoro unico e software proprietari per trasformare i dati di progetto in documenti digitali chiari e innovativi, oggi asset strategici integrati nei processi aziendali.</p>
-      <span class="c1b-foot">due.zero | documentazione tecnica industriale</span>
+      <span class="c1b-foot">due.zero | technical communication revolution</span>
     </div>
 
     <div class="hint" id="hint"><span class="hintArrow" aria-hidden="true">↓</span> Scroll</div>
 
-    <!-- badge progetti: visibili solo dopo il preload, spariscono appena si scrolla. Ricambi e Traduzioni
-         non hanno ancora una pagina/link reale: span non cliccabile, stesso trattamento già usato per
-         il sottomenu Servizi e per Privacy/Cookie in footer -->
+    <!-- label che spiega le icone sotto: stessa visibilità/lifecycle di .heroBadges (badgesShown in JS),
+         non è il titolo — piccola, non deve competere con esso -->
+    <div class="heroEco" id="heroEco">
+      <span class="heroEcoLabel">Il nostro ecosistema operativo</span>
+      <p class="heroEcoSub">Piattaforme proprietarie, portali B2B e workflow digitali con cui gestiamo la tua documentazione tecnica e il tuo post-vendita.</p>
+    </div>
+
+    <!-- badge progetti: visibili solo dopo il preload, spariscono appena si scrolla. SC Spare Manager e
+         SC Translate non hanno ancora una pagina/link reale: span non cliccabile, stesso trattamento già
+         usato per il sottomenu Cosa Facciamo e per Privacy/Cookie in footer -->
     <div class="heroBadges" id="heroBadges">
-      <a class="heroBadge" href="https://hyperparts.it/" target="_blank" rel="noopener noreferrer">
-        <span class="heroBadgeTip">Hyper.Parts</span><img src="img/hyperparts.svg" alt="Hyper.Parts">
+      <a class="heroBadge" href="https://hyperparts.it/" target="_blank" rel="noopener noreferrer" aria-label="HYPER.PARTS">
+        <span class="heroBadgeTip"><span class="tipName">HYPER.PARTS</span><span class="tipDesc">Portale Consultazione Ricambi</span></span>
+        <svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+        	 y="0px" viewBox="0 0 300 300" xml:space="preserve">
+        <g class="static-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#333333" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="roll-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#003B75" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="static-text">
+        	<g>
+        		<path fill="#808080" d="M72.291,155.277c0-13.45,5.653-25.401,16.414-32.943V62.5h-32.59c-2.681,0-1.813,2.196-1.813,4.885v164.97
+        			c0,2.688,0.615,4.839,3.295,4.839l31.107,0.016v-49.004C77.944,180.678,72.291,168.726,72.291,155.277z"/>
+        		<path fill="#FFD300" d="M146.626,155.277c0-18.227-14.777-33.013-33.004-33.013s-33.005,14.786-33.005,33.013
+        			c0,18.226,14.779,33.005,33.005,33.005S146.626,173.503,146.626,155.277z"/>
+        		<path fill="#808080" d="M255.982,92.74c-3.876-11.649-11.712-19.79-23.053-24.545c-9.857-4.127-20.299-5.401-30.812-5.539
+        			c0,0-14.923,0.225-30.626,0.215c-0.244-0.076-0.538,0.13-0.902,0.13H138v59.334c10.761,7.542,16.414,19.493,16.414,32.943
+        			c0,13.448-5.653,25.4-16.414,32.928v49.004l30.906-0.016c2.681,0,3.094-2.151,3.094-4.839V181l0,0v-48l0,0V94h30.058
+        			c3.87,1,5.605,0.624,9.409,1.297c6.688,1.194,11.939,4.687,14.374,11.377c2.213,6.057,2.468,12.291,0.85,18.566
+        			c-1.672,6.502-5.76,10.647-12.245,12.017c-3.936,0.834-8.252,1.326-12.274,1.355L182,138.644V169h20.13
+        			c7.572,0,20.552-1.072,27.778-3.438c12.486-4.089,21.461-11.894,25.843-24.407C261.383,125.055,261.372,108.902,255.982,92.74z"/>
+        	</g>
+        </g>
+        <g class="roll-text">
+        	<g>
+        		<path fill="#FFFFFF" d="M72.291,155.277c0-13.45,5.653-25.401,16.414-32.943V62.5h-32.59c-2.681,0-1.813,2.196-1.813,4.885v164.97
+        			c0,2.688,0.615,4.839,3.295,4.839l31.107,0.016v-49.004C77.944,180.678,72.291,168.726,72.291,155.277z"/>
+        		<path fill="#FFD300" d="M146.626,155.277c0-18.227-14.777-33.013-33.004-33.013s-33.005,14.786-33.005,33.013
+        			c0,18.226,14.779,33.005,33.005,33.005S146.626,173.503,146.626,155.277z"/>
+        		<path fill="#FFFFFF" d="M255.982,92.74c-3.876-11.649-11.712-19.79-23.053-24.545c-9.857-4.127-20.299-5.401-30.812-5.539
+        			c0,0-14.923,0.225-30.626,0.215c-0.244-0.076-0.538,0.13-0.902,0.13H138v59.334c10.761,7.542,16.414,19.493,16.414,32.943
+        			c0,13.448-5.653,25.4-16.414,32.928v49.004l30.906-0.016c2.681,0,3.094-2.151,3.094-4.839V181l0,0v-48l0,0V94h30.058
+        			c3.87,1,5.605,0.624,9.409,1.297c6.688,1.194,11.939,4.687,14.374,11.377c2.213,6.057,2.468,12.291,0.85,18.566
+        			c-1.672,6.502-5.76,10.647-12.245,12.017c-3.936,0.834-8.252,1.326-12.274,1.355L182,138.644V169h20.13
+        			c7.572,0,20.552-1.072,27.778-3.438c12.486-4.089,21.461-11.894,25.843-24.407C261.383,125.055,261.372,108.902,255.982,92.74z"/>
+        	</g>
+        </g>
+        </svg>
       </a>
-      <a class="heroBadge" href="https://hyperlab.azurewebsites.net/Identity/Account/Login" target="_blank" rel="noopener noreferrer">
-        <span class="heroBadgeTip">Hyper.Lab</span><img src="img/hyperlab.svg" alt="Hyper.Lab">
+      <a class="heroBadge" href="https://hyperlab.azurewebsites.net/Identity/Account/Login" target="_blank" rel="noopener noreferrer" aria-label="HYPER.LAB">
+        <span class="heroBadgeTip"><span class="tipName">HYPER.LAB</span><span class="tipDesc">Piattaforma Gestione Qualità</span></span>
+        <svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+        	 y="0px" viewBox="0 0 300 300" xml:space="preserve">
+        <g class="static-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#333333" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="roll-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#F15A24" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="static-text">
+        	<g>
+        		<path fill="#808080" d="M72.291,155.277c0-13.45,5.653-25.401,16.414-32.943V62.5h-32.59c-2.681,0-1.813,2.196-1.813,4.885v164.97
+        			c0,2.688,0.615,4.839,3.295,4.839l31.107,0.016v-49.004C77.944,180.678,72.291,168.726,72.291,155.277z"/>
+        		<path fill="#F15A24" d="M146.626,155.277c0-18.227-14.777-33.013-33.004-33.013s-33.005,14.786-33.005,33.013
+        			c0,18.226,14.779,33.005,33.005,33.005S146.626,173.503,146.626,155.277z"/>
+        		<path fill="#CCCCCC" d="M181,62h66c5.522,0,10,4.477,10,10v95.958l-34-33.999V94h-42V62z"/>
+        		<path fill="#808080" d="M223,192.042V205h-52.3c-0.195-0.305-0.7-0.707-0.7-1.25V67.37c0-2.681-2.356-4.855-5.029-4.855L136,62.5
+        			v59.834c11,5.076,18.587,19.478,18.587,32.943c0,13.463-7.587,27.644-18.587,32.958v48.974l101.47-0.03
+        			c0.88,0,1.75-0.063,2.609-0.179H247c5.522,0,10-4.478,10-10v-0.959L223,192.042z"/>
+        		<polygon fill="#CCCCCC" points="270,191.976 270,227.051 215,172.167 215,137.167 		"/>
+        	</g>
+        </g>
+        <g class="roll-text">
+        	<g>
+        		<path fill="#FFFFFF" d="M72.291,155.277c0-13.45,5.653-25.401,16.414-32.943V62.5h-32.59c-2.681,0-1.813,2.196-1.813,4.885v164.97
+        			c0,2.688,0.615,4.839,3.295,4.839l31.107,0.016v-49.004C77.944,180.678,72.291,168.726,72.291,155.277z"/>
+        		<path fill="#F15A24" d="M146.626,155.277c0-18.227-14.777-33.013-33.004-33.013s-33.005,14.786-33.005,33.013
+        			c0,18.226,14.779,33.005,33.005,33.005S146.626,173.503,146.626,155.277z"/>
+        		<path fill="#CCCCCC" d="M181,62h66c5.522,0,10,4.477,10,10v95.958l-34-33.999V94h-42V62z"/>
+        		<path fill="#FFFFFF" d="M223,192.042V205h-52.3c-0.195-0.305-0.7-0.707-0.7-1.25V67.37c0-2.681-2.356-4.855-5.029-4.855L136,62.5
+        			v59.834c11,5.076,18.587,19.478,18.587,32.943c0,13.463-7.587,27.644-18.587,32.958v48.974l101.47-0.03
+        			c0.88,0,1.75-0.063,2.609-0.179H247c5.522,0,10-4.478,10-10v-0.959L223,192.042z"/>
+        		<polygon fill="#CCCCCC" points="270,191.976 270,227.051 215,172.167 215,137.167 		"/>
+        	</g>
+        </g>
+        </svg>
       </a>
-      <a class="heroBadge" href="#doc40Start" id="badgeDoc40">
-        <span class="heroBadgeTip">Documenti 4.0</span><img src="img/doc40.svg" alt="Documenti 4.0">
+      <a class="heroBadge" href="#doc40Start" id="badgeDoc40" aria-label="DOCUMENTATION 4.0">
+        <span class="heroBadgeTip"><span class="tipName">DOCUMENTATION 4.0</span><span class="tipDesc">Tracciabilità Parco Macchine</span></span>
+        <svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+        	 y="0px" viewBox="0 0 300 300" xml:space="preserve">
+        <g class="static-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#333333" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        	<g>
+        		<polygon fill="none" points="155.841,209.624 207.488,179.806 207.488,120.183 155.841,90.365 104.194,120.184 104.194,179.806 		
+        			"/>
+        		<polygon fill="none" points="0.45,120.179 0.45,179.806 52.097,209.624 103.743,179.806 103.743,120.18 52.094,90.361 		"/>
+        		<polygon fill="none" points="155.615,89.963 155.615,30.336 103.972,0.521 52.325,30.338 52.325,89.963 103.968,119.78 		"/>
+        		<path fill="none" d="M156.068,89.963l51.654,29.822l51.637-29.812V30.357L236.672,17.26c0-0.006,0-0.013,0-0.02l-28.96-16.719
+        			l-51.644,29.816V89.963z"/>
+        		<polygon fill="#FFFFFF" points="103.968,119.78 103.979,119.787 155.615,89.975 155.615,89.963 		"/>
+        		<polygon fill="#FFFFFF" points="207.524,120.204 207.488,120.183 207.488,179.806 155.841,209.624 104.194,179.806 
+        			104.194,120.184 104.193,120.185 104.193,179.816 156.063,209.766 156.063,210.017 207.73,180.187 207.524,180.067 		"/>
+        		<polygon fill="#FFFFFF" points="156.068,89.975 207.711,119.791 207.722,119.785 156.068,89.963 		"/>
+        		<path fill="#FFFFFF" d="M259.696,90.298l-51.985,30.014l-0.114-0.066l-0.073-0.042v59.864l0.206,0.119l3.181,1.836
+        			c0.103-0.116,0.211-0.228,0.326-0.333l-3.263-1.884v-59.634l51.647-29.818l12.705,7.335c0.063-0.138,0.131-0.272,0.207-0.402
+        			l-12.724-7.346v0.295L259.696,90.298z"/>
+        		<polygon fill="#FFFFFF" points="0.218,179.688 0.33,179.75 52.092,209.637 103.967,179.688 104.079,179.75 104.193,179.816 
+        			104.193,120.185 103.972,120.312 103.858,120.246 103.743,120.18 103.743,179.806 52.097,209.624 0.45,179.806 0.45,120.179 
+        			0.219,120.312 0.105,120.246 0.219,119.791 51.866,89.973 51.866,89.966 0.112,119.844 0,119.91 0,180.067 0.218,180.193 		"/>
+        		<polygon fill="#FFFFFF" points="52.325,89.963 52.325,89.973 103.972,119.791 103.979,119.787 103.968,119.78 		"/>
+        		<polygon fill="#FFFFFF" points="52.315,90.235 52.204,90.298 52.094,90.361 103.743,120.18 103.858,120.246 103.972,120.312 
+        			104.193,120.185 104.194,120.184 155.841,90.365 155.615,90.235 155.615,89.975 103.979,119.787 103.972,119.791 52.325,89.973 
+        			52.325,89.963 52.325,30.338 103.972,0.521 155.615,30.336 155.615,30.078 155.727,30.012 155.84,29.946 104.083,0.063 103.972,0 
+        			52.094,29.95 52.315,30.078 		"/>
+        		<polygon fill="#FFFFFF" points="156.068,30.337 156.065,30.338 156.065,89.973 156.068,89.975 156.068,89.963 		"/>
+        		<path fill="#FFFFFF" d="M0.219,119.791l-0.114,0.455l0.114,0.066l0.23-0.133l51.645-29.817l0.109-0.063l0.112-0.063V30.078
+        			l-0.221-0.128L28.391,16.264c-0.101,0.08-0.203,0.157-0.303,0.238c-0.026,0.021-0.05,0.044-0.077,0.064l23.855,13.772v59.627
+        			v0.007L0.219,119.791z"/>
+        		<path fill="#FFFFFF" d="M259.808,30.422l16.875-9.743c-0.114-0.108-0.227-0.217-0.341-0.325l-16.687,9.635l0.153,0.088V30.422z"/>
+        		<path fill="#FFFFFF" d="M259.358,30.357v-0.019L236.671,17.24c0,0.007,0,0.014,0,0.02L259.358,30.357z"/>
+        		<path fill="#FFFFFF" d="M104.193,179.816l-0.114-0.066l-0.112-0.063l-51.875,29.949l0.223,0.129v60.157l-0.111,0.063l-0.112,0.064
+        			l21.401,12.355c0.145-0.094,0.297-0.18,0.458-0.257L52.32,269.66v-59.634l51.646-29.817l51.647,29.817v22.524
+        			c0.142-0.104,0.292-0.198,0.449-0.285v-22.249v-0.251L104.193,179.816z"/>
+        		<path fill="#FFFFFF" d="M52.315,269.923v-60.157l-0.223-0.129L0.33,179.75l-0.112-0.063v0.506v0.016l51.647,29.817v59.634
+        			l-23.858,13.775c0.126,0.101,0.255,0.199,0.382,0.3l23.702-13.686l0.112-0.064L52.315,269.923z"/>
+        		<path fill="#FFFFFF" d="M155.615,30.078v0.259v59.626v0.012v0.26l0.226,0.13l51.647,29.817l0.037,0.021l0.073,0.042l0.114,0.066
+        			l51.985-30.014l0.112-0.063V89.94V30.422v-0.344l-0.153-0.088L207.823,0.063L207.711,0L155.84,29.946l-0.113,0.065L155.615,30.078
+        			z M236.671,17.24l22.687,13.098v0.019v59.616l-51.637,29.812l-0.01,0.006l-51.644-29.816l-0.003-0.001V30.338l0.003-0.001
+        			l51.644-29.816L236.671,17.24z"/>
+        	</g>
+        </g>
+        <g class="roll-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#009688" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+	
+        		<image width="26" height="26" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAAsSAAALEgHS3X78AAAA
+        GXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAH5JREFUeNrslkEKwDAIBLO+PD+3
+        9FKakqTW6kIgHgNxGA+6KMZS1dp7B1At/+FpPmw2gSIK8gZEJGAGQwakB0MW5AmTQipk2tytaEYU
+        0DkxyR4b1WiDNqgFWQ/XEkbXCmJYCcOGevjEk2jc9yg6N5jCyV/YaCrwBsevQfIQYACxujWzu782
+        RwAAAABJRU5ErkJggg==" transform="matrix(1 0 0 1 39 77)">
+        	</image>
+	
+        		<image width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAA
+        GXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAFZJREFUeNrcU8sKACAIc355f254
+        CFJIUqFDu449DhvIQUQGBQBgeNwKTybIir0JUxErlCvpO7gj1vCWQbvBBwa6BfbTfNbALLHTApkn
+        hm+Mbh01nAIMALy5IJ/j8b4dAAAAAElFTkSuQmCC" transform="matrix(1 0 0 1 96 112)">
+        	</image>
+	
+        		<image width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAA
+        GXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAE1JREFUeNpiZMAC/v//34BNnJGR
+        EUOckRiN+AxiJFUzuiGM5GhGNoSJgQIAspiJXNthgCIXjBoANQBb8qSbC0CWUycpUyUzkZudAQIM
+        AJ7LJBpMxo1ZAAAAAElFTkSuQmCC" transform="matrix(1 0 0 1 44 22)">
+        	</image>
+	
+        		<image width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAA
+        GXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAElJREFUeNpiZEAD////b2DAARgZ
+        GTHkGInRiM8gRlI1oxvCxEAhYCTHdmRXUOyCgTUA5P2BdcHgCMRBkBKJzYm4ciQjpdkZIMAAVP8g
+        GrfhP/gAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 252 82)">
+        	</image>
+	
+        		<image width="21" height="21" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAACXBIWXMAAAsSAAALEgHS3X78AAAA
+        GXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAGVJREFUeNrclUEKACEMAx1f7s+7
+        eCgsKF3R9LDm5EHGpGKkLMrMmq+BFu1lBRICJgewC4vAnAJn8KoCvlWLUG4MtUu501yoOvrP4qdA
+        v8rh7vio334fp9Tp0FLKC8svadV38ggwAChbK6BZqjw7AAAAAElFTkSuQmCC" transform="matrix(1 0 0 1 145 19)">
+        	</image>
+        	<g>
+        		<polygon fill="none" points="155.615,89.963 155.615,30.336 103.972,0.521 52.325,30.338 52.325,89.963 103.968,119.78 		"/>
+        		<polygon fill="none" points="155.841,209.624 207.488,179.806 207.488,120.183 155.841,90.365 104.194,120.184 104.194,179.806 		
+        			"/>
+        		<polygon fill="none" points="0.45,120.179 0.45,179.806 52.097,209.624 103.743,179.806 103.743,120.18 52.094,90.361 		"/>
+        		<path fill="none" d="M156.068,89.963l51.654,29.822l51.637-29.812V30.357L236.672,17.26c0-0.006,0-0.013,0-0.02l-28.96-16.719
+        			l-51.644,29.816V89.963z"/>
+        		<polygon fill="#FFFFFF" points="103.968,119.78 103.979,119.787 155.615,89.975 155.615,89.963 		"/>
+        		<polygon fill="#FFFFFF" points="156.068,89.975 207.711,119.791 207.722,119.785 156.068,89.963 		"/>
+        		<polygon fill="#FFFFFF" points="207.524,120.204 207.488,120.183 207.488,179.806 155.841,209.624 104.194,179.806 
+        			104.194,120.184 104.193,120.185 104.193,179.816 156.063,209.766 156.063,210.017 207.73,180.187 207.524,180.067 		"/>
+        		<path fill="#FFFFFF" d="M259.696,90.298l-51.985,30.014l-0.114-0.066l-0.073-0.042v59.864l0.206,0.119l3.181,1.836
+        			c0.103-0.116,0.211-0.228,0.326-0.333l-3.263-1.884v-59.634l51.647-29.818l12.705,7.335c0.063-0.138,0.131-0.272,0.207-0.402
+        			l-12.724-7.346v0.295L259.696,90.298z"/>
+        		<polygon fill="#FFFFFF" points="52.325,89.963 52.325,89.973 103.972,119.791 103.979,119.787 103.968,119.78 		"/>
+        		<polygon fill="#FFFFFF" points="0.218,179.688 0.33,179.75 52.092,209.637 103.967,179.688 104.079,179.75 104.193,179.816 
+        			104.193,120.185 103.972,120.312 103.858,120.246 103.743,120.18 103.743,179.806 52.097,209.624 0.45,179.806 0.45,120.179 
+        			0.219,120.312 0.105,120.246 0.219,119.791 51.866,89.973 51.866,89.966 0.112,119.844 0,119.91 0,180.067 0.218,180.193 		"/>
+        		<polygon fill="#FFFFFF" points="156.068,30.337 156.065,30.338 156.065,89.973 156.068,89.975 156.068,89.963 		"/>
+        		<polygon fill="#FFFFFF" points="52.315,90.235 52.204,90.298 52.094,90.361 103.743,120.18 103.858,120.246 103.972,120.312 
+        			104.193,120.185 104.194,120.184 155.841,90.365 155.615,90.235 155.615,89.975 103.979,119.787 103.972,119.791 52.325,89.973 
+        			52.325,89.963 52.325,30.338 103.972,0.521 155.615,30.336 155.615,30.078 155.727,30.012 155.84,29.946 104.083,0.063 103.972,0 
+        			52.094,29.95 52.315,30.078 		"/>
+        		<path fill="#FFFFFF" d="M0.219,119.791l-0.114,0.455l0.114,0.066l0.23-0.133l51.645-29.817l0.109-0.063l0.112-0.063V30.078
+        			l-0.221-0.128L28.391,16.264c-0.101,0.08-0.203,0.157-0.303,0.238c-0.026,0.021-0.05,0.044-0.077,0.064l23.855,13.772v59.627
+        			v0.007L0.219,119.791z"/>
+        		<path fill="#FFFFFF" d="M259.358,30.357v-0.019L236.671,17.24c0,0.007,0,0.014,0,0.02L259.358,30.357z"/>
+        		<path fill="#FFFFFF" d="M259.808,30.422l16.875-9.743c-0.114-0.108-0.227-0.217-0.341-0.325l-16.687,9.635l0.153,0.088V30.422z"/>
+        		<path fill="#FFFFFF" d="M104.193,179.816l-0.114-0.066l-0.112-0.063l-51.875,29.949l0.223,0.129v60.157l-0.111,0.063l-0.112,0.064
+        			l21.401,12.355c0.145-0.094,0.297-0.18,0.458-0.257L52.32,269.66v-59.634l51.646-29.817l51.647,29.817v22.524
+        			c0.142-0.104,0.292-0.198,0.449-0.285v-22.249v-0.251L104.193,179.816z"/>
+        		<path fill="#FFFFFF" d="M52.315,269.923v-60.157l-0.223-0.129L0.33,179.75l-0.112-0.063v0.506v0.016l51.647,29.817v59.634
+        			l-23.858,13.775c0.126,0.101,0.255,0.199,0.382,0.3l23.702-13.686l0.112-0.064L52.315,269.923z"/>
+        		<path fill="#FFFFFF" d="M155.615,30.078v0.259v59.626v0.012v0.26l0.226,0.13l51.647,29.817l0.037,0.021l0.073,0.042l0.114,0.066
+        			l51.985-30.014l0.112-0.063V89.94V30.422v-0.344l-0.153-0.088L207.823,0.063L207.711,0L155.84,29.946l-0.113,0.065L155.615,30.078
+        			z M236.671,17.24l22.687,13.098v0.019v59.616l-51.637,29.812l-0.01,0.006l-51.644-29.816l-0.003-0.001V30.338l0.003-0.001
+        			l51.644-29.816L236.671,17.24z"/>
+        	</g>
+        </g>
+        <g class="static-text">
+        	<g>
+        		<path fill="#009688" d="M95.935,112h22.58v76.619h10.599v20.954h-10.599v24.434H96.346v-24.434H44.404v-20.954L95.935,112z
+        			 M96.346,188.619V148.73l-27.185,39.889H96.346z"/>
+        		<path fill="#009688" d="M150.601,216.207c2.751,0,5.098,0.971,7.038,2.912c1.942,1.943,2.913,4.316,2.913,7.119
+        			c0,2.752-0.971,5.112-2.913,7.08c-1.94,1.971-4.287,2.954-7.038,2.954c-2.75,0-5.097-0.983-7.039-2.954
+        			c-1.942-1.968-2.912-4.328-2.912-7.08c0-2.803,0.97-5.176,2.912-7.119C145.504,217.178,147.85,216.207,150.601,216.207z"/>
+        		<path fill="#009688" d="M168.366,174.541c0-15.697,1.685-27.832,5.057-36.408c3.371-8.576,8.131-15.076,14.279-19.5
+        			c6.149-4.421,13.026-6.633,20.631-6.633c7.713,0,14.699,2.225,20.955,6.675c6.257,4.45,11.206,11.126,14.846,20.024
+        			c3.641,8.898,5.461,20.848,5.461,35.842c0,14.939-1.793,26.834-5.38,35.68c-3.587,8.845-8.536,15.52-14.846,20.023
+        			c-6.312,4.505-13.323,6.756-21.037,6.756c-7.605,0-14.456-2.186-20.55-6.553c-6.095-4.37-10.854-10.881-14.28-19.539
+        			C170.079,202.252,168.366,190.127,168.366,174.541z M179.611,174.742c0,13.444,1.2,23.598,3.602,30.488
+        			c2.399,6.877,5.946,12.097,10.638,15.656c4.692,3.572,9.656,5.352,14.888,5.352c5.286,0,10.221-1.738,14.805-5.217
+        			c4.585-3.479,8.064-8.711,10.437-15.67c2.968-8.467,4.451-18.688,4.451-30.609c0-11.973-1.322-21.79-3.965-29.422
+        			c-2.643-7.646-6.297-13.242-10.963-16.775c-4.665-3.532-9.587-5.3-14.764-5.3c-5.287,0-10.249,1.768-14.888,5.3
+        			c-4.639,3.533-8.171,8.75-10.598,15.628C180.826,151.064,179.611,161.246,179.611,174.742z"/>
+        	</g>
+        </g>
+        <g class="roll-text">
+        	<g>
+        		<path fill="#FFFFFF" d="M95.935,112h22.58v76.619h10.599v20.954h-10.599v24.434H96.346v-24.434H44.404v-20.954L95.935,112z
+        			 M96.346,188.619V148.73l-27.185,39.889H96.346z"/>
+        		<path fill="#FFFFFF" d="M150.601,216.207c2.751,0,5.098,0.971,7.038,2.912c1.942,1.943,2.913,4.316,2.913,7.119
+        			c0,2.752-0.971,5.112-2.913,7.08c-1.94,1.971-4.287,2.954-7.038,2.954c-2.75,0-5.097-0.983-7.039-2.954
+        			c-1.942-1.968-2.912-4.328-2.912-7.08c0-2.803,0.97-5.176,2.912-7.119C145.504,217.178,147.85,216.207,150.601,216.207z"/>
+        		<path fill="#FFFFFF" d="M168.366,174.541c0-15.697,1.685-27.832,5.057-36.408c3.371-8.576,8.131-15.076,14.279-19.5
+        			c6.149-4.421,13.026-6.633,20.631-6.633c7.713,0,14.699,2.225,20.955,6.675c6.257,4.45,11.206,11.126,14.846,20.024
+        			c3.641,8.898,5.461,20.848,5.461,35.842c0,14.939-1.793,26.834-5.38,35.68c-3.587,8.845-8.536,15.52-14.846,20.023
+        			c-6.312,4.505-13.323,6.756-21.037,6.756c-7.605,0-14.456-2.186-20.55-6.553c-6.095-4.37-10.854-10.881-14.28-19.539
+        			C170.079,202.252,168.366,190.127,168.366,174.541z M179.611,174.742c0,13.444,1.2,23.598,3.602,30.488
+        			c2.399,6.877,5.946,12.097,10.638,15.656c4.692,3.572,9.656,5.352,14.888,5.352c5.286,0,10.221-1.738,14.805-5.217
+        			c4.585-3.479,8.064-8.711,10.437-15.67c2.968-8.467,4.451-18.688,4.451-30.609c0-11.973-1.322-21.79-3.965-29.422
+        			c-2.643-7.646-6.297-13.242-10.963-16.775c-4.665-3.532-9.587-5.3-14.764-5.3c-5.287,0-10.249,1.768-14.888,5.3
+        			c-4.639,3.533-8.171,8.75-10.598,15.628C180.826,151.064,179.611,161.246,179.611,174.742z"/>
+        		<path fill="#B3B3B3" d="M173.062,209.747c-3.129-8.567-4.695-20.305-4.695-35.206c0-15.697,1.685-27.832,5.057-36.408
+        			c3.371-8.576,8.131-15.076,14.279-19.5c6.149-4.421,13.026-6.633,20.631-6.633c7.713,0,14.699,2.225,20.955,6.675
+        			c5.48,3.897,9.956,9.501,13.429,16.81l-8.25,9.835c-2.643-7.646-6.297-13.242-10.963-16.775c-4.665-3.532-9.587-5.3-14.764-5.3
+        			c-5.287,0-10.249,1.768-14.888,5.3c-4.639,3.533-8.171,8.75-10.598,15.628c-2.427,6.892-3.642,17.073-3.642,30.569
+        			c0,11.208,0.834,20.13,2.503,26.779L173.062,209.747z"/>
+        		<circle fill="#FFFFFF" cx="207.504" cy="119.595" r="15"/>
+		
+        			<image width="21" height="21" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAACXBIWXMAAAsSAAALEgHS3X78AAAA
+        GXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAFVJREFUeNpiZMAHpnU04JTLqsAp
+        x0iyYUQYzkiRgTgMZ6TYMCwGMzHQADBSzZVIrqWRS6npSiigiUtHDR0ihg6lxD+0ChRquBZreUrT
+        kp8KdRRAgAEAgR8fvoTw5CEAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 197 109)">
+        		</image>
+        		<path fill-rule="evenodd" fill="#FFFFFF" d="M207.711,102.595c-1.041-1.079-1.723-2.538-2.491-3.944
+        			c-3.587-6.567-7.318-13.438-11.002-20.343c-2.764-5.181-6.822-9.343-6.228-17.645c0.677-9.456,8.74-17.769,18.683-18.06
+        			c5.073-0.149,9.591,1.622,12.663,3.943c4.167,3.15,8.295,9.128,7.681,17.23c-0.301,3.966-2.081,7.303-3.944,10.586
+        			C218.072,83.179,212.083,94.215,207.711,102.595z M199.824,57.757c-3.419,7.118,3.492,13.775,10.171,12.04
+        			c3.224-0.838,6.092-4.054,6.02-8.303c-0.09-5.339-4.658-9.105-10.171-8.096C202.844,53.947,200.709,55.914,199.824,57.757z"/>
+        	</g>
+        </g>
+        </svg>
       </a>
-      <a class="heroBadge" href="https://www.duezero.eu/DueZeroProject/Default.aspx" target="_blank" rel="noopener noreferrer">
-        <span class="heroBadgeTip">2.0 Project</span><img src="img/project20.svg" alt="2.0 Project">
+      <a class="heroBadge" href="https://www.duezero.eu/DueZeroProject/Default.aspx" target="_blank" rel="noopener noreferrer" aria-label="2.0 PROJECT">
+        <span class="heroBadgeTip"><span class="tipName">2.0 PROJECT</span><span class="tipDesc">Pianificazione dei tuoi Progetti</span></span>
+        <svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+        	 y="0px" viewBox="0 0 300 300" xml:space="preserve">
+        <g class="static-icon">
+        	<g>
+        		<path fill="#FFFFFF" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#E6E6E6" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="roll-icon">
+        	<g>
+        		<path fill="#FFFFFF" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#E6E6E6" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="static-text">
+        	<g>
+        		<polygon fill="#808080" points="230.609,105.415 230.609,62.5 56.25,62.5 56.25,236.857 99.095,236.857 		"/>
+        		<polygon fill="#FF0000" points="243.75,107.232 243.75,237.5 113.404,237.5 		"/>
+        	</g>
+        </g>
+        <g class="roll-text">
+        	<g>
+        		<linearGradient id="project20_SVGID_1_" gradientUnits="userSpaceOnUse" x1="143.4297" y1="236.8574" x2="143.4297" y2="62.5005">
+        			<stop  offset="0" style="stop-color:#808080"/>
+        			<stop  offset="0.4287" style="stop-color:#828282;stop-opacity:0.5713"/>
+        			<stop  offset="0.5831" style="stop-color:#898989;stop-opacity:0.4169"/>
+        			<stop  offset="0.6932" style="stop-color:#949494;stop-opacity:0.3068"/>
+        			<stop  offset="0.7821" style="stop-color:#A5A5A5;stop-opacity:0.2179"/>
+        			<stop  offset="0.8583" style="stop-color:#BBBBBB;stop-opacity:0.1417"/>
+        			<stop  offset="0.9258" style="stop-color:#D7D7D7;stop-opacity:0.0742"/>
+        			<stop  offset="0.9854" style="stop-color:#F6F6F6;stop-opacity:0.0146"/>
+        			<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+        		</linearGradient>
+        		<polygon fill="url(#project20_SVGID_1_)" points="230.609,105.415 230.609,62.5 56.25,62.5 56.25,236.857 99.095,236.857 		"/>
+        		<polygon fill="#FF0000" points="243.75,107.232 243.75,237.5 113.404,237.5 		"/>
+        	</g>
+        </g>
+        </svg>
       </a>
-      <a class="heroBadge" href="manualistica-tecnica.html">
-        <span class="heroBadgeTip">Manualistica</span><img src="img/manualistica.svg" alt="Manualistica">
+      <a class="heroBadge" href="manualistica-tecnica.html" aria-label="SC PUBLISHER">
+        <span class="heroBadgeTip"><span class="tipName">SC PUBLISHER</span><span class="tipDesc">Servizio Manualistica tecnica ShortCut!</span></span>
+        <svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+        	 y="0px" viewBox="0 0 300 300" xml:space="preserve">
+        <g class="static-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#333333" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="roll-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#29ABE2" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="static-text">
+        	<g>
+        		<path fill="#29ABE2" d="M128.738,98.01l-20.135,17.767c-7.068-9.838-14.264-14.757-21.591-14.757
+        			c-3.568,0-6.483,0.955-8.754,2.864c-2.268,1.91-3.403,4.062-3.403,6.457c0,2.395,0.809,4.66,2.433,6.796
+        			c2.203,2.848,8.848,8.964,19.935,18.35c10.372,8.673,16.664,14.143,18.867,16.408c5.51,5.566,9.417,10.89,11.721,15.971
+        			c2.3,5.081,3.452,10.631,3.452,16.65c0,11.715-4.051,21.392-12.149,29.029S100.453,225,87.43,225
+        			c-10.175,0-19.034-2.492-26.583-7.476c-7.548-4.984-14.013-12.815-19.39-23.495l22.851-13.786
+        			c6.872,12.621,14.779,18.932,23.724,18.932c4.668,0,8.589-1.359,11.767-4.078c3.177-2.718,4.765-5.857,4.765-9.417
+        			c0-3.236-1.2-6.473-3.598-9.709c-2.4-3.236-7.683-8.188-15.852-14.854c-15.561-12.686-25.612-22.476-30.151-29.369
+        			c-4.539-6.893-6.807-13.77-6.807-20.631c0-9.903,3.776-18.398,11.324-25.486S76.343,75,87.424,75
+        			c7.131,0,13.919,1.65,20.364,4.952C114.237,83.252,121.219,89.272,128.738,98.01z"/>
+        		<path fill="#29ABE2" d="M258.543,137.718l-10.776,6.699c-9.31-12.362-22.012-18.543-38.112-18.543
+        			c-12.864,0-23.546,4.137-32.05,12.414c-8.5,8.274-12.75,18.325-12.75,30.159c0,7.691,1.955,14.936,5.866,21.727
+        			c3.91,6.785,9.277,12.055,16.098,15.804c6.82,3.748,14.466,5.625,22.934,5.625c15.518,0,28.188-6.181,38.015-18.543l10.776,7.087
+        			c-5.048,7.605-11.828,13.501-20.339,17.691c-8.512,4.191-18.204,6.289-29.078,6.289c-16.699,0-30.55-5.308-41.553-15.922
+        			c-11.003-10.615-16.505-23.527-16.505-38.738c0-10.227,2.573-19.725,7.719-28.495c5.146-8.77,12.217-15.615,21.213-20.534
+        			c8.997-4.919,19.062-7.379,30.194-7.379c6.99,0,13.738,1.068,20.243,3.204c6.505,2.136,12.022,4.919,16.553,8.35
+        			C251.521,128.042,255.372,132.411,258.543,137.718z"/>
+        	</g>
+        </g>
+        <g class="roll-text">
+        	<g>
+        		<path fill="#FFFFFF" d="M128.738,98.01l-20.135,17.767c-7.068-9.838-14.264-14.757-21.591-14.757
+        			c-3.568,0-6.483,0.955-8.754,2.864c-2.268,1.91-3.403,4.062-3.403,6.457c0,2.395,0.809,4.66,2.433,6.796
+        			c2.203,2.848,8.848,8.964,19.935,18.35c10.372,8.673,16.664,14.143,18.867,16.408c5.51,5.566,9.417,10.89,11.721,15.971
+        			c2.3,5.081,3.452,10.631,3.452,16.65c0,11.715-4.051,21.392-12.149,29.029S100.453,225,87.43,225
+        			c-10.175,0-19.034-2.492-26.583-7.476c-7.548-4.984-14.013-12.815-19.39-23.495l22.851-13.786
+        			c6.872,12.621,14.779,18.932,23.724,18.932c4.668,0,8.589-1.359,11.767-4.078c3.177-2.718,4.765-5.857,4.765-9.417
+        			c0-3.236-1.2-6.473-3.598-9.709c-2.4-3.236-7.683-8.188-15.852-14.854c-15.561-12.686-25.612-22.476-30.151-29.369
+        			c-4.539-6.893-6.807-13.77-6.807-20.631c0-9.903,3.776-18.398,11.324-25.486S76.343,75,87.424,75
+        			c7.131,0,13.919,1.65,20.364,4.952C114.237,83.252,121.219,89.272,128.738,98.01z"/>
+        		<path fill="#FFFFFF" d="M258.543,137.718l-10.776,6.699c-9.31-12.362-22.012-18.543-38.112-18.543
+        			c-12.864,0-23.546,4.137-32.05,12.414c-8.5,8.274-12.75,18.325-12.75,30.159c0,7.691,1.955,14.936,5.866,21.727
+        			c3.91,6.785,9.277,12.055,16.098,15.804c6.82,3.748,14.466,5.625,22.934,5.625c15.518,0,28.188-6.181,38.015-18.543l10.776,7.087
+        			c-5.048,7.605-11.828,13.501-20.339,17.691c-8.512,4.191-18.204,6.289-29.078,6.289c-16.699,0-30.55-5.308-41.553-15.922
+        			c-11.003-10.615-16.505-23.527-16.505-38.738c0-10.227,2.573-19.725,7.719-28.495c5.146-8.77,12.217-15.615,21.213-20.534
+        			c8.997-4.919,19.062-7.379,30.194-7.379c6.99,0,13.738,1.068,20.243,3.204c6.505,2.136,12.022,4.919,16.553,8.35
+        			C251.521,128.042,255.372,132.411,258.543,137.718z"/>
+        	</g>
+        </g>
+        </svg>
       </a>
-      <span class="heroBadge heroBadgePending">
-        <span class="heroBadgeTip">Ricambi</span><img src="img/ricambi.svg" alt="Ricambi">
+      <span class="heroBadge heroBadgePending" aria-label="SC SPARE MANAGER">
+        <span class="heroBadgeTip"><span class="tipName">SC SPARE MANAGER</span><span class="tipDesc">Servizio Cataloghi Ricambi ShortCut!</span></span>
+        <svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+        	 y="0px" viewBox="0 0 300 300" xml:space="preserve">
+        <g class="static-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#333333" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="roll-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#C9961A" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="static-text">
+        	<g>
+        		<path fill="#C9961A" d="M124.875,98.036l-20.157,17.787c-7.073-9.851-14.28-14.775-21.61-14.775c-3.57,0-6.496,0.957-8.764,2.867
+        			c-2.274,1.913-3.41,4.065-3.41,6.464c0,2.397,0.812,4.664,2.438,6.804c2.205,2.851,8.853,8.975,19.957,18.368
+        			c10.385,8.683,16.677,14.159,18.888,16.427c5.515,5.574,9.428,10.901,11.729,15.987c2.309,5.086,3.457,10.646,3.457,16.67
+        			c0,11.724-4.058,21.412-12.163,29.059c-8.108,7.647-18.677,11.467-31.718,11.467c-10.182,0-19.051-2.491-26.606-7.483
+        			c-7.557-4.983-14.029-12.827-19.415-23.521l22.872-13.803c6.885,12.639,14.798,18.959,23.754,18.959
+        			c4.674,0,8.596-1.361,11.779-4.086c3.183-2.719,4.769-5.865,4.769-9.429c0-3.233-1.199-6.476-3.605-9.717
+        			c-2.398-3.242-7.687-8.194-15.865-14.873c-15.576-12.698-25.645-22.497-30.188-29.398c-4.542-6.901-6.811-13.783-6.811-20.654
+        			c0-9.913,3.781-18.419,11.338-25.512C63.102,78.546,72.424,75,83.521,75c7.136,0,13.932,1.652,20.385,4.956
+        			C110.361,83.261,117.353,89.287,124.875,98.036z"/>
+        		<path fill="#C9961A" d="M152.382,115.822h13.607v19.436c5.368-7.387,11.558-12.925,18.545-16.619
+        			c6.991-3.691,14.791-5.539,23.399-5.539c15.017,0,27.862,5.41,38.545,16.232c10.683,10.819,16.021,23.845,16.021,39.069
+        			c0,15.553-5.288,28.753-15.873,39.604c-10.588,10.856-23.352,16.278-38.303,16.278c-8.417,0-16.15-1.749-23.204-5.242
+        			c-7.065-3.499-13.439-8.718-19.131-15.653v56.86h-13.607V115.822z M206.809,126.219c-11.768,0-21.673,4.116-29.724,12.327
+        			c-8.044,8.222-12.067,18.45-12.067,30.684c0,8.022,1.789,15.24,5.386,21.654c3.578,6.404,8.722,11.473,15.412,15.231
+        			c6.69,3.756,13.752,5.633,21.188,5.633c7.304,0,14.174-1.893,20.603-5.664c6.433-3.797,11.561-9.092,15.374-15.88
+        			c3.815-6.805,5.717-13.921,5.717-21.365c0-7.507-1.894-14.63-5.675-21.357c-3.776-6.733-8.87-11.955-15.267-15.681
+        			C221.354,128.083,214.374,126.219,206.809,126.219z"/>
+        	</g>
+        </g>
+        <g class="roll-text">
+        	<g>
+        		<path fill="#FFFFFF" d="M124.875,98.036l-20.157,17.787c-7.073-9.851-14.28-14.775-21.61-14.775c-3.57,0-6.496,0.957-8.764,2.867
+        			c-2.274,1.913-3.41,4.065-3.41,6.464c0,2.397,0.812,4.664,2.438,6.804c2.205,2.851,8.853,8.975,19.957,18.368
+        			c10.385,8.683,16.677,14.159,18.888,16.427c5.515,5.574,9.428,10.901,11.729,15.987c2.309,5.086,3.457,10.646,3.457,16.67
+        			c0,11.724-4.058,21.412-12.163,29.059c-8.108,7.647-18.677,11.467-31.718,11.467c-10.182,0-19.051-2.491-26.606-7.483
+        			c-7.557-4.983-14.029-12.827-19.415-23.521l22.872-13.803c6.885,12.639,14.798,18.959,23.754,18.959
+        			c4.674,0,8.596-1.361,11.779-4.086c3.183-2.719,4.769-5.865,4.769-9.429c0-3.233-1.199-6.476-3.605-9.717
+        			c-2.398-3.242-7.687-8.194-15.865-14.873c-15.576-12.698-25.645-22.497-30.188-29.398c-4.542-6.901-6.811-13.783-6.811-20.654
+        			c0-9.913,3.781-18.419,11.338-25.512C63.102,78.546,72.424,75,83.521,75c7.136,0,13.932,1.652,20.385,4.956
+        			C110.361,83.261,117.353,89.287,124.875,98.036z"/>
+        		<path fill="#FFFFFF" d="M152.382,115.822h13.607v19.436c5.368-7.387,11.558-12.925,18.545-16.619
+        			c6.991-3.691,14.791-5.539,23.399-5.539c15.017,0,27.862,5.41,38.545,16.232c10.683,10.819,16.021,23.845,16.021,39.069
+        			c0,15.553-5.288,28.753-15.873,39.604c-10.588,10.856-23.352,16.278-38.303,16.278c-8.417,0-16.15-1.749-23.204-5.242
+        			c-7.065-3.499-13.439-8.718-19.131-15.653v56.86h-13.607V115.822z M206.809,126.219c-11.768,0-21.673,4.116-29.724,12.327
+        			c-8.044,8.222-12.067,18.45-12.067,30.684c0,8.022,1.789,15.24,5.386,21.654c3.578,6.404,8.722,11.473,15.412,15.231
+        			c6.69,3.756,13.752,5.633,21.188,5.633c7.304,0,14.174-1.893,20.603-5.664c6.433-3.797,11.561-9.092,15.374-15.88
+        			c3.815-6.805,5.717-13.921,5.717-21.365c0-7.507-1.894-14.63-5.675-21.357c-3.776-6.733-8.87-11.955-15.267-15.681
+        			C221.354,128.083,214.374,126.219,206.809,126.219z"/>
+        	</g>
+        </g>
+        </svg>
       </span>
-      <span class="heroBadge heroBadgePending">
-        <span class="heroBadgeTip">Traduzioni</span><img src="img/traduzioni.svg" alt="Traduzioni">
+      <span class="heroBadge heroBadgePending" aria-label="SC TRANSLATE">
+        <span class="heroBadgeTip"><span class="tipName">SC TRANSLATE</span><span class="tipDesc">Glossario e Traduzioni professionali</span></span>
+        <svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+        	 y="0px" viewBox="0 0 300 300" xml:space="preserve">
+        <g class="static-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#333333" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="roll-icon">
+        	<g>
+        		<path fill="#324646" d="M293.733,44.981C282.153,18.507,255.744,0,225,0H75C33.579,0,0,33.579,0,75v150
+        			c0,30.263,17.934,56.32,43.744,68.174C141.861,264.814,264.862,152.669,293.733,44.981z"/>
+        		<path fill="#EC297B" d="M43.744,293.174C53.262,297.545,63.841,300,75,300h150c41.421,0,75-33.578,75-75V75
+        			c0-10.677-2.246-20.825-6.267-30.019C264.862,152.669,141.861,264.814,43.744,293.174z"/>
+        	</g>
+        </g>
+        <g class="static-text">
+        	<g>
+        		<path fill="#EC297B" d="M16.468,75h82.903v28.144H72.043V225h-28.96V103.144H16.468V75z"/>
+        		<path fill="#EC297B" d="M117.624,114.055H131.9v19.17c4.971-7.07,10.07-12.236,15.313-15.5c7.214-4.351,14.803-6.526,22.765-6.526
+        			c5.379,0,10.478,1.054,15.313,3.161s8.778,4.912,11.846,8.413c3.059,3.501,5.719,8.515,7.962,15.041
+        			c4.75-8.702,10.681-15.313,17.802-19.833c7.121-4.521,14.786-6.781,22.995-6.781c7.656,0,14.429,1.938,20.292,5.813
+        			s10.223,9.279,13.069,16.213s4.274,17.335,4.274,31.203V225H268.95v-60.571c0-11.896-0.85-20.071-2.541-24.524
+        			s-4.588-8.039-8.693-10.758c-4.096-2.719-8.991-4.079-14.684-4.079c-6.908,0-13.23,2.04-18.958,6.118
+        			c-5.719,4.079-9.908,9.518-12.551,16.315c-2.643,6.798-3.959,18.151-3.959,34.059V225h-14.276v-56.798
+        			c0-13.393-0.833-22.485-2.498-27.278c-1.666-4.792-4.572-8.633-8.719-11.522s-9.075-4.334-14.786-4.334
+        			c-6.594,0-12.764,1.988-18.508,5.965c-5.745,3.977-9.993,9.331-12.747,16.061c-2.753,6.73-4.13,17.029-4.13,30.897V225h-14.276
+        			V114.055z"/>
+        	</g>
+        </g>
+        <g class="roll-text">
+        	<g>
+        		<path fill="#FFFFFF" d="M16.468,75h82.903v28.144H72.043V225h-28.96V103.144H16.468V75z"/>
+        		<path fill="#FFFFFF" d="M117.624,114.055H131.9v19.17c4.971-7.07,10.07-12.236,15.313-15.5c7.214-4.351,14.803-6.526,22.765-6.526
+        			c5.379,0,10.478,1.054,15.313,3.161s8.778,4.912,11.846,8.413c3.059,3.501,5.719,8.515,7.962,15.041
+        			c4.75-8.702,10.681-15.313,17.802-19.833c7.121-4.521,14.786-6.781,22.995-6.781c7.656,0,14.429,1.938,20.292,5.813
+        			s10.223,9.279,13.069,16.213s4.274,17.335,4.274,31.203V225H268.95v-60.571c0-11.896-0.85-20.071-2.541-24.524
+        			s-4.588-8.039-8.693-10.758c-4.096-2.719-8.991-4.079-14.684-4.079c-6.908,0-13.23,2.04-18.958,6.118
+        			c-5.719,4.079-9.908,9.518-12.551,16.315c-2.643,6.798-3.959,18.151-3.959,34.059V225h-14.276v-56.798
+        			c0-13.393-0.833-22.485-2.498-27.278c-1.666-4.792-4.572-8.633-8.719-11.522s-9.075-4.334-14.786-4.334
+        			c-6.594,0-12.764,1.988-18.508,5.965c-5.745,3.977-9.993,9.331-12.747,16.061c-2.753,6.73-4.13,17.029-4.13,30.897V225h-14.276
+        			V114.055z"/>
+        	</g>
+        </g>
+        </svg>
       </span>
     </div>
   </div>
@@ -123,8 +618,9 @@
 
 <!-- ================= CAPITOLO 2 — ECOSISTEMA (asset reali) ================= -->
 <div class="scene2" id="scene2">
-  <!-- titolo "Documentation 4.0" completo (non a metà rivelazione) qui: s~.978 su tutta la timeline
-       di questa scena (.902 titolo pieno, .959 sottotitolo pieno, .986 inizia il ritiro) -->
+  <!-- titolo "Documentation 4.0" completo (non a metà rivelazione) qui: s~.898 su tutta la timeline
+       di questa scena (.822 titolo pieno, .879 sottotitolo pieno, .906 inizia il ritiro — timeline
+       traslata indietro di .144+.064 rispetto all'originale, vedi capitoli.js) -->
   <div class="chapterAnchor" id="doc40Start" aria-hidden="true"></div>
   <div class="sticky2" id="sticky2">
     <!-- Ponte Cap.1 -> Cap.2: il perimetro della card finale si espande e diventa il campo nero -->
@@ -139,8 +635,15 @@
       <span class="ch2BannerText" id="ch2BannerText">Capitolo 02 | Ecosistema</span>
     </div>
     <div class="eco-open" id="ecoOpen">
-      <h2 class="eco-open-h" id="ecoOpenH">Non tre software.<br>Un unico ecosistema<br>che segue il ciclo di vita<br>della macchina.</h2>
-      <p class="eco-open-sub" id="ecoOpenSub">Dalla progettazione della manualistica allo sviluppo dei contenuti, fino al post-vendita e alla gestione degli aggiornamenti per matricola. Un'infrastruttura software integrata per connettere Ufficio Tecnico, Service e Produzione.</p>
+      <h2 class="eco-open-h" id="ecoOpenH">Un unico ecosistema<br>che segue il ciclo di vita<br>della macchina</h2>
+      <div class="eco-open-sub" id="ecoOpenSub">
+        <ul class="eco-subList">
+          <li>Progettazione e redazione di manualistica tecnica conforme</li>
+          <li>Piattaforma after sales e gestione aggiornamenti per matricola</li>
+          <li>Infrastruttura e connessione dei reparti aziendali</li>
+          <li>Integrazione tra ufficio tecnico, service e produzione</li>
+        </ul>
+      </div>
     </div>
 
     <!-- Ponte verso 2.0 PROJECT: crop ravvicinato del telefono che va a fuoco -->
@@ -153,17 +656,45 @@
         <h3 class="pj-title" id="pjTitle">2.0 Project</h3>
         <p class="pj-sub" id="pjSub">La piattaforma di gestione commessa</p>
       </div>
-      <p class="pj-desc" id="pjDesc">L'area riservata in Cloud per i nostri Clienti. Permette di monitorare in tempo reale lo stato di avanzamento dei lavori, pianificare le attività, condividere file e dati di progetto, definire i tempi e coordinare le priorità in totale sicurezza, ovunque ti trovi. Dove il progetto documentale prende forma.</p>
-      <a href="https://www.duezero.eu/DueZeroProject/Default.aspx" target="_blank" rel="noopener noreferrer" class="pj-cta" id="pjCta">Scopri 2.0 Project <span class="plus">[+]</span></a>
+      <p class="pj-desc" id="pjDesc">Infrastruttura cloud dedicata ai nostri clienti.<br>Permette di monitorare in tempo reale l'avanzamento commesse,<br>condividere file di progetto e pianificare le attività<br>in totale sicurezza e da qualsiasi dispositivo.<br>Dove il flusso documentale prende forma.</p>
+      <div class="eco-cta-row" id="pjCtaRow">
+        <a href="https://www.duezero.eu/DueZeroProject/Default.aspx" target="_blank" rel="noopener noreferrer" class="pj-cta" id="pjCta">Scopri 2.0 Project <span class="plus">[+]</span></a>
+        <div class="eco-appGroup">
+          <span class="eco-appLabel">Disponibile anche in versione Mobile App per iOS e Android</span>
+          <div class="eco-appIcons">
+            <a href="https://play.google.com/store/apps/details?id=eu.duezero.app&hl=it" target="_blank" rel="noopener noreferrer" class="eco-appIcon" aria-label="Google Play — Due Zero">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 2.5c-.3.3-.5.7-.5 1.2v16.6c0 .5.2.9.5 1.2l.1.1L12.9 12 3.1 2.4 3 2.5zm14.4 8L14.3 12l3.1 3.1 4.1-2.4c1.1-.6 1.1-1.6 0-2.2l-4.1-2.4zM4.3 21.4L14.3 13.3l2.5 2.5-11.7 6.7c-.3.2-.6.1-.8-.1zM14.3 10.7L4.3 2.6c.2-.2.5-.3.8-.1l11.7 6.7-2.5 2.5z"/></svg>
+            </a>
+            <a href="https://apps.apple.com/us/app/due-zero/id1544240205" target="_blank" rel="noopener noreferrer" class="eco-appIcon" aria-label="App Store — Due Zero">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.87-1.99 1.54-2.987 1.54-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.46zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.91 1.34-1.86 2.67-3.34 2.7-1.46.03-1.93-.87-3.6-.87-1.67 0-2.19.84-3.58.9-1.44.05-2.54-1.45-3.46-2.78-1.87-2.71-3.3-7.66-1.38-11 .95-1.65 2.65-2.7 4.49-2.73 1.41-.03 2.74.95 3.6.95.86 0 2.47-1.17 4.16-1 .71.03 2.7.29 3.98 2.16-.1.06-2.38 1.39-2.35 4.15.03 3.29 2.89 4.39 2.92 4.4z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- HYPERPARTS — campo fotografico immersivo (eco_hyperparts_bg.jpg), titolo dominante, nessun numero interno -->
     <div class="ecoHyperImg" id="ecoHyperImg" aria-hidden="true"></div>
     <div id="sceneHyper">
-      <h3 class="hp-title" id="hpTitle">Hyper.Parts</h3>
-      <p class="hp-sub" id="hpSub">Il portale ricambi e After-Sales</p>
-      <p class="hp-desc" id="hpDesc">Il servizio che rende il tuo post-vendita smart. La WebApp B2B che connette Costruttore ed Utilizzatore e trasforma i modelli CAD 3D e le distinte base in cataloghi ricambi interattivi consultabili via web. Permette a Clienti e Tecnici di assistenza di identificare i componenti, consultare i manuali correlati e inviare richieste d'ordine precise. DUE.ZERO implementa i dati per te, semplicemente sviluppando la Documentazione tecnica. Scopri come.</p>
-      <a href="https://hyperparts.it/" target="_blank" rel="noopener noreferrer" class="hp-cta" id="hpCta">Esplora Hyperparts <span class="plus">[+]</span></a>
+      <div class="hp-group" id="hpGroup">
+        <h3 class="hp-title" id="hpTitle">Hyper.Parts</h3>
+        <p class="hp-sub" id="hpSub">Il portale ricambi e After-Sales</p>
+      </div>
+      <p class="hp-desc" id="hpDesc">La piattaforma webapp B2B per un post-vendita smart.<br>Due.Zero trasforma dati CAD e distinte in cataloghi ricambi interattivi<br>per l'identificazione componenti e l'ordine in tempo reale.<br>Integra i manuali d'uso e moduli AI con gestione dati delegata.<br>Innovazione immediata per costruttori e utilizzatori.</p>
+      <div class="eco-cta-row" id="hpCtaRow">
+        <a href="https://hyperparts.it/" target="_blank" rel="noopener noreferrer" class="hp-cta" id="hpCta">Esplora Hyperparts <span class="plus">[+]</span></a>
+        <div class="eco-appGroup">
+          <span class="eco-appLabel">Piena operatività sul campo da smartphone e tablet</span>
+          <div class="eco-appIcons">
+            <span class="eco-appIcon pending" aria-label="Google Play — link in arrivo">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 2.5c-.3.3-.5.7-.5 1.2v16.6c0 .5.2.9.5 1.2l.1.1L12.9 12 3.1 2.4 3 2.5zm14.4 8L14.3 12l3.1 3.1 4.1-2.4c1.1-.6 1.1-1.6 0-2.2l-4.1-2.4zM4.3 21.4L14.3 13.3l2.5 2.5-11.7 6.7c-.3.2-.6.1-.8-.1zM14.3 10.7L4.3 2.6c.2-.2.5-.3.8-.1l11.7 6.7-2.5 2.5z"/></svg>
+            </span>
+            <a href="https://apps.apple.com/us/app/hyperparts/id6797175665" target="_blank" rel="noopener noreferrer" class="eco-appIcon" aria-label="App Store — Hyperparts">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.87-1.99 1.54-2.987 1.54-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.46zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.91 1.34-1.86 2.67-3.34 2.7-1.46.03-1.93-.87-3.6-.87-1.67 0-2.19.84-3.58.9-1.44.05-2.54-1.45-3.46-2.78-1.87-2.71-3.3-7.66-1.38-11 .95-1.65 2.65-2.7 4.49-2.73 1.41-.03 2.74.95 3.6.95.86 0 2.47-1.17 4.16-1 .71.03 2.7.29 3.98 2.16-.1.06-2.38 1.39-2.35 4.15.03 3.29 2.89 4.39 2.92 4.4z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- DOCUMENTATION 4.0 — cambio di scala: da componente/macchina a parco macchine. Fondo carta, nessuna foto aggiuntiva. -->
@@ -171,7 +702,7 @@
       <h3 class="dc-title" id="dcTitle">Documentation 4.0</h3>
       <span class="dc-accent" id="dcAccent" aria-hidden="true"></span>
       <p class="dc-sub" id="dcSub">La mappatura del parco macchine</p>
-      <p class="dc-text"><i id="dcPara">Controllo e tracciabilità globale del parco macchine installato. La mappa interattiva offre una visione centrale di tutte le matricole prodotte e documentate, consentendo di consultare in ogni momento i contenuti aggiornati e garantire la rintracciabilità storica di rilasci e revisioni nel tempo.</i></p>
+      <p class="dc-text"><i id="dcPara">Il risultato visivo del nostro ecosistema in continua evoluzione.<br>Una mappa interattiva per tracciare in tempo reale<br>il parco macchine documentato per i nostri clienti nel mondo.<br>Siti produttivi, matricole e contenuti tecnici aggiornati,<br>per garantire tracciabilità e rintracciabilità storica globale.</i></p>
       <!-- sfondo chiaro qui (carta), non nero come nell'hero: serve la variante scura del richiamo -->
       <div class="hint hintDark" id="dcHint" aria-hidden="true"><span class="hintArrow">↓</span> Scroll</div>
     </div>
@@ -180,7 +711,7 @@
 
 <!-- Documentation 4.0 È la Machine Map, ed è anche la soglia del Capitolo 03 — UN SOLO sticky, un solo progresso di
      scroll, tre layer sovrapposti: mappa (cresce da contenuta a schermo intero e resta protagonista), outro nero
-     (sale e la chiude), soglia Servizi (banner + titolo + sottotitolo, entrano nello stesso viewport già durante la
+     (sale e la chiude), soglia Cosa Facciamo (banner + titolo + sottotitolo, entrano nello stesso viewport già durante la
      chiusura, restano fermi per un hold reale, poi l'arco dei servizi prende il posto in una sezione successiva). -->
 <section class="mapServicesTransition" id="mapServicesTransition">
   <div class="mapServicesSticky" id="mapServicesSticky">
@@ -230,18 +761,18 @@
     <!-- layer 3: soglia Capitolo 03 — banner + titolo + sottotitolo, stesso sticky, stesso progresso -->
     <div class="servicesIntroLayer" id="servicesIntroLayer">
       <div class="ch3Banner" id="ch3Banner" aria-hidden="true">
-        <span class="ch3BannerText" id="ch3BannerText">Capitolo 03 | Servizi</span>
+        <span class="ch3BannerText" id="ch3BannerText">Capitolo 03 | Cosa Facciamo</span>
       </div>
       <div class="svc-open" id="svcOpen">
-        <h2 class="svc-open-h" id="svcOpenH">Sei servizi.<br>Un processo continuo.</h2>
-        <p class="svc-open-sub" id="svcOpenSub">Ogni competenza entra nello stesso processo.</p>
+        <h2 class="svc-open-h" id="svcOpenH">Sei servizi.<br>Un processo continuo</h2>
+        <p class="svc-open-sub" id="svcOpenSub">Ogni competenza entra nello stesso processo</p>
       </div>
     </div>
 
   </div>
 </section>
 
-<!-- Servizi — card a scroll orizzontale (dalla bozza duezero-scroll): su desktop la sezione è pinnata
+<!-- Cosa Facciamo — card a scroll orizzontale (dalla bozza duezero-scroll): su desktop la sezione è pinnata
      e il binario di card scorre lateralmente guidato dallo scroll, con contatore, barra di progresso e
      spotlight sulla card centrale; su mobile e in reduced-motion gli stessi dati sono resi come lista
      verticale statica. Card e lista sono generate da JS dall'array SERVICES: cambiare numero o titoli
@@ -252,7 +783,7 @@
     <div class="svcSticky" id="svcSticky">
       <div class="svcHead">
         <div class="svcHeadLeft">
-          <h2 class="svcHeadLabel"><span class="svcHeadBar" aria-hidden="true"></span>03 | I Servizi</h2>
+          <h2 class="svcHeadLabel"><span class="svcHeadBar" aria-hidden="true"></span>03 | Cosa Facciamo</h2>
           <p class="svcHeadTitle">Specialisti<br>dell'industria</p>
         </div>
         <div class="svcProgressWrap">
@@ -263,8 +794,8 @@
       <div class="svcTrackWrap"><div class="svcTrack" id="svcTrack"></div></div>
     </div>
   </div>
-  <div class="svcMobileList" id="svcMobileList" aria-label="I nostri servizi">
-    <p class="svcMobileLabel"><span class="svcHeadBar" aria-hidden="true"></span>03 | I Servizi</p>
+  <div class="svcMobileList" id="svcMobileList" aria-label="Cosa facciamo">
+    <p class="svcMobileLabel"><span class="svcHeadBar" aria-hidden="true"></span>03 | Cosa Facciamo</p>
   </div>
 </section>
 
@@ -280,8 +811,8 @@
 
     <div class="qualityIntro" id="qualityIntro">
       <div class="qualityBanner">CAPITOLO 04 | QUALITÀ</div>
-      <h2>LA QUALITÀ<br>NON SI CONTROLLA<br>ALLA FINE.</h2>
-      <p>Si progetta, si verifica, si rende tracciabile.</p>
+      <h2>LA QUALITÀ<br>NON SI CONTROLLA<br>ALLA FINE</h2>
+      <p>Si progetta, si verifica, si rende tracciabile</p>
     </div>
 
     <div class="qualityMethod" id="qualityMethod">
@@ -313,44 +844,18 @@
   </div>
 </section>
 
-<!-- Capitolo 05 — News: sezione editoriale, non feed social e non griglia di card. Un solo sticky,
-     tre gesti: apertura (banner+titolo, stesso schema di Cap.04), editoriale (lista di tre titoli a
-     sinistra — l'attivo grande e nitido, gli altri due piccoli e leggibili — pannello immagine+estratto
-     a destra che cambia con crop orizzontale e maschera verticale), chiusura (nero + invito LinkedIn).
-     newsList è popolata via JS da NEWS_ITEMS; ogni riga porta anche un fallback statico (immagine,
-     estratto, CTA) visibile solo in reduced-motion, dove il pannello dinamico condiviso non ha senso. -->
+<!-- Capitolo 05 — News: contenuti editoriali non ancora pronti, sezione ridotta alla sola apertura.
+     Niente più sticky/scroll-jack (aveva senso solo per sequenziare tre scene): reveal one-shot quando
+     la sezione entra in viewport, stesso meccanismo già usato per il Footer (classe .revealed). -->
 <section class="newsSection" id="newsSection">
-  <!-- banner+titolo+sottotitolo già COMPLETI qui (~27%), prima che l'intro inizi a ritrarsi (.30) -->
   <div class="chapterAnchor" id="newsStart" aria-hidden="true"></div>
-  <div class="newsSticky" id="newsSticky">
-    <div class="newsIntro" id="newsIntro">
-      <div class="newsBanner">CAPITOLO 05 | NEWS</div>
-      <h2>IL LAVORO<br>CONTINUA.</h2>
-      <p>Progetti, tecnologie e punti di vista dal mondo Due.Zero.</p>
-    </div>
-
-    <div class="newsEditorial" id="newsEditorial">
-      <div class="newsList" id="newsList"></div>
-
-      <div class="newsVisual" id="newsVisual">
-        <img id="newsImage" alt="">
-      </div>
-
-      <div class="newsDetail" id="newsDetail">
-        <span class="newsMeta" id="newsMeta"></span>
-        <p id="newsExcerpt"></p>
-        <button type="button" class="newsCta" id="newsCta">
-          LEGGI L’INSIGHT <span>→</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="newsFinal" id="newsFinal">
-      <p>SEGUI IL LAVORO DI DUE.ZERO.</p>
-      <button type="button" class="linkedinCta">
-        SEGUICI SU LINKEDIN <span>→</span>
-      </button>
-    </div>
+  <div class="newsIntro" id="newsIntro">
+    <div class="newsBanner">CAPITOLO 05 | NEWS</div>
+    <h2>IL LAVORO<br>CONTINUA</h2>
+    <p>Progetti, tecnologie e punti di vista dal mondo Due.Zero</p>
+    <a class="linkedinCta" href="https://www.linkedin.com/in/due-zero-srl-05b47742/" target="_blank" rel="noopener noreferrer">
+      SEGUICI SU LINKEDIN <span>→</span>
+    </a>
   </div>
 </section>
 
@@ -372,7 +877,7 @@
   </div>
 
   <div class="footerLogoWrap">
-    <img src="img/DueZero_logo.png" alt="Due.Zero" class="footerLogo">
+    <img src="img/DueZero_logo.svg" alt="Due.Zero" class="footerLogo">
   </div>
 
   <div class="footerInfo">
@@ -394,7 +899,7 @@
       <span class="footerLabel">ESPLORA</span>
       <a href="#chapter1Start">Chi siamo</a>
       <a href="#scene2">Ecosistema</a>
-      <a href="#servizi">Servizi</a>
+      <a href="#servizi">Cosa Facciamo</a>
       <a href="#qualityStart">Qualità</a>
       <a href="#newsStart">News</a>
     </div>
@@ -411,7 +916,7 @@
 <div class="overlay" id="overlay">
   <button class="close" id="closeBtn">CHIUDI <span class="plus">[+]</span></button>
   <a href="#chapter1Start"><span class="oi">01</span> Chi siamo</a>
-  <!-- Ecosistema 4.0 e Servizi hanno un sottomenu: su desktop appare a lato al passaggio del mouse (resta
+  <!-- Ecosistema 4.0 e Cosa Facciamo hanno un sottomenu: su desktop appare a lato al passaggio del mouse (resta
        aperto anche spostandosi verso di lui, con un piccolo ritardo alla chiusura — vedi capitolo1.js),
        su mobile diventa una tendina classica ad accordion, aperta/chiusa dal pulsante [+] dedicato -->
   <div class="menuItem" id="miEco">
@@ -423,17 +928,17 @@
     </div>
   </div>
   <div class="menuItem" id="miSrv">
-    <a href="#servizi" class="menuMain"><span class="oi">03</span> Servizi</a>
-    <button class="menuToggle" aria-label="Sottomenu Servizi" aria-expanded="false"><span class="plus">[+]</span></button>
+    <a href="#servizi" class="menuMain"><span class="oi">03</span> Cosa Facciamo</a>
+    <button class="menuToggle" aria-label="Sottomenu Cosa Facciamo" aria-expanded="false"><span class="plus">[+]</span></button>
     <div class="submenu">
       <!-- non ancora cliccabili: ogni servizio avrà una pagina dedicata non ancora creata (stesso
            trattamento già usato per Privacy/Cookie in footer: span statico, non un link a vuoto) -->
       <a href="manualistica-tecnica.html">Manualistica Tecnica</a>
-      <span class="submenuStatic">Cataloghi Ricambi</span>
-      <span class="submenuStatic">Traduzioni Multilingue</span>
-      <span class="submenuStatic">Technical Compliance</span>
-      <span class="submenuStatic">Marketing Industriale</span>
-      <span class="submenuStatic">Soluzioni Software 2.0</span>
+      <a href="cataloghi-ricambi.html">Cataloghi Ricambi</a>
+      <a href="traduzioni-multilingue.html">Traduzioni Multilingue</a>
+      <a href="technical-compliance.html">Technical Compliance</a>
+      <a href="soluzioni-creative.html">Marketing Industriale</a>
+      <a href="soluzioni-software.html">Soluzioni Software 2.0</a>
     </div>
   </div>
   <a href="#qualityStart"><span class="oi">04</span> Qualità</a>

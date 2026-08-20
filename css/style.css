@@ -1,10 +1,13 @@
 :root{--black:#0A0A0A;--paper:#EDEDEA;--ink:#141412;--red:#E2231A;
   --geo:'Big Shoulders Display',sans-serif;--mono:'IBM Plex Mono',monospace;--mx:50vw;--my:44vh;
-  --hero-font:'Bebas Neue',sans-serif} /* solo per .title (scritta centrale hero): il resto del sito resta su --geo */
+  --hero-font:'Questrial',sans-serif} /* solo per .title (scritta centrale hero): il resto del sito resta su --geo */
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
-.scene{position:relative;height:760vh}
+/* 1020vh, non più 760: la nuova sequenza (titolo da solo -> immagine -> sottotitolo, ciascuno con
+   spazio di lettura reale) ha più tappe di prima e aveva bisogno di più spazio assoluto di scroll —
+   stessa logica già applicata al Capitolo 2 */
+.scene{position:relative;height:1020vh}
 /* punti di ancoraggio invisibili per il menu: puntare all'inizio grezzo di queste sezioni (0%) atterra
    prima che banner/titolo del capitolo siano visibili (la "carta" non è ancora salita, il testo non si
    è ancora rivelato) — sembra di essere ancora nella scena precedente. Questi marker stanno più avanti,
@@ -14,11 +17,10 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    non /altezza_sezione — un top in percentuale del contenitore ignora quel "-100vh" e atterra più avanti
    del previsto (verificato: con top:25% su una sezione di 520vh si atterrava già a ritiro del titolo
    iniziato, invece che a titolo completo). Il valore qui è target_s*(altezza_sezione_vh-100), già calcolato */
-.scene .chapterAnchor{top:448.8vh}
+.scene .chapterAnchor{top:472.7vh}
 .sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black)}
 .ambient{position:absolute;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(480px circle at var(--mx) var(--my),rgba(255,255,255,.05),rgba(255,255,255,0) 70%)}
-.lightPanel{position:absolute;inset:0;z-index:1;background:var(--paper);transform:translateY(101%)}
 
 /* ---- topbar (solo MENU) — fissa e presente su tutto il documento ----
    pointer-events:none sulla barra (che è larga quanto il viewport): senza, intercetterebbe i click
@@ -38,11 +40,16 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .menuBtn .plus{color:var(--red)}
 
 /* ---- titolo hero (centro) ---- */
-.center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;perspective:1400px;z-index:3}
+/* padding-bottom (non padding-top): sposta il centro del titolo verso l'alto, lasciando più spazio
+   libero sotto per label+icone — in vh, non px fissi, così regge su rapporti larghezza/altezza diversi
+   (il problema precedente era proprio un valore fisso calibrato su un solo formato di schermo) */
+.center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;perspective:1400px;z-index:3;padding-bottom:22vh}
 .heroMove{position:relative;transform-origin:left top;will-change:transform,opacity}
 .tilt{position:relative;transform-style:preserve-3d;will-change:transform}
 .gloss-wrap{position:relative;text-align:center;pointer-events:auto;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
-.title{font-family:var(--hero-font);font-weight:400;text-transform:uppercase;font-size:clamp(46px,11.5vw,205px);line-height:.94;letter-spacing:.01em}
+/* clamp ricalibrato per Questrial: proporzioni normali, non condensate come Bebas Neue di prima —
+   agli stessi valori "COMMUNICATION" arrivava a ~90% della larghezza viewport, decisamente troppo */
+.title{font-family:var(--hero-font);font-weight:400;text-transform:uppercase;font-size:clamp(42px,9vw,165px);line-height:.94;letter-spacing:.01em}
 /* NIENTE transition qui: una transizione CSS a tempo fisso parte per conto suo, scollegata dal gesto
    di scroll — anche se morbida al suo interno, si percepisce come uno scatto perché non segue lo scroll
    dell'utente in tempo reale. Il riallineamento (--l0Shift/--l1Shift) resta quindi agganciato allo scroll
@@ -93,28 +100,57 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    nome/testo in permanenza — tolto: con lo sfondo scuro e il font del titolo creava un effetto "nuvola"
    sopra all'hover. Il nome compare invece in una vera nuvoletta-tooltip al passaggio del mouse (sotto).
    Ogni icona ha già il suo sfondo chiaro dentro l'SVG, quindi niente chip esterno: galleggia sul nero ---- */
+/* label che spiega le icone sotto: piccola, non deve competere col titolo. Stessa visibilità di
+   .heroBadges (badgesShown in JS) — appare e sparisce insieme alla riga icone che descrive.
+   bottom:140px = vicina alle icone (gruppo unico), lontana dal titolo (spinto su da .center) — la
+   vicinanza deve leggersi come "la label parla delle icone", non del titolo sopra.
+   Con le icone così vicine la nuvoletta-tooltip (sopra l'icona) ci finirebbe dentro: risolto in JS
+   attenuando la label quando un'icona è sotto hover, invece di allontanarla di nuovo dalle icone */
+.heroEco{position:absolute;left:50%;bottom:140px;transform:translateX(-50%);z-index:5;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;
+  max-width:780px;padding:0 24px;opacity:0;pointer-events:none;transition:opacity .4s ease}
+.heroEcoLabel{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
+.heroEcoSub{font-family:var(--mono);font-size:13px;line-height:1.55;text-transform:uppercase;color:rgba(237,237,234,.55)}
+
 .heroBadges{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:6;
   display:flex;align-items:center;gap:14px;opacity:0;pointer-events:none;transition:opacity .4s ease}
 .heroBadge{position:relative;display:inline-flex;align-items:center;cursor:pointer}
-/* in attesa di link/pagina reale (Hyper.Lab, Manualistica, Ricambi, Traduzioni): stesso trattamento
-   già usato per il sottomenu Servizi e per Privacy/Cookie in footer — presente ma non cliccabile */
+/* in attesa di link/pagina reale (SC Spare Manager, SC Translate): stesso trattamento già usato per il
+   sottomenu Servizi e per Privacy/Cookie in footer — presente ma non cliccabile */
 .heroBadgePending{cursor:default}
-/* lo scale del "dock" (JS) è sull'immagine, non su .heroBadge: così la nuvoletta-tooltip, che è una
-   sorella non figlia dell'immagine, non si ingrandisce/deforma insieme all'icona sotto al mouse */
-.heroBadge img{display:block;height:clamp(40px,7vw,56px);width:auto;transform-origin:center bottom;
-  transition:transform .18s ease-out}
-/* nuvoletta col nome: sopra l'icona, invisibile finché non ci passi sopra col mouse. bottom:calc(100% + Npx)
-   invece di bottom:100%+margin-bottom: risultava troppo vicina all'icona, in parte coperta da essa —
-   un unico valore esplicito per il distacco è più prevedibile che sommare due proprietà diverse */
-/* +40px: l'icona sotto il mouse si ingrandisce fino a 1.55x (effetto dock, transform-origin center
-   bottom) e cresce verso l'alto di ~31px — questo valore lascia comunque ~9px di margine anche a icona
-   al massimo dello zoom, restando più vicina al titolo sopra rispetto alla versione precedente (+48px) */
+/* lo scale del "dock" (JS) è sull'svg, non su .heroBadge: così la pillola-tooltip, che è una
+   sorella non figlia dell'icona, non si ingrandisce/deforma insieme all'icona sotto al mouse */
+/* niente transition qui: la scala è interpolata via RAF in JS (stesso principio dello smoothing dello
+   scroll altrove nel sito) — una CSS transition che insegue un target che cambia ad ogni mousemove si
+   interrompe e riparte in continuazione, ed è proprio quello che dava la sensazione "meccanica" */
+.heroBadge svg{display:block;height:clamp(40px,7vw,56px);width:auto;transform-origin:center bottom}
+/* stato ROLL/STATIC (SVG a 4 livelli): di norma è visibile solo STATIC, ROLL è invisibile ma
+   già nel DOM — sull'hover della SINGOLA icona si scambiano via opacity, indipendentemente
+   dall'onda di scale sopra (che invece riguarda tutte le icone vicine, non solo quella sotto il mouse) */
+.heroBadge .roll-icon,.heroBadge .roll-text{opacity:0;transition:opacity .22s ease}
+.heroBadge .static-icon,.heroBadge .static-text{opacity:1;transition:opacity .22s ease}
+.heroBadge:hover .roll-icon,.heroBadge:hover .roll-text{opacity:1}
+.heroBadge:hover .static-icon,.heroBadge:hover .static-text{opacity:0}
+/* pillola col nome: stesso trattamento del pulsante MENU, sfondo incluso stavolta — senza sfondo il
+   testo si leggeva poco contro la label/icone dietro. Due righe: nome del servizio sopra, descrizione
+   sotto, centrate */
 .heroBadgeTip{position:absolute;left:50%;bottom:calc(100% + 40px);z-index:2;transform:translateX(-50%) translateY(4px);
-  padding:6px 12px;border-radius:8px;background:var(--paper);color:var(--ink);
-  font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;
+  display:flex;flex-direction:column;gap:2px;align-items:center;text-align:center;
+  padding:10px 16px;border-radius:14px;border:1px solid rgba(237,237,234,.32);
+  background:rgba(10,10,10,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  color:#EDEDEA;font-family:var(--mono);white-space:nowrap;
   opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease}
-.heroBadgeTip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
-  border:5px solid transparent;border-top-color:var(--paper)}
+.heroBadgeTip .tipName{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.heroBadgeTip .tipDesc{font-size:11px;letter-spacing:.02em;color:rgba(237,237,234,.7)}
+/* triangolino a due strati: quello esterno fa da bordo (stesso colore del bordo della pillola), quello
+   interno più piccolo è del colore di sfondo della pillola — dà l'idea di un unico pezzo, non di un
+   triangolo estraneo attaccato sotto */
+.heroBadgeTip::before{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;
+  border-top:7px solid rgba(237,237,234,.32)}
+.heroBadgeTip::after{content:'';position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;
+  border-top:6px solid var(--black)}
 .heroBadge:hover .heroBadgeTip{opacity:1;transform:translateX(-50%) translateY(0)}
 /* effetto legato al PRIMO scroll (non al caricamento): se lo scroll parte veloce i badge rischiano di
    sparire prima di essere notati, quindi proprio nell'istante in cui iniziano a sfumare fanno un piccolo
@@ -134,51 +170,54 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .preloaderBar{width:150px;height:2px;background:rgba(237,237,234,.15);overflow:hidden}
 .preloaderBarFill{height:100%;width:0%;background:var(--red);transition:width 1.1s cubic-bezier(.3,.6,.3,1)}
 
-/* ---- CAPITOLO 1 (chiaro) ---- */
-.chapter1{position:absolute;inset:0;z-index:4;color:var(--ink);opacity:0;pointer-events:none}
-/* immagine — stessa identica tecnica di .ecoProjectImg (2.0 Project, Ecosistema): campo fotografico
-   ampio che sborda oltre il bordo destro, sfumato via mask-image (non un taglio netto come un clip-path
-   — qui il fade rende l'immagine "integrata" nello sfondo, non un riquadro). Il testo può stare vicino
-   o perfino sopra la parte iniziale del fade senza scontrarsi con niente: lì l'immagine è quasi
-   trasparente, diventa piena solo dopo il 24% della sua stessa larghezza — stesso principio di eco,
-   dove #sceneProject (max-width:620px) convive con .ecoProjectImg (78vw) senza calcoli di sicurezza */
+/* ---- CAPITOLO 1 ---- */
+/* centrato come l'apertura del Capitolo 2 (era ancorato in basso a sinistra, testo scuro):
+   nero, poi titolo da solo, poi immagine, poi sottotitolo — stessa grammatica del Capitolo 2 */
+/* padding-top:36px: su schermi larghi e bassi il titolo centrato arrivava a toccare il banner
+   "Capitolo 1 | Chi siamo" in alto a destra (verificato: -10.7px a 2000x900) — stesso piccolo
+   margine di sicurezza già usato per l'apertura del Capitolo 2 */
+.chapter1{position:absolute;inset:0;z-index:4;color:#EDEDEA;opacity:0;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:36px 6vw 0}
+/* immagine: appare già alla sua inquadratura finale (106% / 62%,48% — la stessa a cui arrivava
+   prima lo zoom), niente più crop/scale animato via JS: solo dissolvenza */
 .ch1Img{position:absolute;inset:-4vh -4vw;z-index:2;
-  background-image:url('../img/01-DOCTEC.jpg');background-repeat:no-repeat;transform-origin:center;
-  opacity:0;pointer-events:none;will-change:transform,filter,background-size,background-position}
-/* velo chiaro (non scuro come Hyperparts): qui il titolo è testo scuro su carta, non bianco su nero.
-   Stessa curva verticale di .ecoHyperImg ma in tono carta, così il blocco titolo in basso resta leggibile
-   anche a foto piena senza il fade laterale di prima */
+  background-image:url('../img/01-DOCTEC.jpg');background-repeat:no-repeat;
+  background-size:106% auto;background-position:62% 48%;
+  opacity:0;pointer-events:none;will-change:opacity}
+/* velo SCURO (non più chiaro): il titolo ora è testo chiaro su nero, non scuro su carta. Più denso
+   nella fascia centrale (dove il testo è centrato) e più leggero verso i bordi alto/basso, non un
+   semplice degradé dall'alto in basso pensato per un blocco ancorato in fondo */
 .ch1ImgVeil{position:absolute;inset:-4vh -4vw;z-index:3;
-  background:linear-gradient(180deg,rgba(237,237,234,0) 0%,rgba(237,237,234,.5) 60%,rgba(237,237,234,.86) 100%);
+  background:linear-gradient(180deg,rgba(7,12,20,.30) 0%,rgba(7,12,20,.72) 38%,rgba(7,12,20,.72) 62%,rgba(7,12,20,.30) 100%);
   opacity:0;pointer-events:none;will-change:opacity}
 .ch-desc{position:absolute;top:112px;left:38px;max-width:600px;font-family:var(--mono);font-size:18px;line-height:1.6;letter-spacing:.01em;color:rgba(20,20,18,.92)}
 .ch-desc .dw{display:inline-block;opacity:0;transform:translateY(9px)}
-/* blocco titolo+sottotitolo ancorato in basso a sinistra: è il contenitore ad avere la posizione,
-   così il titolo sale da sé quando sotto entra il sottotitolo — vedi l'animazione dedicata in
-   capitolo1.js (subRiseOffset). Bottom fisso: senza più un braccio da scavalcare, non serve calc() */
-.ch-block{position:absolute;left:38px;bottom:64px;max-width:calc(100vw - 76px);display:flex;flex-direction:column;gap:30px}
-/* niente più vincolo di larghezza legato all'immagine: col fade morbido il titolo può crescere
-   liberamente, come nella versione originale prima che qualunque immagine esistesse in questa scena.
-   Resta il tetto in vh (9vh): su schermi larghi ma bassi (laptop 13", finestra ridotta) un titolo
-   troppo grande usciva comunque dal bordo superiore, indipendentemente dall'immagine — verificato
-   -56px a 1280x700 nella versione precedente, il rischio è dello stesso tipo qui */
-/* transform-origin left bottom: lo scale "titolo grande da solo -> normale quando entra il
-   sottotitolo" (capitolo1.js, titleScale) deve crescere verso l'alto restando ancorato a sinistra,
-   non gonfiarsi in tutte le direzioni dal centro — altrimenti si sposterebbe anche a destra, verso
-   la zona dell'immagine, e in basso, sovrapponendosi in modo scomposto al sottotitolo */
-.ch-title{font-weight:800;text-transform:uppercase;font-size:min(clamp(34px,7.4vw,136px),9vh);line-height:.92;letter-spacing:-.01em;color:var(--ink);transform-origin:left bottom}
+/* centrato (come .eco-open): niente più posizione propria né risalita via JS (subRiseOffset, rimossa) —
+   la centratura la fa il flex del genitore .chapter1, si ricalcola da sola quando cambia il contenuto */
+.ch-block{display:flex;flex-direction:column;align-items:center;gap:30px}
+/* apertura un po' più grande, per coerenza col Capitolo 2 (tetto in vh: 9->9.5): con 4 righe di testo
+   (contro l'1-2 parole di Cap.02) un salto maggiore va in overlap reale col banner. Il vincolo vero non
+   è la larghezza ma un'altezza precisa: appena sopra gli 820px (soglia della modalità banner "compatta")
+   il margine crolla — verificato: a 10vh il gap a 821px di altezza era solo 1.6px (praticamente nullo),
+   a 13vh francamente negativo. 9.5vh riporta il gap a 821px a +9.1px, margine reale. Si restringe poi
+   via JS (scale, sync con imgFadeIn) fino al rapporto 9/9.5 = .9474, che torna alla dimensione di
+   prima — già verificata a più risoluzioni */
+.ch-title{font-weight:800;text-transform:uppercase;font-size:min(clamp(34px,7.4vw,136px),9.5vh);line-height:.92;letter-spacing:-.01em;color:#EDEDEA}
 .ch-title .ln{display:block;overflow:hidden}
 /* nowrap: gli a capo sono decisi a mano nel markup, una riga per .ln. Senza, su schermi stretti una
    riga lunga si spezza da sola e la maschera che la rivela ne scopre due insieme, rompendo il ritmo */
 .ch-title .ln i{display:block;font-style:normal;transform:translateY(106%);white-space:nowrap}
-/* sottotitolo: stesso rapporto di scala del titolo (~1,5x rispetto alla versione precedente,
-   quando il titolo arrivava a 88px) così la coppia titolo+sottotitolo resta in proporzione anche
-   ora che il titolo è più grande. Va a capo da solo (nessun a capo imposto) entro una misura di
-   riga leggibile — nessun vincolo legato all'immagine, stesso principio del titolo qui sopra */
+/* sottotitolo ora è un titoletto + elenco puntato (prima una riga sola): stesso principio delle
+   descrizioni di 2.0 Project/Hyperparts, entra come blocco unico (niente stagger riga per riga) */
 .ch-sub{overflow:hidden;max-width:min(680px,58vw)}
-.ch-sub i{display:block;font-style:normal;font-family:var(--mono);text-transform:uppercase;
-  font-size:min(clamp(24px,2.6vw,33px),4vh);line-height:1.5;letter-spacing:.02em;color:rgba(20,20,18,.68);
-  transform:translateY(105%)}
+.ch-subInner{display:block;transform:translateY(105%)}
+/* margin:auto + width:fit-content: la lista si centra come blocco, ma il testo dentro resta allineato
+   a sinistra — così il pallino resta in un'unica colonna invece di "saltare" riga per riga */
+.ch-subList{list-style:none;display:flex;flex-direction:column;gap:10px;margin:0 auto;width:fit-content;text-align:left}
+.ch-subList li{font-family:var(--mono);text-transform:uppercase;
+  font-size:min(clamp(14px,1.4vw,18px),2.6vh);line-height:1.5;letter-spacing:.02em;
+  color:rgba(237,237,234,.65);padding-left:22px;position:relative}
+.ch-subList li::before{content:'';position:absolute;left:0;top:.65em;width:10px;height:2px;background:var(--red)}
 /* banner che si COSTRUISCE a quadrati */
 .chBanner{position:absolute;z-index:9;opacity:0;display:flex;align-items:center;padding:0 26px}
 .chBanner .bt{position:relative;z-index:1;color:#fff;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:clamp(18px,2.1vw,30px);white-space:nowrap;opacity:0}
@@ -247,9 +286,6 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .c1b-text{font-weight:600;text-transform:uppercase;font-size:clamp(22px,2.8vw,44px);line-height:1.28;max-width:min(82vw,860px);letter-spacing:-.005em}
 .c1b-text .ph{display:block;overflow:hidden}
 .c1b-text .ph i{display:block;font-style:normal;transform:translateY(100%)}
-/* disattivo di default: attivo solo sotto 820px, vedi media query — su desktop il wrap naturale
-   basta già, non deve andare a capo qui */
-.c1b-text .mobileBreak{display:none}
 
 /* ================= CAPITOLO 2 — ECOSISTEMA (asset reali, no SVG generico) ================= */
 /* 940vh, non più 860: la sola apertura (titolo da solo -> sparisce -> sottotitolo da solo) aveva
@@ -257,7 +293,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    relativo disponibile — 80vh in più qui allungano l'intera timeline del capitolo in proporzione,
    senza toccare nessuna soglia sub(s,...) esistente */
 .scene2{position:relative;height:940vh;background:var(--black)}
-.scene2 .chapterAnchor{top:821.52vh}
+.scene2 .chapterAnchor{top:754.32vh}
 .sticky2{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black);perspective:1200px}
 
 /* fondi Hyperparts/Documentation (invariati, gestiti da render2 come prima) */
@@ -290,12 +326,15 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    proporzionale come prima. Sugli schermi normali è impercettibile (il titolo è comunque più corto) */
 .eco-open{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:24px 6vw 0}
 .eco-open-h{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(56px,8.6vw,142px);line-height:.86;letter-spacing:-.015em;opacity:0;transform:scale(1.06);will-change:transform,opacity,clip-path}
-/* max-height parte da 0 (animato da JS via titleShift/subIn): il sottotitolo non riserva spazio finché
+/* max-height parte da 0 (animato da JS via titleShrink/subIn): il sottotitolo non riserva spazio finché
    il titolo non si è ristretto per fargli posto, altrimenti resterebbe comunque nel flusso anche a
    opacity:0 e rialzerebbe il blocco centrato fin sotto al banner */
-/* font più grande del solito eco-open-sub: qui non condivide più la scena col titolo, è lui il protagonista del momento */
-/* max-width molto più largo di prima (600px): meno righe, frasi più lunghe, come richiesto */
+/* elenco puntato (come il Capitolo 1): il titolo si rimpicciolisce ma resta visibile sopra, non è più
+   un cambio di protagonista — max-width invariato (900px) */
 .eco-open-sub{margin-top:30px;color:rgba(237,237,234,.88);font-family:var(--mono);font-size:clamp(17px,1.7vw,23px);line-height:1.55;letter-spacing:.04em;max-width:900px;opacity:0;max-height:0;overflow:hidden}
+.eco-subList{list-style:none;display:flex;flex-direction:column;gap:10px;margin:0 auto;width:fit-content;text-align:left}
+.eco-subList li{font-family:var(--mono);text-transform:uppercase;font-size:min(clamp(14px,1.4vw,18px),2.6vh);line-height:1.5;letter-spacing:.02em;color:rgba(237,237,234,.75);padding-left:22px;position:relative}
+.eco-subList li::before{content:'';position:absolute;left:0;top:.65em;width:10px;height:2px;background:var(--red)}
 
 /* ---- label comune (mono, piccola) — posizione/colore per scena ---- */
 .eco-lbl{position:absolute;z-index:4;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:0;pointer-events:none}
@@ -313,20 +352,47 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   opacity:0;pointer-events:none;will-change:opacity}
 
 /* ---- 2.0 PROJECT: titolo protagonista, sottotitolo editoriale, descrizione estesa, CTA reale ---- */
-#sceneProject{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:700px}
+/* gap ridotto (14->8px): lo stacco fra gruppo titolo e descrizione era percepito troppo largo */
+/* pointer-events:none di base (come #sceneDoc): sceneProject/sceneHyper/sceneDoc occupano tutti la
+   stessa area assoluta, stesso z-index — quello che viene dopo nel DOM vince lo stacking a parità di z-index
+   e blocca i click su quello sotto anche se invisibile (contenuto a opacity:0, ma il contenitore no).
+   pjCtaRow/hpCtaRow riattivano pointer-events:auto sul proprio giro via JS quando sono davvero in vista:
+   un figlio può sempre farlo, a prescindere dal valore del genitore — icone Project non cliccabili, causa reale */
+#sceneProject{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:8px;max-width:700px;pointer-events:none}
 /* gruppo "2.0 PROJECT + sottotitolo": si riallinea (sale) dopo il hold, un solo gesto continuo legato allo scroll */
 .pj-group{display:flex;flex-direction:column;gap:14px;transform-origin:left bottom;will-change:transform}
 .pj-title{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(40px,6.8vw,104px);line-height:.92;letter-spacing:-.01em;opacity:0;transform:translateY(18px);transform-origin:left center;pointer-events:none;will-change:transform,opacity}
 .pj-sub{color:#EDEDEA;font-family:var(--geo);font-weight:600;text-transform:uppercase;font-size:clamp(17px,2.1vw,28px);line-height:1.24;letter-spacing:-.005em;max-width:480px;opacity:0;pointer-events:none}
-/* descrizione: testo corrente leggibile, non più il tag mono in maiuscolo di prima */
+/* descrizione: maiuscolo (testo fornito dal capo), a capo forzati dove indicato — vedi <br> nel markup */
 /* text-shadow: leggibilità garantita indipendentemente dalla foto sotto, senza dover scurire il velo oltre la fascia bassa */
-.pj-desc{color:rgba(237,237,234,.92);text-shadow:0 1px 4px rgba(0,0,0,.65);font-family:var(--mono);font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.01em;opacity:0;pointer-events:none}
-.pj-cta{display:inline-flex;align-items:center;gap:10px;margin-top:4px;padding:11px 20px;border:1px solid rgba(237,237,234,.42);
-  color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
-  opacity:0;transform:translateX(0);pointer-events:none;transition:transform .3s ease,background-color .3s ease,color .3s ease,border-color .3s ease}
-.pj-cta .plus{color:var(--red);transition:color .3s ease}
-.pj-cta:hover{transform:translateX(8px);background:#EDEDEA;color:var(--black);border-color:#EDEDEA}
-.pj-cta:hover .plus{color:var(--red)}
+.pj-desc{color:rgba(237,237,234,.92);text-shadow:0 1px 4px rgba(0,0,0,.65);font-family:var(--mono);font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.01em;text-transform:uppercase;opacity:0;pointer-events:none}
+/* CTA a pillola, stesso trattamento del bottone MENU (sfondo scuro sfocato, bordo, angoli 999px) —
+   prima era un link a bordo squadrato con inversione colore all'hover, ora coerente col resto del sito */
+.eco-cta-row{display:flex;align-items:center;gap:32px;flex-wrap:wrap;margin-top:6px;opacity:0;pointer-events:none}
+/* sfondo più opaco (.55->.8) e bordo più marcato (.28->.5) + ombra: qui la pillola sta nella fascia più
+   scura della foto (il velo si intensifica verso il basso), lo stesso trattamento del bottone MENU a .55
+   ci si confondeva quasi del tutto — non era un problema del bottone MENU stesso, quello sta su fondi
+   variabili non sempre così scuri */
+/* niente opacity/pointer-events propri: li controlla .eco-cta-row (il genitore), come le icone store accanto */
+.pj-cta,.hp-cta{display:inline-flex;align-items:center;gap:10px;padding:11px 20px;border-radius:999px;
+  background:rgba(10,10,10,.8);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:1px solid rgba(237,237,234,.5);box-shadow:0 2px 10px rgba(0,0,0,.35);color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;text-decoration:none;transition:background .3s ease,border-color .3s ease}
+.pj-cta .plus,.hp-cta .plus{color:var(--red);transition:color .3s ease}
+.pj-cta:hover,.hp-cta:hover{background:rgba(10,10,10,.95);border-color:rgba(237,237,234,.75)}
+/* icone store: stesso trattamento pillola, solo icona — link inerti finché non arrivano gli URL diretti */
+/* etichetta che introduce le icone (testo del capo, distinto per sezione) — risolve anche l'ambiguità
+   delle icone da sole, segnalata: ora è chiaro che portano a un'app mobile, non a un generico link */
+/* icone centrate sotto l'etichetta (più larga della semplice riga di icone) */
+.eco-appGroup{display:flex;flex-direction:column;align-items:center;gap:8px}
+.eco-appLabel{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:rgba(237,237,234,.55)}
+.eco-appIcons{display:flex;align-items:center;gap:10px}
+.eco-appIcon{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:999px;
+  background:rgba(10,10,10,.8);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:1px solid rgba(237,237,234,.5);box-shadow:0 2px 10px rgba(0,0,0,.35);color:#EDEDEA;transition:background .3s ease,border-color .3s ease}
+.eco-appIcon svg{width:18px;height:18px}
+.eco-appIcon.pending{cursor:default;opacity:.5}
+.eco-appIcon:not(.pending):hover{background:rgba(10,10,10,.95);border-color:rgba(237,237,234,.75)}
 
 /* ---- HYPERPARTS: campo fotografico immersivo (tavolo di lavoro reale), titolo dominante con maschera laterale ---- */
 /* stesso principio del velo di 2.0 Project: oscuramento concentrato in basso, non un velo uniforme */
@@ -335,16 +401,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   background-repeat:no-repeat;background-position:center,center 30%;background-size:cover,cover;
   transform-origin:50% 30%;opacity:0;pointer-events:none;will-change:transform,filter,clip-path}
 
-#sceneHyper{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:760px}
+/* gap ridotto (14->8px), come in Project */
+#sceneHyper{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:8px;max-width:760px;pointer-events:none}
+/* gruppo "titolo + sottotitolo": sottotitolo attaccato al titolo, stessa struttura di .pj-group
+   (prima erano due elementi indipendenti, non raggruppati — il sottotitolo arrivava staccato) */
+.hp-group{display:flex;flex-direction:column;gap:14px}
 .hp-title{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(48px,8vw,132px);line-height:.90;letter-spacing:-.01em;opacity:0;clip-path:inset(0 100% 0 0);transform-origin:left center;pointer-events:none;will-change:transform,opacity,clip-path}
 .hp-sub{color:#EDEDEA;font-family:var(--geo);font-weight:600;text-transform:uppercase;font-size:clamp(17px,2.1vw,28px);line-height:1.24;letter-spacing:-.005em;max-width:520px;opacity:0;pointer-events:none}
-.hp-desc{color:rgba(237,237,234,.92);text-shadow:0 1px 4px rgba(0,0,0,.65);font-family:var(--mono);font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.01em;opacity:0;pointer-events:none}
-.hp-cta{display:inline-flex;align-items:center;gap:10px;margin-top:4px;padding:11px 20px;border:1px solid rgba(255,211,0,.4);
-  color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
-  opacity:0;transform:translateY(0);pointer-events:none;transition:transform .3s ease,background-color .3s ease,color .3s ease,border-color .3s ease}
-.hp-cta .plus{color:var(--red);transition:color .3s ease}
-.hp-cta:hover{transform:translateY(-6px);background:#EDEDEA;color:var(--black);border-color:#EDEDEA}
-.hp-cta:hover .plus{color:var(--red)}
+.hp-desc{color:rgba(237,237,234,.92);text-shadow:0 1px 4px rgba(0,0,0,.65);font-family:var(--mono);font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.01em;text-transform:uppercase;opacity:0;pointer-events:none}
 
 /* ---- DOCUMENTATION 4.0: cambio di scala (da componente a parco macchine) — fondo carta, titolo dominante centrato, nessuna foto aggiuntiva ---- */
 #sceneDoc{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 6vw}
@@ -354,7 +418,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 /* riga mono: stessa grammatica editoriale delle altre righe del prototipo — wrapper overflow:hidden + riga intera
    che entra/esce in verticale (translateY), mai parola per parola, mai rotazioni o scatti */
 .dc-text{margin-top:18px;max-width:680px;overflow:hidden}
-.dc-text i{display:block;font-style:normal;color:rgba(20,20,18,.62);font-family:var(--mono);font-size:clamp(13px,1.2vw,15px);line-height:1.6;transform:translateY(100%);will-change:transform}
+.dc-text i{display:block;font-style:normal;text-transform:uppercase;color:rgba(20,20,18,.62);font-family:var(--mono);font-size:clamp(13px,1.2vw,15px);line-height:1.6;transform:translateY(100%);will-change:transform}
 
 /* Documentation 4.0 È la Machine Map, e la Machine Map è anche la soglia del Capitolo 03 — UN SOLO sticky, UN SOLO
    progresso di scroll, tre layer sovrapposti (mappa, outro nero, intro Servizi): mai due sticky indipendenti che
@@ -427,13 +491,15 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   transform:translateX(120%);pointer-events:none;will-change:transform}
 .ch3BannerText{font-family:var(--mono);font-size:clamp(18px,2.1vw,30px);letter-spacing:.05em;text-transform:uppercase;color:#fff;white-space:nowrap}
 
-.svc-open{position:absolute;left:6vw;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;
-  align-items:flex-start;text-align:left;pointer-events:none;max-width:46vw}
+/* centrato come le altre aperture di capitolo (chapter1/eco-open) — prima era ancorato a sinistra,
+   incoerente con le scene iniziali precedenti */
+.svc-open{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  align-items:center;text-align:center;pointer-events:none;padding:0 6vw}
 .svc-open-h{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(46px,7.2vw,118px);
-  line-height:.92;letter-spacing:-.01em;clip-path:inset(0 100% 0 0);transform:scale(1.10);transform-origin:left center;
+  line-height:.92;letter-spacing:-.01em;clip-path:inset(0 100% 0 0);transform:scale(1.10);transform-origin:center;
   will-change:transform,clip-path}
 .svc-open-sub{margin-top:22px;color:rgba(237,237,234,.75);font-family:var(--mono);font-size:clamp(13px,1.2vw,16px);
-  letter-spacing:.06em;max-width:420px;opacity:0}
+  letter-spacing:.06em;text-transform:uppercase;max-width:420px;opacity:0}
 
 /* ---- servizi: CARD A SCROLL ORIZZONTALE (dalla bozza duezero-scroll, adattata a palette/font del sito) —
    su desktop la sezione è pinnata (sticky) e il binario di card trasla in orizzontale legato allo scroll,
@@ -458,40 +524,56 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* card: sfondo fotografico + overlay scuro che si alleggerisce all'hover (il testo si inverte in scuro) */
 .service-card{flex-shrink:0;width:max(380px,27vw);min-height:clamp(440px,54vh,620px);
-  background-color:#0a0a0a;background-size:cover;background-position:center;
+  background-color:#0a0a0a;
   border:1px solid rgba(237,237,234,.08);padding:40px;position:relative;overflow:hidden;
   display:flex;flex-direction:column;text-decoration:none;color:#EDEDEA;cursor:pointer;
   transition:transform .45s cubic-bezier(.16,1,.3,1),border-color .4s ease,opacity .15s ease}
-.service-card:hover{transform:translateY(-6px);border-color:rgba(237,237,234,.14);z-index:10;opacity:1!important}
+/* .active = stessa card "a fuoco" durante lo scroll orizzontale (vedi renderSvc in capitoli.js):
+   trattamento identico all'hover reale, richiesto esplicitamente ("proprio come e uguale all'hover") */
+.service-card:hover,.service-card.active{transform:translateY(-6px);border-color:var(--red);z-index:10;opacity:1!important}
 .service-card::after{content:'';position:absolute;inset:0;z-index:0;
   background:linear-gradient(rgba(0,0,0,.68) 0%,rgba(0,0,0,.84) 100%);transition:background .5s ease}
-.service-card:hover::after{background:linear-gradient(rgba(237,237,234,.82) 0%,rgba(237,237,234,.68) 100%)}
-.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);
-  transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1);z-index:2}
-.service-card:hover::before{transform:scaleX(1)}
+.service-card:hover::after,.service-card.active::after{background:linear-gradient(rgba(237,237,234,.82) 0%,rgba(237,237,234,.68) 100%)}
+/* immagine su un layer proprio (non più background diretto sulla card): lo zoom sull'hover/active
+   scala solo lei — la card stessa resta ferma, solo il leggero sollevamento (transform sopra), non
+   uno zoom su tutta la card. overflow:hidden sul contenitore taglia l'eccesso */
+.sc-bg{position:absolute;inset:0;background-size:cover;background-position:center;
+  transition:transform .6s cubic-bezier(.16,1,.3,1);will-change:transform}
+.service-card:hover .sc-bg,.service-card.active .sc-bg{transform:scale(1.08)}
 .service-card>*{position:relative;z-index:1}
+/* più specifico della wildcard sopra (stessa specificità, ma qui serve vincere sempre, non solo per
+   ordine nel foglio): .sc-bg deve restare sotto sia al testo sia all'overlay, mai a z-index:1 — e deve
+   restare position:absolute (la wildcard sopra la resettava a relative, l'immagine perdeva inset:0 e
+   collassava ad altezza quasi zero: "l'immagine è quasi sparita", il bug reale segnalato) */
+.service-card>.sc-bg{position:absolute;z-index:0}
 .sc-num{font-family:var(--mono);font-weight:500;font-size:56px;color:rgba(237,237,234,.10);line-height:1;
   margin-bottom:24px;transition:color .4s ease}
 .sc-title{font-family:var(--geo);font-weight:700;text-transform:uppercase;font-size:clamp(21px,1.7vw,27px);
-  line-height:1.12;letter-spacing:-.005em;margin-bottom:12px;color:#EDEDEA;transition:color .4s ease}
-.sc-desc{font-family:var(--mono);font-size:13px;line-height:1.7;color:rgba(237,237,234,.45);
+  line-height:1.12;letter-spacing:-.005em;margin-bottom:6px;color:#EDEDEA;transition:color .4s ease}
+/* font mono (come la descrizione), non più il display del titolo: condensato + maiuscolo a 13-15px
+   perdeva le forme delle parole, illeggibile. Ma font diverso = due elementi che sembravano scollegati dal
+   titolo, segnalato. Recuperato il legame non col font (tornerebbe illeggibile) ma con: tracking negativo
+   come il titolo (non più +.03em "arioso" che tirava in direzione opposta), colore più vicino al bianco
+   pieno del titolo, e un margine più stretto sotto al titolo — si leggono come un blocco unico, poi più
+   respiro prima della descrizione (che resta staccata, il contenuto vero e proprio) */
+.sc-sub{font-family:var(--mono);font-weight:500;text-transform:uppercase;font-size:clamp(14px,1.15vw,17px);
+  line-height:1.4;letter-spacing:-.01em;margin-bottom:18px;color:rgba(237,237,234,.9);transition:color .4s ease}
+.sc-desc{font-family:var(--mono);font-size:13px;line-height:1.7;text-transform:uppercase;color:rgba(237,237,234,.45);
   flex-grow:1;margin-bottom:24px;transition:color .4s ease}
-.sc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
-.sc-tag{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.05em;
-  color:rgba(237,237,234,.35);background:rgba(237,237,234,.05);padding:5px 9px;border-radius:2px;
-  white-space:nowrap;transition:color .4s ease,background .4s ease}
 .sc-cta{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10px;
   text-transform:uppercase;letter-spacing:.2em;color:var(--red);font-weight:500;margin-top:auto;
   transition:gap .3s ease}
-.service-card:hover .sc-cta{gap:16px}
+.service-card:hover .sc-cta,.service-card.active .sc-cta{gap:16px}
 .sc-link-icon{position:absolute;top:20px;right:20px;width:30px;height:30px;border:1px solid rgba(237,237,234,.12);
   border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(237,237,234,.25);
   font-size:12px;z-index:2;transition:color .3s ease,border-color .3s ease,transform .3s ease;pointer-events:none}
-.service-card:hover .sc-num{color:rgba(10,10,10,.16)}
-.service-card:hover .sc-title{color:#0a0a0a}
-.service-card:hover .sc-desc{color:rgba(10,10,10,.65)}
-.service-card:hover .sc-tag{color:rgba(10,10,10,.55);background:rgba(10,10,10,.08)}
-.service-card:hover .sc-link-icon{color:var(--red);border-color:var(--red);transform:rotate(45deg)}
+/* .active aggiunto a tutte queste — prima solo :hover, il testo restava bianco sulla card "a fuoco"
+   durante lo scroll invece di scurirsi come nell'hover reale, il secondo bug reale segnalato */
+.service-card:hover .sc-num,.service-card.active .sc-num{color:rgba(10,10,10,.16)}
+.service-card:hover .sc-title,.service-card.active .sc-title{color:#0a0a0a}
+.service-card:hover .sc-sub,.service-card.active .sc-sub{color:rgba(10,10,10,.75)}
+.service-card:hover .sc-desc,.service-card.active .sc-desc{color:rgba(10,10,10,.65)}
+.service-card:hover .sc-link-icon,.service-card.active .sc-link-icon{color:var(--red);border-color:var(--red);transform:rotate(45deg)}
 
 /* lista verticale (mobile + reduced-motion): stessi dati delle card, nessun pin */
 .svcMobileList{display:none;background:var(--black);padding:90px 8vw 100px}
@@ -521,7 +603,10 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 /* Metodo, validazione, tracciabilità — non una vetrina di badge. Contrasto netto con il nero dei Servizi:
    la scena si apre in carta calda (--paper) e chiude tornando al nero. Un solo sticky, quattro gesti in
    sequenza (apertura, metodo, tracciabilità, chiusura), ciascuno un layer assoluto nello stesso sticky. */
-.qualitySection{position:relative;height:520vh;background:var(--black);overflow:visible}
+/* 520->655vh: +135vh dedicati solo al ciclo DQ/IQ/OQ/PQ (vedi qualityCodePos in capitoli.js), che durava
+   appena ~135vh in totale per 4 elementi — "molto molto veloce" segnalato. Tutto il resto della sezione
+   trasla della stessa quantità assoluta di vh, a parità di ritmo già corretto in precedenza */
+.qualitySection{position:relative;height:655vh;background:var(--black);overflow:visible}
 .qualitySection .chapterAnchor{top:100.8vh}
 .qualitySticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black)}
 
@@ -544,7 +629,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   font-size:clamp(42px,6.6vw,104px);line-height:.94;letter-spacing:-.01em;max-width:70vw;
   clip-path:inset(0 100% 0 0);transform-origin:center center;will-change:transform,clip-path}
 .qualityIntro p{margin-top:22px;max-width:44vw;color:rgba(20,20,18,.68);
-  font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);letter-spacing:.03em;opacity:0;will-change:opacity}
+  font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);letter-spacing:.03em;text-transform:uppercase;opacity:0;will-change:opacity}
 
 /* ---- scena 2 — metodo: nessuna card/griglia/dashboard. Una sola sigla pienamente visibile alla volta,
    dentro una finestra mascherata (qualityCodeMask), con hold leggibile e definizione a maschera verticale ---- */
@@ -599,86 +684,40 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .qualityCta:hover span{transform:translateX(4px)}
 
 /* ================= CAPITOLO 05 — NEWS =================
-   Editoriale, non feed social e non griglia di card. Un solo sticky, tre gesti in sequenza:
-   apertura (carta + banner + titolo, stesso meccanismo di Cap.04), editoriale (lista di tre titoli
-   a sinistra, articolo attivo grande/nitido a sinistra e pannello immagine+estratto a destra,
-   swap via crop orizzontale sull'immagine e maschera verticale su categoria/estratto — stessa
-   tecnica già usata per il pannello Servizi/qualityDefinition), chiusura (nero + invito LinkedIn). */
-.newsSection{position:relative;height:500vh;background:var(--paper);overflow:visible}
-.newsSection .chapterAnchor{top:96vh}
-.newsSticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--paper)}
+   Ridotta alla sola apertura (contenuti editoriali non ancora pronti): non più tre scene in sequenza,
+   quindi niente sticky/scroll-jack — reveal one-shot quando la sezione entra in viewport, stesso
+   meccanismo del Footer (classe .revealed aggiunta via scroll listener leggero, vedi capitoli.js).
+   Stesso trattamento centrato già usato per qualityIntro (Cap.04). */
+.newsSection{position:relative;background:var(--paper);padding:26vh 6vw;overflow:hidden}
+.newsSection .chapterAnchor{top:0}
 
-/* ---- scena 1 — apertura: stesso schema di Cap.04 (banner top-left assoluto, titolo in blocco
-   con maschera orizzontale, sottotitolo dopo una breve pausa) ---- */
-.newsIntro{position:absolute;inset:0;z-index:2;pointer-events:none;
-  display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;
-  padding:0 6vw 13vh;clip-path:inset(0 0 0 0);will-change:clip-path}
-/* a destra come chBanner (Cap.01), stesso taglio d'angolo di qualityBanner (28px: stessa altezza massima) */
+.newsIntro{display:flex;flex-direction:column;align-items:center;text-align:center}
+/* stessa posizione/animazione di chBanner/qualityBanner: angolo in alto a destra, non nel flusso
+   centrato — non deve muoversi rispetto agli altri banner di capitolo */
 .newsBanner{position:absolute;right:38px;top:9vh;display:flex;align-items:center;
   width:min(46vw,560px);height:clamp(64px,8vh,90px);padding:0 28px;background:var(--red);color:#fff;
   font-family:var(--mono);font-size:clamp(15px,1.6vw,22px);letter-spacing:.06em;text-transform:uppercase;
   clip-path:polygon(100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%,0 0);
-  transform:translateX(120%);pointer-events:none;will-change:transform}
+  transform:translateX(120%);opacity:1;transition:transform .6s ease}
 .newsIntro h2{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;
-  font-size:clamp(42px,6.6vw,104px);line-height:.94;letter-spacing:-.01em;max-width:52vw;
-  clip-path:inset(0 100% 0 0);transform-origin:left center;will-change:transform,clip-path}
-.newsIntro p{margin-top:22px;max-width:38vw;color:rgba(20,20,18,.68);
-  font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);letter-spacing:.03em;opacity:0;will-change:opacity}
-
-/* ---- scena 2 — editoriale: lista (52vw) a sinistra sempre leggibile su tre righe, immagine in alto
-   a destra, dettaglio (categoria+estratto+CTA) sotto l'immagine — griglia perché newsList/newsVisual/
-   newsDetail sono fratelli nello stesso layer, non innestati ---- */
-.newsEditorial{position:absolute;inset:0;z-index:3;pointer-events:none;
-  display:grid;grid-template-columns:52vw 1fr;grid-template-rows:auto auto;
-  align-items:center;column-gap:4vw;padding:0 6vw;clip-path:inset(0 0 0 0);will-change:clip-path}
-
-.newsList{grid-column:1;grid-row:1/3;display:flex;flex-direction:column;justify-content:center;
-  gap:32px;opacity:0;will-change:opacity}
-.newsListItem{pointer-events:none}
-.newsListItem:not(:first-child){border-top:1px solid rgba(20,20,18,.14);padding-top:26px}
-.newsListHead{display:flex;align-items:center;gap:12px}
-.newsListNum{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:rgba(20,20,18,.4);
-  transition:color .3s ease}
-.newsListCategory{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(20,20,18,.4);transition:color .3s ease}
-.newsListItem h3{margin-top:8px;font-family:var(--geo);font-weight:700;text-transform:uppercase;
-  color:rgba(20,20,18,.38);font-size:clamp(20px,2.15vw,30px);line-height:1.08;
-  transition:color .35s ease,font-size .35s ease,font-weight .35s ease}
-.newsListItem.active .newsListNum,.newsListItem.active .newsListCategory{color:var(--red)}
-.newsListItem.active h3{color:var(--ink);font-weight:800;font-size:clamp(30px,3.6vw,48px)}
-.newsListStatic{display:none} /* solo fallback reduced-motion */
-
-.newsVisual{grid-column:2;grid-row:1;align-self:end;position:relative;
-  width:clamp(300px,36vw,520px);height:58vh;overflow:hidden;opacity:0;will-change:opacity}
-.newsVisual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  clip-path:inset(0 0 0 0);transition:clip-path .7s cubic-bezier(.4,0,.2,1)}
-
-.newsDetail{grid-column:2;grid-row:2;align-self:start;margin-top:22px;pointer-events:none;opacity:0;
-  will-change:opacity}
-.newsMeta{display:block;font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);letter-spacing:.14em;
-  text-transform:uppercase;color:var(--red);clip-path:inset(0 0 0% 0);
-  transition:clip-path .22s cubic-bezier(.4,0,.2,1)}
-.newsDetail p{margin-top:14px;max-width:32vw;color:rgba(20,20,18,.7);font-family:var(--mono);
-  font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.02em;clip-path:inset(0 0 0% 0);
-  transition:clip-path .22s cubic-bezier(.4,0,.2,1)}
-.newsCta{margin-top:22px;display:inline-flex;align-items:center;gap:10px;background:none;border:none;
-  cursor:pointer;padding:0;font-family:var(--mono);font-size:12px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--ink);pointer-events:auto}
-.newsCta span{color:var(--red);transition:transform .25s ease}
-.newsCta:hover span{transform:translateX(4px)}
-
-/* ---- scena 3 — chiusura: un campo nero sale sopra la carta; invito grande + CTA LinkedIn ---- */
-.newsFinal{position:absolute;inset:0;z-index:5;pointer-events:none;
-  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
-  padding:0 6vw;background:var(--black);transform:translateY(100%);will-change:transform}
-.newsFinal p{color:rgba(237,237,234,.65);font-family:var(--mono);font-size:clamp(13px,1.1vw,16px);
-  letter-spacing:.16em;text-transform:uppercase;opacity:0;will-change:opacity}
-.linkedinCta{margin-top:26px;display:inline-flex;align-items:center;gap:16px;pointer-events:auto;
-  background:none;border:none;cursor:pointer;color:#EDEDEA;font-family:var(--geo);font-weight:800;
-  text-transform:uppercase;font-size:clamp(36px,5.6vw,88px);line-height:1;letter-spacing:-.01em;
-  opacity:0;will-change:opacity}
+  font-size:clamp(42px,6.6vw,104px);line-height:.94;letter-spacing:-.01em;max-width:70vw;
+  clip-path:inset(0 100% 0 0);transition:clip-path .9s cubic-bezier(.4,0,.2,1) .15s}
+.newsIntro p{margin-top:22px;max-width:44vw;color:rgba(20,20,18,.68);
+  font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);letter-spacing:.03em;text-transform:uppercase;
+  opacity:0;transform:translateY(14px);transition:opacity .6s ease .3s,transform .6s ease .3s}
+.linkedinCta{margin-top:64px;display:inline-flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:clamp(14px,1.3vw,18px);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;border-bottom:1px solid rgba(20,20,18,.3);padding-bottom:6px;
+  opacity:0;transform:translateY(14px);
+  transition:opacity .6s ease .45s,transform .6s ease .45s,border-color .25s ease}
 .linkedinCta span{color:var(--red);transition:transform .25s ease}
-.linkedinCta:hover span{transform:translateX(8px)}
+.linkedinCta:hover{border-color:rgba(20,20,18,.6)}
+.linkedinCta:hover span{transform:translateX(6px)}
+
+.newsSection.revealed .newsBanner{transform:translateX(0)}
+.newsSection.revealed .newsIntro h2{clip-path:inset(0 0% 0 0)}
+.newsSection.revealed .newsIntro p{opacity:1;transform:translateY(0)}
+.newsSection.revealed .linkedinCta{opacity:1;transform:translateY(0)}
 
 /* ================= FOOTER — chiusura editoriale, non un footer basso tradizionale =================
    Nessuno sticky: è un blocco normale nel flusso, alto almeno 135vh, che entra in scena una sola volta
@@ -757,7 +796,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .svc-open-h{font-size:clamp(40px,11vw,80px)}
   /* Capitolo 04 — Qualità: stesso meccanismo scroll-driven, stage più corto, titoli ridotti,
      DQ/IQ/OQ/PQ uno alla volta senza sovrapposizioni (stessa maschera, solo più piccola) */
-  .qualitySection{height:460vh}
+  .qualitySection{height:580vh}
   /* l'ancoraggio del menu (chapterAnchor) è in vh assoluti, calcolati sull'altezza DESKTOP (520vh) —
      qui l'altezza della sezione è diversa (460vh), quindi lo stesso valore corrisponderebbe a un
      punto di scroll diverso (il titolo arrivava tagliato a metà). Ricalcolato sulla stessa formula,
@@ -776,32 +815,11 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .qualityFinal{padding:0 8vw}
   .qualityFinal h3{font-size:clamp(32px,8.5vw,60px);max-width:86vw}
 
-  /* Capitolo 05 — News: apertura identica, ma la scena editoriale su mobile impila in colonna unica
-     (lista con l'attivo in evidenza e i due inattivi ridotti a una riga ellissata, poi immagine, poi
-     dettaglio) per garantire che tutto stia dentro i 100vh dello sticky senza sovrapposizioni */
-  .newsSection{height:600vh}
-  /* stesso motivo di .qualitySection sopra: altezza mobile diversa dalla desktop (600vh vs 500vh),
-     stesso target_s (.24) ricalcolato: .24*(600-100)=120vh */
-  .newsSection .chapterAnchor{top:120vh}
-  /* su mobile il titolo si centra invece di restare ancorato in basso a sinistra (come su desktop):
-     lo spazio vuoto sopra, accettabile su schermi larghi, su un telefono (molto più alto che largo)
-     diventava un vuoto enorme prima del titolo — stesso trattamento già usato per qualityIntro */
-  .newsIntro{padding:0 8vw;justify-content:center;align-items:center;text-align:center}
+  /* Capitolo 05 — News: apertura più compatta su mobile/tablet */
+  .newsSection{padding:16vh 8vw}
   .newsIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
   .newsIntro p{max-width:80vw}
   .newsBanner{width:min(70vw,420px);right:20px;top:7vh}
-
-  .newsEditorial{display:flex;flex-direction:column;justify-content:center;padding:0 8vw;gap:16px}
-  .newsList{width:auto;gap:12px}
-  .newsListItem:not(:first-child){padding-top:12px}
-  .newsListItem h3{font-size:14px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .newsListItem.active h3{font-size:clamp(22px,6.4vw,30px);white-space:normal;margin-top:6px}
-  .newsListItem:not(.active){opacity:.55}
-  .newsVisual{width:100%;height:24vh}
-  .newsDetail{margin-top:14px}
-  .newsDetail p{max-width:100%;font-size:13px}
-  .newsFinal{padding:0 8vw}
-  .linkedinCta{font-size:clamp(30px,9vw,48px)}
 
   /* Footer: titolo mai tagliato, logo già sotto la CTA nel flusso naturale (nessun riordino necessario),
      blocchi contatti/sede/esplora impilati, legal libero di andare su due righe */
@@ -838,14 +856,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .qualityCode{font-size:clamp(72px,10.5vw,170px)}
   .qualityRecord h3{font-size:clamp(34px,5vw,76px)}
   .qualityFinal h3{font-size:clamp(36px,5.4vw,84px)}
-  /* Capitolo 05: stessa scala di riduzione, nessun overflow su MacBook 13" — stage resta 380vh (regola base).
-     Niente override di altezza per .newsVisual qui: questa query si sovrappone anche alle larghezze mobile
-     (max-width:1280px include anche 375-390px) e vincerebbe sulla regola mobile .newsVisual{height:24vh}
-     per ordine di sorgente, rompendo il fit verticale calcolato per l'impilamento mobile — sui laptop veri
-     (821-1280px) l'editoriale resta a due colonne (grid, non flex-stack), quindi 58vh di base è già sicuro */
+  /* Capitolo 05: stessa scala di riduzione, nessun overflow su MacBook 13" */
   .newsIntro h2{font-size:clamp(38px,5.6vw,84px)}
-  .newsListItem.active h3{font-size:clamp(26px,3.2vw,40px)}
-  .linkedinCta{font-size:clamp(32px,4.8vw,72px)}
 }
 
 /* ---- correzioni telefono: DEVONO stare dopo la query (max-width:1280px) qui sopra ----
@@ -873,15 +885,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      attuali la più lunga misura ~10,1 volte il corpo, quindi su telefono va scalata o non entra
      (e con nowrap verrebbe tagliata invece che andare a capo) */
   .ch-title{font-size:clamp(22px,7.9vw,44px)}
-  .ch-block{left:20px;bottom:40px;gap:18px;max-width:calc(100vw - 40px)}
+  .ch-block{gap:18px}
   .ch-sub{max-width:none}
-  .ch-sub i{font-size:clamp(13px,3.6vw,16px);line-height:1.55;letter-spacing:.03em}
+  .ch-subList li{font-size:clamp(12px,3.4vw,14px)}
   /* card editoriale: il corpo ingrandito nella regola base (fino a 44px) usa un minimo di 22px
      che su telefono stretto (320px, 5 frasi che vanno su 2-3 righe ciascuna) faceva toccare il
      testo contro intestazione e piè di card — verificato: -17px e -60px di sovrapposizione reale.
      Minimo riportato più vicino al valore originale, solo per questa fascia */
   .c1b-text{font-size:clamp(22px,6vw,28px);line-height:1.32}
-  .c1b-text .mobileBreak{display:block}
   .chBanner{padding:0 18px}          /* larghezza calcolata in JS: vedi buildBanner() */
   .chBanner .bt{font-size:13px}
   .ch2Banner{right:20px;width:min(86vw,420px);padding:0 18px}
@@ -911,12 +922,11 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .pj-group{transform:none}
   .pj-title,.pj-sub,.pj-desc{opacity:1;transform:none;color:var(--ink);pointer-events:auto}
   .pj-desc{color:rgba(20,20,18,.6)}
-  .pj-cta{opacity:1;pointer-events:auto;color:var(--ink);border-color:rgba(20,20,18,.35)}
-  .pj-cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
   #sceneHyper{position:static;display:flex;flex-direction:column;align-items:flex-start;gap:14px;background:#070c14;color:#EDEDEA;padding:32px;max-width:none}
   .hp-title,.hp-sub,.hp-desc{opacity:1;transform:none;clip-path:none;color:#EDEDEA;pointer-events:auto}
   .hp-desc{color:rgba(237,237,234,.6)}
-  .hp-cta{opacity:1;pointer-events:auto}
+  /* pillola: sfondo scuro proprio, leggibile sia su sceneProject (chiaro) sia su sceneHyper (scuro) — nessuna inversione colore necessaria */
+  .pj-cta,.hp-cta,.eco-cta-row,.eco-appIcon{opacity:1;pointer-events:auto}
   #sceneDoc{position:static;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:10px;color:var(--ink);pointer-events:auto;padding:0}
   .dc-title,.dc-sub,.dc-text,.dc-accent{opacity:1;transform:none;clip-path:none}
   .dc-text i{transform:none}
@@ -959,28 +969,9 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .qualityFinal h3{color:#EDEDEA}
   .qualityCta{color:#EDEDEA;pointer-events:auto}
 
-  /* Capitolo 05 — News: sequenza lineare statica — intro → i tre articoli per intero (titolo, immagine,
-     estratto, CTA ciascuno, non solo l'attivo: il pannello dinamico condiviso non ha senso senza scroll)
-     → invito LinkedIn */
-  .newsSection{height:auto;background:var(--paper)}
-  .newsSticky{position:static;height:auto;overflow:visible;display:flex;flex-direction:column;gap:64px;padding:100px 38px 110px}
-  .newsIntro,.newsEditorial,.newsFinal{position:static;clip-path:none;transform:none;
-    pointer-events:auto;display:flex;flex-direction:column;align-items:flex-start;padding:0}
+  /* Capitolo 05 — News: niente reveal-on-scroll, tutto già visibile e fermo */
   .newsBanner{position:static;transform:none;margin-bottom:28px}
-  .newsIntro h2,.newsIntro p,.newsFinal p,.linkedinCta{opacity:1;transform:none;clip-path:none}
-  .newsList{opacity:1;width:100%;gap:48px}
-  .newsListItem h3{color:var(--ink);font-weight:800;font-size:clamp(24px,4vw,36px)}
-  .newsListNum,.newsListCategory{color:var(--red)}
-  .newsListStatic{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-top:18px}
-  .newsListStatic img{width:100%;max-width:480px;height:auto;aspect-ratio:4/3;object-fit:cover}
-  .newsListStatic p{max-width:520px;color:rgba(20,20,18,.7);font-family:var(--mono);font-size:14px;line-height:1.6}
-  .newsCtaStatic{display:inline-flex;align-items:center;gap:10px;background:none;border:none;cursor:pointer;
-    padding:0;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
-  .newsCtaStatic span{color:var(--red)}
-  .newsVisual,.newsDetail{display:none}
-  .newsFinal{background:var(--black);color:#EDEDEA;padding:60px 38px;margin:0 -38px}
-  .newsFinal p{color:rgba(237,237,234,.65)}
-  .linkedinCta{color:#EDEDEA;pointer-events:auto}
+  .newsIntro h2,.newsIntro p,.linkedinCta{opacity:1;transform:none;clip-path:none;transition:none}
 
   /* Footer: niente reveal-on-scroll, tutto già visibile e fermo */
   .footerEyebrow,.footerIntro h2,.footerIntro p,.footerMainCta,.footerLogo,.footerBlock{
