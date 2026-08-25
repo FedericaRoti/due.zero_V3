@@ -312,21 +312,27 @@
   // il riferimento allo slug per ogni card.
   const SERVICES=[
     {slug:'manualistica-tecnica',title:'Manualistica Tecnica',href:'manualistica-tecnica.html',
+      img:'manualistica-tecnica-40-impaginazione-layout-dtp.jpg',
       sub:"Ingegnerizzazione della documentazione per macchine automatiche",
       desc:"Traduciamo la complessità del tuo macchinario in manuali d'uso, manutenzione e HMI chiari, strutturati e conformi al nuovo Regolamento Macchine. Riduci il time-to-market e proteggi la tua responsabilità di Fabbricante con il nostro workflow industriale certificato."},
     {slug:'cataloghi-ricambi',title:'Cataloghi Ricambi',href:'cataloghi-ricambi.html',
+      img:'catalogo-ricambi-digitale-app-hyper-parts-smartphone.jpg',
       sub:"Gestione ricambi e post-vendita Industry 4.0: la piattaforma Hyper.Parts",
       desc:"Trasforma il tuo After Sales in un centro di profitto. Con la piattaforma interattiva Hyper.Parts e il servizio integrato Due.Zero, offri ai tuoi clienti la consultazione 3D delle tavole ricambi da web e mobile, incrementando la vendita di parti originali."},
     {slug:'traduzioni-multilingue',title:'Traduzioni Multilingue',href:'traduzioni-multilingue.html',
+      img:'traduzioni-tecniche-post-editing-iso-18587-glossario.jpg',
       sub:"Traduzioni tecniche multilingue, localizzazione certificata ISO 17100 e post-editing ISO 18587",
       desc:"Servizi di traduzione specialistica per l'industria meccanica e l'automazione. Integriamo la traduzione umana certificata ISO 17100 con i processi di post-editing umano ISO 18587 (Light e Full) su contenuti generati da traduzione automatica (MT/AI), garantendo rigore terminologico, massima velocità ed export globale."},
     {slug:'technical-compliance',title:'Technical Compliance',href:'technical-compliance.html',
+      img:'valutazione-rischi-direttiva-macchine-technical-compliance.jpg',
       sub:"Technical Compliance e marcature CE: consulenza normativa e Risk Assessment",
       desc:"Guida completa verso la conformità normativa: valutazione dei rischi (UNI EN ISO 12100), calcolo del Performance Level (ISO 13849) e predisposizione del fascicolo tecnico per garantire la sicurezza del macchinario e la marcatura CE."},
     {slug:'soluzioni-creative',title:'Marketing Industriale',href:'soluzioni-creative.html',
+      img:'modellazione-cad-3d-esplosi-ricambi-marketing-industriale.jpg',
       sub:"Marketing industriale B2B, eventi fieristici e digital communication per B2B/OEM",
       desc:"Comunica il valore della tua tecnologia con un approccio specialistico. Realizziamo render 3D, video tecnici, allestimenti e contenuti multimediali per le principali fiere mondiali dell'automazione (Interpack, Cibus Tec, IPACK-IMA). Sviluppiamo portali web e piani editoriali LinkedIn ad alto valore ingegneristico."},
     {slug:'soluzioni-software',title:'Soluzioni Software 2.0',href:'soluzioni-software.html',
+      img:'soluzioni-software-custom-integrazione-gestionale-cad.jpg',
       sub:"Soluzioni software custom, gestionali avanzati e digitalizzazione dei processi industriali",
       desc:"Dalla gestione della documentazione tecnica allo sviluppo di software gestionali customizzati per l'intera organizzazione aziendale. Sfruttiamo la nostra visione strategica e l'intelligenza artificiale per creare piattaforme su misura (es. HyperLab) compliant con le norme ISO 9001 e ISO/IEC 17025."}
   ];
@@ -340,7 +346,7 @@
       card.className='service-card';
       card.dataset.service=s.slug;
       if(s.href) card.href=s.href; // senza href l'<a> resta inerte: stesso trattamento "pending" già usato altrove
-      card.innerHTML='<div class="sc-bg" style="background-image:url(\'img/services/'+s.slug+'.jpg\')"></div>'+
+      card.innerHTML='<div class="sc-bg" style="background-image:url(\'img/services/gallery/'+s.img+'\')"></div>'+
         '<div class="sc-num">'+num+'</div>'+
         '<h3 class="sc-title">'+esc(s.title)+'</h3>'+
         '<p class="sc-sub">'+esc(s.sub)+'</p>'+
@@ -352,7 +358,7 @@
       item.className='svcMobileItem';
       item.dataset.service=s.slug;
       if(s.href) item.href=s.href;
-      item.style.backgroundImage="url('img/services/"+s.slug+".jpg')";
+      item.style.backgroundImage="url('img/services/gallery/"+s.img+"')";
       item.innerHTML='<span class="svcMobileNum">'+num+'</span>'+
         '<span class="svcMobileContent">'+
           '<span class="svcMobileName">'+esc(s.title)+'</span>'+

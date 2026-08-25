@@ -10,33 +10,64 @@
   let lenisInstance=null;
   if(window.Lenis && !reduce){ lenisInstance=new Lenis({lerp:0.09,smoothWheel:true}); (function raf(t){lenisInstance.raf(t);requestAnimationFrame(raf);})(); }
 
+  // ---- ritorno da una pagina interna (servizio, Parliamone, ...): se l'utente aveva lasciato la
+  // home per una pagina nella stessa scheda, salviamo lo scroll esatto al momento del click (vedi
+  // listener sotto) e lo ritroviamo qui al ritorno — niente preloader, si riparte dallo stesso punto
+  // invece di rivedere l'apertura del sito da zero ----
+  const RETURN_KEY='duezero_returnY';
+  const returnYRaw=sessionStorage.getItem(RETURN_KEY);
+  const isReturning=returnYRaw!==null;
+  if(isReturning) sessionStorage.removeItem(RETURN_KEY);
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href$=".html"]:not([target="_blank"])');
+    if(a) sessionStorage.setItem(RETURN_KEY,String(scrollY));
+  });
+
   // ---- preloader: schermata nera/rossa coerente col resto del sito, sparisce quando font+pagina sono pronti.
   // Tempo minimo di visione (400ms) per evitare un flash su connessioni veloci. I due badge hero diventano
-  // visibili solo DOPO questo momento (vedi preloadDone in render()).
+  // visibili solo DOPO questo momento (vedi preloadDone in render()). Il tempo minimo e l'animazione
+  // della barra si saltano se isReturning: l'utente ha già visto l'apertura in questa sessione.
   let preloadDone=false;
   const preloaderBarFill=$('preloaderBarFill');
   // la riga rossa cresce verso un valore "quasi pieno" mentre si aspetta davvero il caricamento
   // (non finge un tempo fisso: se il caricamento è più lento, resta ferma li ad aspettare) —
   // solo al vero completamento scatta a 100%, si vede completarsi, POI la schermata dissolve sulla home
-  if(preloaderBarFill){
+  if(preloaderBarFill && !isReturning){
     requestAnimationFrame(()=>requestAnimationFrame(()=>{ preloaderBarFill.style.width='78%'; }));
   }
   function hidePreloader(){
     preloadDone=true;
     if(menuBtn) menuBtn.style.opacity='1';   // da qui in poi il menu resta acceso per tutto il documento
     if(preloader){
-      if(preloaderBarFill){ preloaderBarFill.style.transition='width .3s ease'; preloaderBarFill.style.width='100%'; }
-      setTimeout(()=>{
-        preloader.classList.add('done');   // la riga rossa si vede completare PRIMA che la schermata dissolva sulla home
-        setTimeout(()=>{ if(preloader.parentNode) preloader.parentNode.removeChild(preloader); },650);
-      },320);
+      if(isReturning){
+        if(preloader.parentNode) preloader.parentNode.removeChild(preloader); // via di scatto, niente barra/dissolvenza
+      } else {
+        if(preloaderBarFill){ preloaderBarFill.style.transition='width .3s ease'; preloaderBarFill.style.width='100%'; }
+        setTimeout(()=>{
+          preloader.classList.add('done');   // la riga rossa si vede completare PRIMA che la schermata dissolva sulla home
+          setTimeout(()=>{ if(preloader.parentNode) preloader.parentNode.removeChild(preloader); },650);
+        },320);
+      }
     }
     render(pRaw); // aggiorna subito la visibilità dei badge anche se reduce-motion non usa il loop continuo
   }
-  const minDelay=new Promise(r=>setTimeout(r,400));
+  const minDelay=isReturning?Promise.resolve():new Promise(r=>setTimeout(r,400));
   const fontsReady=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
   const pageReady=new Promise(r=>{ if(document.readyState==='complete') r(); else addEventListener('load',r,{once:true}); });
-  Promise.all([minDelay,fontsReady,pageReady]).then(hidePreloader);
+  Promise.all([minDelay,fontsReady,pageReady]).then(()=>{
+    if(isReturning){
+      // riposiziona PRIMA di togliere il preloader: nessun flash della cima pagina. scrollTo nativo
+      // (verificato: Lenis non lo sovrascrive/corregge, a differenza di lenisInstance.scrollTo con un
+      // numero puro, che qui restituiva un valore scalato/sbagliato). sP/sP2 sono smussati — stesso
+      // principio del salto a Documenti 4.0 (badgeDoc40 sotto): senza risincronizzarli subito insieme
+      // allo scrollY, la scena "insegue" per 1-2s e si rivede tutta la coreografia di mezzo anche se
+      // lo scroll è già arrivato al punto giusto
+      scrollTo(0,parseInt(returnYRaw,10)||0);
+      readScroll(); sP=pRaw; render(sP);
+      if(window.__snapScene2Instant) window.__snapScene2Instant();
+    }
+    hidePreloader();
+  });
 
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), sub=(p,a,b)=>clamp((p-a)/(b-a),0,1), smooth=t=>t*t*(3-2*t), lerp=(a,b,t)=>a+(b-a)*t;
   const chLines=[...document.querySelectorAll('.ch-title .ln i')];
