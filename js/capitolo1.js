@@ -1,6 +1,6 @@
 (function(){
   const $=id=>document.getElementById(id);
-  const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),menuBtn=$('menuBtn'),
+  const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),testWall=$('testWall'),menuBtn=$('menuBtn'),
         glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),
         chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),chSub=$('chSub'),ch1Img=$('ch1Img'),ch1ImgVeil=$('ch1ImgVeil'),
         overlay=$('overlay'),closeBtn=$('closeBtn'),root=document.documentElement,body=document.body,
@@ -327,7 +327,9 @@
     tilt.style.transform='rotateX('+curRotX.toFixed(3)+'deg) rotateY('+curRotY.toFixed(3)+'deg)';
     // banda obliqua: stessa oscillazione automatica di prima (lightX/lightY, dondolio a tempo), solo
     // ricondotta a UN valore solo (--gp) perché un linear-gradient ha una posizione, non un centro x/y
-    gloss.style.setProperty('--gp',((lightX*0.6+lightY*0.4)*100).toFixed(1)+'%');
+    const gp=((lightX*0.6+lightY*0.4)*100).toFixed(1)+'%';
+    gloss.style.setProperty('--gp',gp);
+    if(testWall) testWall.style.setProperty('--gp',gp); // TEST: stessa banda di luce, riusata sul nuovo SVG
 
     sP+=(pRaw-sP)*0.07;   // UNICO smoothing per tutta la coreografia del Capitolo 1
     render(sP);
