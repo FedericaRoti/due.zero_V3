@@ -94,11 +94,22 @@
   // 4 gruppi, uno per frase (2 righe ciascuno): spazio visibile e permanente dopo OGNI frase, non solo
   // tra le due coppie — la comparsa resta a coppie (vedi phLine), ma la separazione visiva è per frase
   const mkGroup=arr=>arr.map(t=>'<span class="ph"><i>'+t+'</i></span>').join(' ');
+  // phGroupGap anche sul 1° gruppo (non solo dal 2° in poi): serve lo stesso spazio protettivo
+  // sopra ciascun gruppo, altrimenti il primo (nessun gruppo precedente da coprire, ma comunque
+  // soggetto allo zoom) sconfina nell'header non avendo margine sopra di sé
   cardTextEl.innerHTML=[0,2,4,6].map(start=>
-    '<span class="phGroup'+(start>0?' phGroupGap':'')+'">'+mkGroup(phrases.slice(start,start+2))+'</span>'
+    '<span class="phGroup phGroupGap">'+mkGroup(phrases.slice(start,start+2))+'</span>'
   ).join('');
   const phLines=[...cardTextEl.querySelectorAll('.ph i')];
   const phGroupEls=[...cardTextEl.querySelectorAll('.phGroup')];
+  // allineamento fisso, non a ogni frame: i gruppi a sinistra (0,2) e quelli a destra (1,3) sono
+  // tutti larghi quanto .c1b-text, quindi text-align:left/right (invece di center, ereditato da
+  // .card1b) li fa partire/finire tutti sullo stesso identico bordo — non solo dentro al proprio
+  // gruppo, ma allineati anche fra il primo e il terzo (o il secondo e il quarto)
+  // i gruppi a destra (1,3) allineano la frase dal suo inizio (left), non dalla fine (right):
+  // il blocco resta spostato a destra via translateX, ma il testo parte da un bordo comune invece
+  // di finire su un bordo comune — quindi tutti e 4 i gruppi sono ora text-align:left
+  phGroupEls.forEach(el=>{ el.style.textAlign='left'; });
 
   let bannerLeft=0,bannerTop=0,bannerBW=660,bannerH=118;
   function buildBanner(){
@@ -283,19 +294,25 @@
     card1b.style.transform='scale('+sx.toFixed(4)+','+sy.toFixed(4)+')';
     cardHeadEl.style.opacity=cardHead.toFixed(3); cardFootEl.style.opacity=cardHead.toFixed(3);
     phLines.forEach((el,i)=>{ const t=phLine(i); el.style.transform='translateY('+((1-t)*100).toFixed(1)+'%)'; });
-    // effetti aggiunti sopra al reveal esistente (invariato): un piccolo zoom ad ogni comparsa di
-    // coppia, più uno spostamento alterno sx/dx per gruppo, "meno allineati" ma non ai bordi.
-    // transform-origin:center top, non center: lo zoom cresce SOLO verso il basso, dentro lo spazio
-    // bianco già presente fra i gruppi (phGroupGap) — mai verso l'alto, quindi non copre mai la
-    // frase precedente, che è esattamente il vincolo richiesto
-    const GROUP_REVEAL=.04, GROUP_PAUSE=.045, GROUP_SHIFT=26;
+    // ogni gruppo è spostato in modo FISSO in una posizione diversa (vedi GROUP_X, non toccare
+    // più) e l'unico movimento è lo zoom: la frase si avvicina fisicamente allo schermo (vera
+    // profondità 3D, non un semplice scale), poi torna indietro alla size normale.
+    // perspective()+translateZ() invece di scale(): uno scale/scaleY piatto si percepisce
+    // sempre come "un'animazione della dimensione", mentre una vera prospettiva (l'elemento che
+    // si muove nello spazio verso la camera, con relativo foreshortening) si legge come uno
+    // zoom reale. L'ingrandimento apparente risultante (perspective/(perspective-z)) è
+    // volutamente nello stesso ordine di grandezza già verificato sicuro (~1.3x): lo spazio
+    // fisico della card (76vh, gap tra le frasi, distanza da header/footer) è lo stesso vincolo
+    // di prima e non è cambiato — cambia solo la qualità percepita del movimento, non quanto
+    // spazio serve, quindi il margine di sicurezza già trovato resta valido
+    const GROUP_REVEAL=.04, GROUP_PAUSE=.045, ZOOM_REVEAL=.06, PERSPECTIVE=900, Z_PEAK=210;
+    const GROUP_X=[-70,70,-190,190]; // 1° un po' a sx, 2° un po' a dx, 3° molto più a sx (oltre -170), 4° di conseguenza a dx
     phGroupEls.forEach((el,g)=>{
       const g0=.6828+g*(GROUP_REVEAL+GROUP_PAUSE);
-      const t=smooth(sub(s,g0,g0+GROUP_REVEAL));
-      const zoom=lerp(.92,1,t);
-      const dir=(g%2===0)?-1:1; // gruppi 0,2 a sinistra — 1,3 a destra
-      el.style.transformOrigin='center top';
-      el.style.transform='translateX('+(dir*GROUP_SHIFT)+'px) scale('+zoom.toFixed(3)+')';
+      const tZoom=smooth(sub(s,g0,g0+ZOOM_REVEAL));
+      const z=lerp(Z_PEAK,0,tZoom); // si avvicina alla camera, poi torna alla profondità normale
+      el.style.transformOrigin='center bottom';
+      el.style.transform='perspective('+PERSPECTIVE+'px) translateZ('+z.toFixed(1)+'px) translateX('+GROUP_X[g]+'px)';
     });
   }
 

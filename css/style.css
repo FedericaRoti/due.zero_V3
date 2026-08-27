@@ -272,7 +272,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .after p{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(20,20,18,.5);margin-top:16px}
 /* card editoriale — nasce dallo stesso pannello carta: un solo gesto continuo (scale morph) */
 .card1b{position:absolute;top:12vh;left:6vw;right:6vw;height:76vh;z-index:6;background:var(--paper);color:var(--ink);
-  display:flex;align-items:center;justify-content:center;text-align:center;
+  display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
   box-shadow:0 6px 18px rgba(0,0,0,.08);border:1px solid rgba(20,20,18,.12);opacity:0;transform-origin:center;will-change:transform}
 .card1b .c1b-head,.card1b .c1b-foot{position:absolute;left:50%;transform:translateX(-50%);
   font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(20,20,18,.5);opacity:0}
@@ -289,7 +289,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 /* spazio visibile e permanente dopo ogni frase (non solo tra le due coppie), tipo a-capo di
    paragrafo leggero — contenuto perché sono 3 stacchi non 1, il testo deve restare nell'altezza
    fissa della card (76vh) */
-.c1b-text .phGroupGap{margin-top:.4em}
+.c1b-text .phGroupGap{margin-top:1em}
 
 /* ================= CAPITOLO 2 — ECOSISTEMA (asset reali, no SVG generico) ================= */
 /* 940vh, non più 860: la sola apertura (titolo da solo -> sparisce -> sottotitolo da solo) aveva
