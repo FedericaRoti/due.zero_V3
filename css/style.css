@@ -1,6 +1,6 @@
 :root{--black:#0A0A0A;--paper:#EDEDEA;--ink:#141412;--red:#E2231A;
   --geo:'Big Shoulders Display',sans-serif;--mono:'IBM Plex Mono',monospace;--mx:50vw;--my:44vh;
-  --hero-font:'Questrial',sans-serif} /* solo per .title (scritta centrale hero): il resto del sito resta su --geo */
+  --hero-font:'Bebas Neue',sans-serif} /* solo per .title (scritta centrale hero): il resto del sito resta su --geo */
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
@@ -47,9 +47,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .heroMove{position:relative;transform-origin:left top;will-change:transform,opacity}
 .tilt{position:relative;transform-style:preserve-3d;will-change:transform}
 .gloss-wrap{position:relative;text-align:center;pointer-events:auto;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
-/* clamp ricalibrato per Questrial: proporzioni normali, non condensate come Bebas Neue di prima —
-   agli stessi valori "COMMUNICATION" arrivava a ~90% della larghezza viewport, decisamente troppo */
-.title{font-family:var(--hero-font);font-weight:400;text-transform:uppercase;font-size:clamp(42px,9vw,165px);line-height:.94;letter-spacing:.01em}
+.title{font-family:var(--hero-font);font-weight:400;text-transform:uppercase;font-size:clamp(46px,11.5vw,205px);line-height:.94;letter-spacing:.01em}
 /* NIENTE transition qui: una transizione CSS a tempo fisso parte per conto suo, scollegata dal gesto
    di scroll — anche se morbida al suo interno, si percepisce come uno scatto perché non segue lo scroll
    dell'utente in tempo reale. Il riallineamento (--l0Shift/--l1Shift) resta quindi agganciato allo scroll
@@ -89,8 +87,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    un'icona centrale rischiava comunque di finirci sopra */
 .hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:4;
   display:flex;align-items:center;gap:8px;
-  font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(237,237,234,.3)}
-.hintArrow{display:inline-block;color:var(--red);font-size:12px;animation:hintBounce 1.6s ease-in-out infinite}
+  font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#EDEDEA}
+.hintArrow{display:inline-block;color:#EDEDEA;font-size:12px;animation:hintBounce 1.6s ease-in-out infinite}
 /* variante per sfondi chiari (carta), es. la scena Documentation 4.0: il colore di base (bianco
    trasparente) sarebbe quasi invisibile lì — la freccia resta rossa in entrambi i casi */
 .hintDark{color:rgba(20,20,18,.4)}
@@ -217,7 +215,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .ch-subList li{font-family:var(--mono);text-transform:uppercase;
   font-size:min(clamp(14px,1.4vw,18px),2.6vh);line-height:1.5;letter-spacing:.02em;
   color:rgba(237,237,234,.65);padding-left:22px;position:relative}
-.ch-subList li::before{content:'';position:absolute;left:0;top:.65em;width:10px;height:2px;background:var(--red)}
+.ch-subList li::before{content:'';position:absolute;left:0;top:calc(.65em - 3px);width:7px;height:7px;
+  background:var(--red);clip-path:polygon(100% 0,100% 100%,0 100%,100% 0)}
 /* banner che si COSTRUISCE a quadrati */
 .chBanner{position:absolute;z-index:9;opacity:0;display:flex;align-items:center;padding:0 26px}
 .chBanner .bt{position:relative;z-index:1;color:#fff;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:clamp(18px,2.1vw,30px);white-space:nowrap;opacity:0}
@@ -286,20 +285,27 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .c1b-text{font-weight:600;text-transform:uppercase;font-size:clamp(22px,2.8vw,44px);line-height:1.28;max-width:min(82vw,860px);letter-spacing:-.005em}
 .c1b-text .ph{display:block;overflow:hidden}
 .c1b-text .ph i{display:block;font-style:normal;transform:translateY(100%)}
+.c1b-text .phGroup{display:block}
+/* spazio visibile e permanente dopo ogni frase (non solo tra le due coppie), tipo a-capo di
+   paragrafo leggero — contenuto perché sono 3 stacchi non 1, il testo deve restare nell'altezza
+   fissa della card (76vh) */
+.c1b-text .phGroupGap{margin-top:.4em}
 
 /* ================= CAPITOLO 2 — ECOSISTEMA (asset reali, no SVG generico) ================= */
 /* 940vh, non più 860: la sola apertura (titolo da solo -> sparisce -> sottotitolo da solo) aveva
    pochissimo spazio assoluto di scroll per essere letta, anche dando le fosse quasi tutto il budget
    relativo disponibile — 80vh in più qui allungano l'intera timeline del capitolo in proporzione,
    senza toccare nessuna soglia sub(s,...) esistente */
-.scene2{position:relative;height:940vh;background:var(--black)}
-.scene2 .chapterAnchor{top:754.32vh}
+/* 800vh, non più 940: Documentation 4.0 è uscita da qui (ora è una scena indipendente propria, vedi
+   .sceneDoc40 sotto) — tolto esattamente lo spazio che occupava (.800-1.0 della vecchia timeline),
+   nessuna soglia sub(s,...) di Ponte/Ecosistema/Project 2.0/Hyperparts è stata toccata */
+.scene2{position:relative;height:1050vh;background:var(--black)}
 .sticky2{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black);perspective:1200px}
 
-/* fondi Hyperparts/Documentation (invariati, gestiti da render2 come prima) */
+/* fondo Hyperparts (invariato, gestito da render2 come prima) — bgPaper2 è sparito insieme a
+   Documentation 4.0: la sua scena indipendente ha ora un fondo carta statico proprio */
 .ecoBg{position:absolute;inset:0;z-index:0;opacity:0;pointer-events:none}
 .ecoBg.bgHyper{background:#070c14}
-.ecoBg.bgPaper2{background:var(--paper)}
 
 /* ---- ponte Cap.1 -> Cap.2: il perimetro della card si espande e si trasforma in nero (un solo elemento, un solo gesto) ---- */
 .ecoBridge{position:absolute;top:12vh;left:6vw;right:6vw;height:76vh;z-index:0;background:var(--paper);
@@ -334,7 +340,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .eco-open-sub{margin-top:30px;color:rgba(237,237,234,.88);font-family:var(--mono);font-size:clamp(17px,1.7vw,23px);line-height:1.55;letter-spacing:.04em;max-width:900px;opacity:0;max-height:0;overflow:hidden}
 .eco-subList{list-style:none;display:flex;flex-direction:column;gap:10px;margin:0 auto;width:fit-content;text-align:left}
 .eco-subList li{font-family:var(--mono);text-transform:uppercase;font-size:min(clamp(14px,1.4vw,18px),2.6vh);line-height:1.5;letter-spacing:.02em;color:rgba(237,237,234,.75);padding-left:22px;position:relative}
-.eco-subList li::before{content:'';position:absolute;left:0;top:.65em;width:10px;height:2px;background:var(--red)}
+.eco-subList li::before{content:'';position:absolute;left:0;top:calc(.65em - 3px);width:7px;height:7px;
+  background:var(--red);clip-path:polygon(100% 0,100% 100%,0 100%,100% 0)}
 
 /* ---- label comune (mono, piccola) — posizione/colore per scena ---- */
 .eco-lbl{position:absolute;z-index:4;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:0;pointer-events:none}
@@ -368,7 +375,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .pj-desc{color:rgba(237,237,234,.92);text-shadow:0 1px 4px rgba(0,0,0,.65);font-family:var(--mono);font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.01em;text-transform:uppercase;opacity:0;pointer-events:none}
 /* CTA a pillola, stesso trattamento del bottone MENU (sfondo scuro sfocato, bordo, angoli 999px) —
    prima era un link a bordo squadrato con inversione colore all'hover, ora coerente col resto del sito */
-.eco-cta-row{display:flex;align-items:center;gap:32px;flex-wrap:wrap;margin-top:6px;opacity:0;pointer-events:none}
+.eco-cta-row{display:flex;align-items:center;gap:48px;flex-wrap:wrap;margin-top:6px;opacity:0;pointer-events:none}
 /* sfondo più opaco (.55->.8) e bordo più marcato (.28->.5) + ombra: qui la pillola sta nella fascia più
    scura della foto (il velo si intensifica verso il basso), lo stesso trattamento del bottone MENU a .55
    ci si confondeva quasi del tutto — non era un problema del bottone MENU stesso, quello sta su fondi
@@ -380,19 +387,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   text-transform:uppercase;text-decoration:none;transition:background .3s ease,border-color .3s ease}
 .pj-cta .plus,.hp-cta .plus{color:var(--red);transition:color .3s ease}
 .pj-cta:hover,.hp-cta:hover{background:rgba(10,10,10,.95);border-color:rgba(237,237,234,.75)}
-/* icone store: stesso trattamento pillola, solo icona — link inerti finché non arrivano gli URL diretti */
-/* etichetta che introduce le icone (testo del capo, distinto per sezione) — risolve anche l'ambiguità
-   delle icone da sole, segnalata: ora è chiaro che portano a un'app mobile, non a un generico link */
-/* icone centrate sotto l'etichetta (più larga della semplice riga di icone) */
-.eco-appGroup{display:flex;flex-direction:column;align-items:center;gap:8px}
-.eco-appLabel{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:rgba(237,237,234,.55)}
-.eco-appIcons{display:flex;align-items:center;gap:10px}
-.eco-appIcon{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:999px;
-  background:rgba(10,10,10,.8);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
-  border:1px solid rgba(237,237,234,.5);box-shadow:0 2px 10px rgba(0,0,0,.35);color:#EDEDEA;transition:background .3s ease,border-color .3s ease}
-.eco-appIcon svg{width:18px;height:18px}
-.eco-appIcon.pending{cursor:default;opacity:.5}
-.eco-appIcon:not(.pending):hover{background:rgba(10,10,10,.95);border-color:rgba(237,237,234,.75)}
+/* badge ufficiali store (Google Play + App Store): nessuna pillola propria, l'immagine è già il badge completo.
+   Raggruppati tra loro (gap ridotto) e staccati dalla CTA principale (gap più ampio di .eco-cta-row) */
+.eco-storeBadges{display:flex;align-items:center;gap:14px}
+.eco-storeBadge{display:inline-flex;align-items:center;transition:opacity .3s ease}
+.eco-storeBadge img{height:40px;width:auto;display:block}
+.eco-storeBadge:hover{opacity:.85}
 
 /* ---- HYPERPARTS: campo fotografico immersivo (tavolo di lavoro reale), titolo dominante con maschera laterale ---- */
 /* stesso principio del velo di 2.0 Project: oscuramento concentrato in basso, non un velo uniforme */
@@ -410,7 +410,34 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .hp-sub{color:#EDEDEA;font-family:var(--geo);font-weight:600;text-transform:uppercase;font-size:clamp(17px,2.1vw,28px);line-height:1.24;letter-spacing:-.005em;max-width:520px;opacity:0;pointer-events:none}
 .hp-desc{color:rgba(237,237,234,.92);text-shadow:0 1px 4px rgba(0,0,0,.65);font-family:var(--mono);font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.01em;text-transform:uppercase;opacity:0;pointer-events:none}
 
+/* ---- HYPER.LABQ: stesso sticky di Hyperparts (#sticky2), non un contenitore proprio — serve il
+   crossfade fra le due foto (vedi capitoli.js). Stessa grammatica di Hyperparts: campo fotografico
+   immersivo, titolo dominante con maschera laterale, sottotitolo, desc, CTA ---- */
+.ecoLabQImg{position:absolute;inset:-4vh -4vw;z-index:1;
+  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.35) 45%,rgba(7,12,20,.62) 65%,rgba(7,12,20,.88) 100%),url('../img/eco_hyperlabq_bg.jpg');
+  background-repeat:no-repeat;background-position:center,center 30%;background-size:cover,cover;
+  transform-origin:50% 30%;opacity:0;pointer-events:none;will-change:transform,filter,clip-path}
+#sceneLabQContent{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:8px;max-width:760px;pointer-events:none}
+.lq-group{display:flex;flex-direction:column;gap:14px}
+.lq-title{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(48px,8vw,132px);line-height:.90;letter-spacing:-.01em;opacity:0;clip-path:inset(0 100% 0 0);transform-origin:left center;pointer-events:none;will-change:transform,opacity,clip-path}
+/* la Q finale non deve risaltare, deve "annebbiarsi": stesso tono del titolo ma molto più trasparente,
+   non un colore nuovo — si legge ancora ma recede invece di attirare l'occhio */
+.lq-titleQ{color:rgba(237,237,234,.35)}
+.lq-sub{color:#EDEDEA;font-family:var(--geo);font-weight:600;text-transform:uppercase;font-size:clamp(17px,2.1vw,28px);line-height:1.24;letter-spacing:-.005em;max-width:520px;opacity:0;pointer-events:none}
+.lq-desc{color:rgba(237,237,234,.92);text-shadow:0 1px 4px rgba(0,0,0,.65);font-family:var(--mono);font-size:clamp(14px,1.15vw,16px);line-height:1.6;letter-spacing:.01em;text-transform:uppercase;opacity:0;pointer-events:none}
+.lq-cta{display:inline-flex;align-items:center;gap:10px;padding:11px 20px;border-radius:999px;
+  background:rgba(10,10,10,.8);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:1px solid rgba(237,237,234,.5);box-shadow:0 2px 10px rgba(0,0,0,.35);color:#EDEDEA;font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;text-decoration:none;transition:background .3s ease,border-color .3s ease}
+.lq-cta .plus{color:var(--red);transition:color .3s ease}
+.lq-cta:hover{background:rgba(10,10,10,.95);border-color:rgba(237,237,234,.75)}
+
 /* ---- DOCUMENTATION 4.0: cambio di scala (da componente a parco macchine) — fondo carta, titolo dominante centrato, nessuna foto aggiuntiva ---- */
+/* scena indipendente (proprio sticky/scroll): prima viveva dentro scene2, spostata qui per fare posto a
+   Hyper.LabQ. 300vh: stesso budget reale di scroll che aveva già dentro scene2 (vedi capitoli.js) */
+.sceneDoc40{position:relative;height:260vh;background:var(--paper)}
+.sceneDoc40 .chapterAnchor{top:45vh}
+.stickyDoc40{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--paper)}
 #sceneDoc{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 6vw}
 .dc-title{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(48px,8vw,132px);line-height:.90;letter-spacing:-.01em;opacity:0;transform:scale(1.06);will-change:transform,opacity,clip-path}
 .dc-accent{width:52px;height:3px;background:var(--red);margin:22px 0;opacity:0;transform-origin:center;will-change:opacity,transform}
@@ -498,9 +525,6 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .svc-open-h{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(46px,7.2vw,118px);
   line-height:.92;letter-spacing:-.01em;clip-path:inset(0 100% 0 0);transform:scale(1.10);transform-origin:center;
   will-change:transform,clip-path}
-.svc-open-sub{margin-top:22px;color:rgba(237,237,234,.75);font-family:var(--mono);font-size:clamp(13px,1.2vw,16px);
-  letter-spacing:.06em;text-transform:uppercase;max-width:420px;opacity:0}
-
 /* ---- servizi: CARD A SCROLL ORIZZONTALE (dalla bozza duezero-scroll, adattata a palette/font del sito) —
    su desktop la sezione è pinnata (sticky) e il binario di card trasla in orizzontale legato allo scroll,
    1px di scroll = 1px di corsa (altezza dello stage impostata da JS su misura del binario). Su mobile
@@ -724,8 +748,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    quando il footer raggiunge il viewport (classe .revealed aggiunta via scroll listener leggero, non
    IntersectionObserver, per restare coerenti con lo stile del resto del file — ma qui il trigger è
    "on-enter" una tantum, non un progresso continuo legato allo scroll: niente sticky, niente scene). */
-.siteFooter{position:relative;min-height:135vh;background:var(--black);color:var(--paper);
-  padding:10vh 6vw 34px;overflow:hidden;display:flex;flex-direction:column}
+.siteFooter{position:relative;min-height:150vh;background:var(--black);color:var(--paper);
+  padding:10vh 6vw 12vh;overflow:hidden;display:flex;flex-direction:column}
 
 .footerEyebrow{display:block;font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);
   letter-spacing:.16em;text-transform:uppercase;color:rgba(237,237,234,.55);
@@ -746,9 +770,10 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .footerMainCta:hover{border-color:rgba(237,237,234,.75)}
 .footerMainCta:hover span{transform:translateX(5px)}
 
-.footerLogoWrap{flex:1;display:flex;align-items:center;justify-content:center;
-  min-height:30vh;padding:6vh 0}
-.footerLogo{width:clamp(280px,34vw,640px);height:auto;
+/* niente più flex:1: con il logo rimpicciolito, "cresci per riempire tutto lo spazio residuo" lasciava
+   un vuoto enorme sopra e sotto (segnalato) — ora occupa solo lo spazio che le serve davvero */
+.footerLogoWrap{flex:0 0 auto;display:flex;align-items:center;justify-content:center;padding:8vh 0 6vh}
+.footerLogo{width:clamp(190px,23vw,440px);height:auto;
   opacity:0;transform:translateY(26px);transition:opacity .9s ease 1.1s,transform .9s ease 1.1s}
 
 /* justify-content:space-between: i tre blocchi (Contatti/Sede/Esplora) non hanno flex-grow, quindi
@@ -827,7 +852,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .footerIntro h2{font-size:clamp(48px,13vw,84px)}
   .footerIntro p{max-width:82vw}
   .footerLogoWrap{min-height:auto;padding:7vh 0}
-  .footerLogo{width:min(70vw,320px)}
+  .footerLogo{width:min(50vw,220px)}
   .footerInfo{flex-direction:column;gap:32px}
   .footerLegal{gap:14px 20px;font-size:10px}
 }
@@ -925,8 +950,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   #sceneHyper{position:static;display:flex;flex-direction:column;align-items:flex-start;gap:14px;background:#070c14;color:#EDEDEA;padding:32px;max-width:none}
   .hp-title,.hp-sub,.hp-desc{opacity:1;transform:none;clip-path:none;color:#EDEDEA;pointer-events:auto}
   .hp-desc{color:rgba(237,237,234,.6)}
-  /* pillola: sfondo scuro proprio, leggibile sia su sceneProject (chiaro) sia su sceneHyper (scuro) — nessuna inversione colore necessaria */
-  .pj-cta,.hp-cta,.eco-cta-row,.eco-appIcon{opacity:1;pointer-events:auto}
+  /* pillola: sfondo scuro proprio, leggibile sia su sceneProject (chiaro) sia su sceneHyper/sceneLabQ (scuro) — nessuna inversione colore necessaria */
+  .pj-cta,.hp-cta,.lq-cta,.eco-cta-row,.eco-storeBadge{opacity:1;pointer-events:auto}
+  .ecoLabQImg{display:none}
+  #sceneLabQContent{position:static;display:flex;flex-direction:column;align-items:flex-start;gap:14px;color:#EDEDEA;padding:32px;max-width:none}
+  .lq-title,.lq-sub,.lq-desc{opacity:1;transform:none;clip-path:none;color:#EDEDEA;pointer-events:auto}
+  .lq-desc{color:rgba(237,237,234,.6)}
+  .sceneDoc40{height:auto}
+  .stickyDoc40{position:static;height:auto;overflow:visible;background:none}
   #sceneDoc{position:static;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:10px;color:var(--ink);pointer-events:auto;padding:0}
   .dc-title,.dc-sub,.dc-text,.dc-accent{opacity:1;transform:none;clip-path:none}
   .dc-text i{transform:none}
@@ -943,7 +974,6 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .ch3Banner{position:static;opacity:1;width:auto;height:auto;transform:none;margin:40px 38px 0;padding:14px 24px;background:var(--red);pointer-events:auto}
   .svc-open{position:static;height:auto;max-width:none;padding:40px 38px 90px;color:#EDEDEA}
   .svc-open-h{opacity:1;transform:none;clip-path:none;color:#EDEDEA}
-  .svc-open-sub{opacity:1}
 
   /* servizi: niente pin né corsa orizzontale — la stessa lista verticale usata su mobile */
   .svcStage{display:none}

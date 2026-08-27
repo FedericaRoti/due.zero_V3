@@ -62,17 +62,29 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
 .svcHero{position:relative;overflow:hidden;background:var(--paper);min-height:62vh;
   display:grid;grid-template-columns:1.15fr 1fr;align-items:center;column-gap:5vw;
   padding:15vh 6vw 8vh}
-.svcHeroText{min-width:0}
+/* padding-top che riserva lo spazio per il triangolo + la pillola "Servizi" qui sopra (entrambi
+   fuori dal flusso, position:absolute rispetto a .svcHero — vedi sotto): senza, l'eyebrow partirebbe
+   dalla cima di .svcHeroText, che nella griglia (align-items:center) può trovarsi più in alto del
+   cluster triangolo/pillola a seconda dell'altezza dell'immagine a fianco, sovrapponendosi */
+.svcHeroText{min-width:0;padding-top:calc(8vh + 38px)}
 .svcHeroVisual{position:relative;align-self:stretch;overflow:hidden;min-height:38vh;
   opacity:0;transform:scale(1.04);transition:opacity 1s ease .3s,transform 1.2s cubic-bezier(.4,0,.2,1) .3s}
 .svcHeroVisual img{width:100%;height:100%;object-fit:cover;display:block}
 .svcHero.revealed .svcHeroVisual{opacity:1;transform:scale(1)}
+/* nuovo, richiesto: stesso triangolo di marchio nell'angolo in basso a destra dell'immagine di copertina */
+.svcHeroVisual::after{content:'';position:absolute;right:0;bottom:0;width:52px;height:52px;
+  background:var(--red);clip-path:polygon(100% 0,100% 100%,0 100%,100% 0);pointer-events:none}
 .svcHeroMark{position:absolute;left:6vw;top:9vh;width:52px;height:52px;background:var(--red);
   clip-path:polygon(100% 0,100% 100%,0 100%,100% 0)}
-.svcBack{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;
-  letter-spacing:.1em;text-transform:uppercase;color:rgba(20,20,18,.45);text-decoration:none;
-  margin-top:8vh;transition:color .25s,gap .25s;width:fit-content}
-.svcBack:hover{color:var(--red);gap:12px}
+/* pillola "Servizi": fuori dal flusso del testo, ancorata subito sotto il triangolo (non più
+   "attaccata" al resto del testo) — stesso principio del pulsante MENU (bordo sottile, sfondo
+   quasi trasparente), leggibile come controllo cliccabile per tornare indietro */
+.svcBack{position:absolute;left:6vw;top:calc(9vh + 52px + 16px);display:inline-flex;align-items:center;
+  gap:8px;font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(20,20,18,.45);text-decoration:none;transition:color .25s,gap .25s,background .3s ease,border-color .3s ease;
+  width:fit-content;padding:9px 18px;border-radius:999px;border:1px solid rgba(20,20,18,.16);
+  background:rgba(20,20,18,.035)}
+.svcBack:hover{color:var(--red);gap:12px;background:rgba(20,20,18,.07);border-color:rgba(20,20,18,.3)}
 .svcEyebrow{display:block;font-family:var(--mono);color:var(--red);font-size:clamp(12px,1.05vw,14px);
   letter-spacing:.16em;text-transform:uppercase;margin-top:18px}
 .svcHero h1{margin-top:16px;font-family:var(--geo);font-weight:800;text-transform:uppercase;color:var(--ink);
@@ -86,30 +98,6 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
   transition:opacity .6s ease .5s,transform .6s ease .5s}
 .svcHero.revealed h1{clip-path:inset(0 0% 0 0)}
 .svcHero.revealed .svcAccent,.svcHero.revealed .svcLead{opacity:1;transform:translateY(0)}
-
-/* ---- variante sperimentale #2: l'immagine non è più un blocco di contenuto (né a lato né sopra),
-   ma uno sfondo a tutta hero, molto trasparente, dietro al testo — tecnica presa da una versione
-   precedente del sito (hero fullscreen con img assoluta+opacity bassa dietro al testo). Il testo
-   torna a occupare tutta la larghezza come nella colonna originale, semplicemente senza più una
-   colonna riservata all'immagine accanto. Solo sulla pagina di prova, via .svcHero--bgImg ---- */
-.svcHero--bgImg{display:block}
-.svcHero--bgImg .svcHeroVisual{position:absolute;inset:0;margin:0;min-height:0;
-  aspect-ratio:auto;z-index:0;transform:none;transition:opacity 1.2s ease .3s}
-.svcHero--bgImg .svcHeroVisual img{width:100%;height:100%;object-fit:cover}
-.svcHero--bgImg.revealed .svcHeroVisual{opacity:.12;transform:none}
-.svcHero--bgImg .svcHeroText{position:relative;z-index:1}
-/* position:relative su .svcHeroText lo rende il nuovo "contenitore di riferimento" per .svcHeroMark
-   (che ci è annidato dentro): senza compensare, il triangolo si posiziona rispetto al testo invece
-   che a tutta l'hero, finendo sotto al padding-top più basso del testo e sopra l'eyebrow. Offset
-   ricalcolato per tornare alla stessa posizione visiva di sempre (6vw/9vh dal bordo dell'hero) */
-.svcHero--bgImg .svcHeroMark{left:0;top:-6vh}
-/* link "Servizi": stesso principio del pulsante MENU (pillola con bordo sottile), ma in tono
-   neutro/carta invece che scuro — deve leggersi come un controllo cliccabile per tornare indietro
-   (l'utente non nota una freccina di testo nuda, e potrebbe non pensare alle frecce del browser),
-   senza aggiungere un altro accento di colore alla pagina */
-.svcHero--bgImg .svcBack{font-size:13px;gap:8px;padding:9px 18px;border-radius:999px;
-  border:1px solid rgba(20,20,18,.16);background:rgba(20,20,18,.035)}
-.svcHero--bgImg .svcBack:hover{background:rgba(20,20,18,.07);border-color:rgba(20,20,18,.3);color:rgba(20,20,18,.7)}
 
 /* ================= LAYOUT CORPO — colonna principale + sidebar =================
    svcMain (svcIntro+svcBody) a sinistra, svcSidebar a destra: la "colonna di destra" con la
@@ -157,7 +145,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
 .svcList{list-style:none;display:flex;flex-direction:column;gap:12px}
 .svcList li{font-family:var(--mono);font-size:clamp(14px,1.05vw,16px);line-height:1.6;
   color:rgba(20,20,18,.7);padding-left:22px;position:relative}
-.svcList li::before{content:'';position:absolute;left:0;top:.6em;width:8px;height:2px;background:var(--red)}
+.svcList li::before{content:'';position:absolute;left:0;top:calc(.6em - 3px);width:7px;height:7px;
+  background:var(--red);clip-path:polygon(100% 0,100% 100%,0 100%,100% 0)}
 /* niente peso 700 nel mono self-hosted (solo 400/500): l'etichetta si distingue col colore, non
    con un bold sintetico che renderebbe male */
 .svcList li strong{font-weight:500;color:var(--ink)}
@@ -191,7 +180,11 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
   .svcHero{grid-template-columns:1fr;padding:12vh 8vw 7vh;min-height:auto}
   .svcHeroVisual{order:-1;margin:0 -8vw 4vh;min-height:auto;aspect-ratio:16/10}
   .svcHeroMark{left:8vw;top:7vh;width:40px;height:40px}
-  .svcBack{margin-top:6vh}
+  .svcHeroVisual::after{width:40px;height:40px}
+  .svcBack{top:calc(7vh + 40px + 14px);left:8vw}
+  /* niente riserva qui: su mobile l'immagine sta sopra il testo (order:-1), quindi il blocco
+     eyebrow/titolo parte già ben sotto al cluster triangolo+pillola, non serve compensare */
+  .svcHeroText{padding-top:0}
   .svcHero h1{font-size:clamp(36px,10.5vw,64px)}
   .svcLead{max-width:100%}
   .svcLayout{grid-template-columns:1fr;padding:0 8vw}

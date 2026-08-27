@@ -88,11 +88,17 @@
     'Con il nostro ecosistema di servizi e il metodo 2.0 Project',
     "governiamo l'intero ciclo di vita dei contenuti tecnici.",
     'Metodologia, conformità normativa e software proprietari',
-    'trasformano i dati di progetto in asset strategici digitali,',
-    'garantendo efficienza operativa e rigorosa precisione',
+    'trasformano i dati di progetto in asset strategici digitali.',
+    'Garantiamo efficienza operativa e rigorosa precisione',
     'in ogni singola fase della catena industriale.'];
-  cardTextEl.innerHTML=phrases.map(t=>'<span class="ph"><i>'+t+'</i></span>').join(' ');
+  // 4 gruppi, uno per frase (2 righe ciascuno): spazio visibile e permanente dopo OGNI frase, non solo
+  // tra le due coppie — la comparsa resta a coppie (vedi phLine), ma la separazione visiva è per frase
+  const mkGroup=arr=>arr.map(t=>'<span class="ph"><i>'+t+'</i></span>').join(' ');
+  cardTextEl.innerHTML=[0,2,4,6].map(start=>
+    '<span class="phGroup'+(start>0?' phGroupGap':'')+'">'+mkGroup(phrases.slice(start,start+2))+'</span>'
+  ).join('');
   const phLines=[...cardTextEl.querySelectorAll('.ph i')];
+  const phGroupEls=[...cardTextEl.querySelectorAll('.phGroup')];
 
   let bannerLeft=0,bannerTop=0,bannerBW=660,bannerH=118;
   function buildBanner(){
@@ -185,8 +191,16 @@
     const imgExit   = smooth(sub(s,.5448,.5938));
     const cardIn    = smooth(sub(s,.5938,.7128));   // il pannello si apre nella card editoriale
     const cardHead  = smooth(sub(s,.6388,.6828));
-    // 5 frasi, stagger .015 tra una e l'altra: l'ultima completa l'entrata entro s=1.0 con margine residuo
-    const phLine    = i=>smooth(sub(s,.6828+i*.015,.7278+i*.015));
+    // 4 frasi, ognuna il proprio passo (non più a coppie): ogni frase (2 righe) compare per conto suo,
+    // poi una pausa vera di solo scroll — vuoto, nulla di nuovo — prima che compaia la frase successiva,
+    // cosi c'è il tempo di leggerla. REVEAL=.04 (le 2 righe della frase, stagger .005/durata .035 l'una),
+    // PAUSE=.045 tra una frase e la successiva (3 pause), margine residuo finale ~.022 prima che la scena
+    // prosegua — stesso principio della singola pausa tra coppie di prima, solo ripetuto per ogni frase
+    const phLine    = i=>{
+      const REVEAL=.04, PAUSE=.045, group=Math.floor(i/2), local=i%2;
+      const g0=.6828+group*(REVEAL+PAUSE);
+      return smooth(sub(s,g0+local*.005,g0+local*.005+.035));
+    };
 
     // il menu non è più legato al progresso di questa scena: resta visibile su tutto il documento
     // (viene acceso una volta sola alla fine del preloader, vedi hidePreloader)
@@ -269,6 +283,20 @@
     card1b.style.transform='scale('+sx.toFixed(4)+','+sy.toFixed(4)+')';
     cardHeadEl.style.opacity=cardHead.toFixed(3); cardFootEl.style.opacity=cardHead.toFixed(3);
     phLines.forEach((el,i)=>{ const t=phLine(i); el.style.transform='translateY('+((1-t)*100).toFixed(1)+'%)'; });
+    // effetti aggiunti sopra al reveal esistente (invariato): un piccolo zoom ad ogni comparsa di
+    // coppia, più uno spostamento alterno sx/dx per gruppo, "meno allineati" ma non ai bordi.
+    // transform-origin:center top, non center: lo zoom cresce SOLO verso il basso, dentro lo spazio
+    // bianco già presente fra i gruppi (phGroupGap) — mai verso l'alto, quindi non copre mai la
+    // frase precedente, che è esattamente il vincolo richiesto
+    const GROUP_REVEAL=.04, GROUP_PAUSE=.045, GROUP_SHIFT=26;
+    phGroupEls.forEach((el,g)=>{
+      const g0=.6828+g*(GROUP_REVEAL+GROUP_PAUSE);
+      const t=smooth(sub(s,g0,g0+GROUP_REVEAL));
+      const zoom=lerp(.92,1,t);
+      const dir=(g%2===0)?-1:1; // gruppi 0,2 a sinistra — 1,3 a destra
+      el.style.transformOrigin='center top';
+      el.style.transform='translateX('+(dir*GROUP_SHIFT)+'px) scale('+zoom.toFixed(3)+')';
+    });
   }
 
   function loop(now){
@@ -391,6 +419,7 @@
     else if(target) target.scrollIntoView();
     readScroll(); sP=pRaw; render(sP);
     if(window.__snapScene2Instant) window.__snapScene2Instant();
+    if(window.__snapDoc40Instant) window.__snapDoc40Instant();
   });
 
   if(!reduce){

@@ -1,11 +1,12 @@
 (function(){
   const $=id=>document.getElementById(id);
   const scene2=$('scene2'); if(!scene2) return;
-  const bgHyper=$('bgHyper'), bgPaper2=$('bgPaper2'),
+  const bgHyper=$('bgHyper'),
         ecoBridge=$('ecoBridge'), ch2Banner=$('ch2Banner'), ch2BannerBar=$('ch2BannerBar'), ch2BannerText=$('ch2BannerText'),
         ecoOpenH=$('ecoOpenH'), ecoOpenSub=$('ecoOpenSub'),
         ecoProjectImg=$('ecoProjectImg'), ecoProjectVeil=$('ecoProjectVeil'), pjGroup=$('pjGroup'), pjTitle=$('pjTitle'), pjSub=$('pjSub'), pjDesc=$('pjDesc'), pjCtaRow=$('pjCtaRow'),
         hpGroup=$('hpGroup'), hpTitle=$('hpTitle'), hpSub=$('hpSub'), hpDesc=$('hpDesc'), hpCtaRow=$('hpCtaRow'), ecoHyperImg=$('ecoHyperImg'),
+        ecoLabQImg=$('ecoLabQImg'), lqGroup=$('lqGroup'), lqTitle=$('lqTitle'), lqSub=$('lqSub'), lqDesc=$('lqDesc'), lqCtaRow=$('lqCtaRow'),
         dcTitle=$('dcTitle'), dcAccent=$('dcAccent'), dcSub=$('dcSub'), dcPara=$('dcPara'), dcHint=$('dcHint');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), sub=(p,a,b)=>clamp((p-a)/(b-a),0,1), smooth=t=>t*t*(3-2*t), lerp=(a,b,t)=>a+(b-a)*t;
@@ -16,6 +17,14 @@
     function readScroll2(){ const denom=Math.max(1,scene2.offsetHeight-innerHeight); pRaw2=clamp((scrollY-scene2.offsetTop)/denom,0,1); }
 
     function render2(s){
+      // ---- Ponte, Ecosistema, Project 2.0, Hyperparts: TUTTE le soglie sotto restano quelle originali,
+      // invariate — usano "sOld", non "s" direttamente. sOld rimappa la prima parte (650vh reali, esattamente
+      // come prima di aggiungere Hyper.LabQ) sull'intervallo [0,1], satura a 1 oltre — così Hyper.LabQ può
+      // essere aggiunta in coda (serve più scroll totale per contenerla) senza ricalcolare una sola soglia
+      // di questo blocco: k = quota della vecchia timeline (650vh) sul nuovo totale (1050vh) ----
+      const k = 650/1050;
+      const sOld = Math.min(s/k, 1);
+
       // ---- Ponte Cap.1 -> Cap.2 [0,.144]: il perimetro della card si espande MENTRE il campo carta
       // diventa nero, stessa finestra (prima erano in sequenza: espande 0-.072, poi annerisce .072-.144 —
       // a metà ponte lo schermo era già pieno ma ancora tutto bianco). Sovrapposte, non è mai né grande
@@ -26,8 +35,8 @@
       // preBridge segue lo scroll reale (non smussato, come lo svincolo nativo stesso) e anticipa lì
       // l'espansione/annerimento, così la card sta già scurendosi mentre sbircia dal basso ----
       const preBridge = smooth(clamp((scrollY-(scene2.offsetTop-innerHeight))/innerHeight,0,1));
-      const bridgeExpand = Math.max(preBridge, smooth(sub(s,0,.144)));
-      const bridgeBlacken = Math.max(preBridge, smooth(sub(s,0,.144)));
+      const bridgeExpand = Math.max(preBridge, smooth(sub(sOld,0,.144)));
+      const bridgeBlacken = Math.max(preBridge, smooth(sub(sOld,0,.144)));
       ecoBridge.style.top=lerp(12,0,bridgeExpand).toFixed(2)+'vh';
       ecoBridge.style.left=lerp(6,0,bridgeExpand).toFixed(2)+'vw';
       ecoBridge.style.right=lerp(6,0,bridgeExpand).toFixed(2)+'vw';
@@ -41,52 +50,52 @@
       // da solo, centrato -> hold -> il titolo si rimpicciolisce (resta visibile, come l'apertura del
       // Capitolo 1) -> l'elenco puntato entra sotto -> hold reale (4 punti da leggere, coerenza col
       // Capitolo 1 richiesta esplicitamente — qui niente immagine, quindi si resta su nero pieno) ----
-      const lineGrow     = smooth(sub(s,0,.012));  // linea rossa sottile che si estende in larghezza
-      const barFill      = smooth(sub(s,.009,.024));  // la linea si ispessisce in barra piena (stessa logica del Capitolo 1)
-      const bannerTextIn = smooth(sub(s,.020,.036));  // testo mono, entra a barra quasi completata
-      const headIn  = smooth(sub(s,.016,.072));   // scala + opacity soltanto: MAI split text, MAI translateY dal basso, MAI stagger
+      const lineGrow     = smooth(sub(sOld,0,.012));  // linea rossa sottile che si estende in larghezza
+      const barFill      = smooth(sub(sOld,.009,.024));  // la linea si ispessisce in barra piena (stessa logica del Capitolo 1)
+      const bannerTextIn = smooth(sub(sOld,.020,.036));  // testo mono, entra a barra quasi completata
+      const headIn  = smooth(sub(sOld,.016,.072));   // scala + opacity soltanto: MAI split text, MAI translateY dal basso, MAI stagger
       // hold da solo [.072,.086]: nessuna variabile, il titolo resta fermo e leggibile
-      const titleShrink = smooth(sub(s,.086,.108));  // il titolo si rimpicciolisce (scale, non fade): resta
+      const titleShrink = smooth(sub(sOld,.086,.108));  // il titolo si rimpicciolisce (scale, non fade): resta
                                                         // visibile in alto, esattamente come il titolo del Capitolo 1
                                                         // quando arriva l'immagine — qui non c'è immagine, ma la
                                                         // logica "il titolo lascia spazio restando leggibile" è la stessa
-      const subIn    = smooth(sub(s,.104,.140));  // l'elenco entra sotto, leggera sovrapposizione con lo shrink
+      const subIn    = smooth(sub(sOld,.104,.140));  // l'elenco entra sotto, leggera sovrapposizione con lo shrink
       // hold finale [.140,.19]: molto più lungo del semplice ingresso — 4 punti elenco da leggere,
       // deve restare fermo prima che inizi il ritiro verso 2.0 Project (altrimenti si legge solo
       // metà elenco e la scena successiva sembra già sovrapposta)
 
       // ---- Ponte verso 2.0 PROJECT [.19,.28]: titolo+elenco si ritirano con crop/maschera, emerge l'immagine ----
-      const retreat = smooth(sub(s,.19,.28));    // gesto dominante: clip-path, non un fade
+      const retreat = smooth(sub(sOld,.19,.28));    // gesto dominante: clip-path, non un fade
       ch2Banner.style.opacity=(1-retreat).toFixed(3);
       ch2BannerBar.style.width=(lineGrow*100).toFixed(1)+'%';
       ch2BannerBar.style.height=lerp(3,100,barFill).toFixed(1)+'%';
       ch2BannerText.style.opacity=bannerTextIn.toFixed(3);
       ch2BannerText.style.transform='translateY('+((1-bannerTextIn)*8).toFixed(1)+'px)';
       ecoOpenH.style.opacity=(headIn*(1-retreat)).toFixed(3);
-      ecoOpenH.style.transform='scale('+(lerp(1.06,1,headIn)*lerp(1,.62,titleShrink)).toFixed(3)+')';
+      ecoOpenH.style.transform='scale('+(lerp(1.06,1,headIn)*lerp(1,.9474,titleShrink)).toFixed(3)+')';
       ecoOpenH.style.clipPath='inset(0 '+(retreat*100).toFixed(1)+'% 0 0)';
       ecoOpenSub.style.opacity=(subIn*(1-retreat)).toFixed(3);
       ecoOpenSub.style.maxHeight=lerp(0,400,subIn).toFixed(0)+'px';
 
-      const imgFadeIn = smooth(sub(s,.19,.22)); // opacity solo come supporto rapido, il resto è leggibile senza
+      const imgFadeIn = smooth(sub(sOld,.19,.22)); // opacity solo come supporto rapido, il resto è leggibile senza
       const cropOut   = retreat;                  // stessa progressione della headline: il crop del testo genera l'entrata dell'immagine
 
       // ---- primo frame di 2.0 PROJECT, 5 stati distinti ----
       // A. entrata (titolo -> sottotitolo) + hold leggibile [.191,.258]
-      const titleIn  = smooth(sub(s,.255,.280));   // il titolo entra quando l'immagine è già leggibile
-      const subInPj  = smooth(sub(s,.278,.300));   // sottotitolo, leggera coda sul titolo
+      const titleIn  = smooth(sub(sOld,.255,.280));   // il titolo entra quando l'immagine è già leggibile
+      const subInPj  = smooth(sub(sOld,.278,.300));   // sottotitolo, leggera coda sul titolo
       // hold leggibile [.300,.322]: nessuna variabile qui, il gruppo resta fermo e leggibile
       // B. riallineamento [.322,.352]: il gruppo titolo+sottotitolo sale, un solo gesto continuo legato allo scroll;
       //    la scritta "2.0 PROJECT" aumenta di dimensione in vista della seconda parte (descrizione + CTA)
-      const regroup   = smooth(sub(s,.322,.352));
-      const titleGrow = smooth(sub(s,.322,.354));  // risolto esattamente quando entra la descrizione
+      const regroup   = smooth(sub(sOld,.322,.352));
+      const titleGrow = smooth(sub(sOld,.322,.354));  // risolto esattamente quando entra la descrizione
       // C. descrizione [.354,.372] e CTA [.382,.402], solo dopo il riallineamento, con pausa breve fra le due
-      const descIn   = smooth(sub(s,.354,.372));
-      const ctaIn    = smooth(sub(s,.382,.402));
+      const descIn   = smooth(sub(sOld,.354,.372));
+      const ctaIn    = smooth(sub(sOld,.382,.402));
       // hold reale della CTA [.402,.447] (~0.045): frame Project stabile e cliccabile, poi uscita di scena
-      const projectOut = smooth(sub(s,.447,.461));
+      const projectOut = smooth(sub(sOld,.447,.461));
 
-      const pjImgExit = smooth(sub(s,.461,.495));  // dopo l'hold della CTA: il campo Project si espande e perde fuoco, non una dissolvenza
+      const pjImgExit = smooth(sub(sOld,.461,.495));  // dopo l'hold della CTA: il campo Project si espande e perde fuoco, non una dissolvenza
       ecoProjectImg.style.opacity=(imgFadeIn*(1-pjImgExit)).toFixed(3);
       if(ecoProjectVeil) ecoProjectVeil.style.opacity=(imgFadeIn*(1-pjImgExit)).toFixed(3);
       ecoProjectImg.style.filter='blur('+(lerp(5,0,cropOut)+lerp(0,10,pjImgExit)).toFixed(2)+'px)';
@@ -105,32 +114,31 @@
       pjCtaRow.style.opacity=(ctaIn*(1-projectOut)).toFixed(3);
       pjCtaRow.style.pointerEvents=(ctaIn>.6 && projectOut<.5)?'auto':'none';
 
-      // ---- fondo Hyperparts — quando inizia la transizione verso Documentation, il fondo carta Due.Zero prende il sopravvento ----
-      const cGroup = smooth(sub(s,.465,.535));
-      const dGroup = smooth(sub(s,.750,.800));
-      bgHyper.style.opacity=(cGroup*(1-dGroup)).toFixed(3);
-      bgPaper2.style.opacity=dGroup.toFixed(3);
+      // ---- fondo Hyperparts/Hyper.LabQ — resta scuro fino alla fine della scena (Documentation 4.0,
+      // che segue, è una scena indipendente propria e gestisce il proprio fondo carta) ----
+      const cGroup = smooth(sub(sOld,.465,.535));
+      bgHyper.style.opacity=cGroup.toFixed(3);
 
       // ---- Transizione Project -> Hyperparts [.461,.555]: da un accesso individuale a un tavolo di lavoro condiviso ----
-      const hpImgFadeIn = smooth(sub(s,.467,.501));  // crossfade fra le due immagini, sovrapposto al gesto di pjImgExit
-      const hpZoomOut   = smooth(sub(s,.461,.555));  // crop ravvicinato e sfocato sul monitor -> arretra fino a tavolo/persone/schermo
+      const hpImgFadeIn = smooth(sub(sOld,.467,.501));  // crossfade fra le due immagini, sovrapposto al gesto di pjImgExit
+      const hpZoomOut   = smooth(sub(sOld,.461,.555));  // crop ravvicinato e sfocato sul monitor -> arretra fino a tavolo/persone/schermo
 
       // ---- HYPERPARTS: titolo dominante (parola intera via maschera laterale) -> sottotitolo attaccato subito
       // dopo (come in 2.0 Project: stagger stretto, non più un hold-poi-restringi-poi-entra separato) ->
       // hold insieme -> descrizione -> pausa -> CTA -> hold reale ----
-      const hpTitleWipe  = smooth(sub(s,.530,.580));
-      const hpSubIn      = smooth(sub(s,.576,.601));  // parte quando il titolo è quasi rivelato, come subInPj su titleIn
+      const hpTitleWipe  = smooth(sub(sOld,.530,.580));
+      const hpSubIn      = smooth(sub(sOld,.576,.601));  // parte quando il titolo è quasi rivelato, come subInPj su titleIn
       // hold titolo+sottotitolo insieme [.601,.625]
-      const hpRegroup    = smooth(sub(s,.625,.650));  // il gruppo sale un poco, stesso gesto/stessa misura (6vh) di
+      const hpRegroup    = smooth(sub(sOld,.625,.650));  // il gruppo sale un poco, stesso gesto/stessa misura (6vh) di
                                                         // pjGroup in Project — prima mancava, la descrizione arrivava
                                                         // attaccata subito sotto senza nessuno spazio percepibile
-      const hpDescIn     = smooth(sub(s,.663,.681));
+      const hpDescIn     = smooth(sub(sOld,.663,.681));
       // pausa breve [.681,.693]
-      const hpCtaIn      = smooth(sub(s,.693,.713));
-      // hold reale della CTA [.713,.744]: CTA e titolo restano fermi e cliccabili, Documentation non parte prima
+      const hpCtaIn      = smooth(sub(sOld,.693,.713));
+      // hold reale della CTA [.713,.744]: CTA e titolo restano fermi e cliccabili
 
-      // ---- uscita di Hyperparts (testo/CTA), solo quando inizia la transizione verso Documentation, mai durante ingresso o hold ----
-      const hpOut = smooth(sub(s,.744,.785));
+      // ---- uscita testo di Hyperparts, solo quando inizia il crossfade verso Hyper.LabQ ----
+      const hpOut = smooth(sub(sOld,.744,.785));
       hpGroup.style.transform='translateY(-'+lerp(0,6,hpRegroup).toFixed(2)+'vh)';
       hpTitle.style.opacity=(hpTitleWipe*(1-hpOut)).toFixed(3);
       hpTitle.style.clipPath='inset(0 '+((1-hpTitleWipe)*100).toFixed(1)+'% 0 0)';
@@ -142,46 +150,54 @@
       hpCtaRow.style.opacity=(hpCtaIn*(1-hpOut)).toFixed(3);
       hpCtaRow.style.pointerEvents=(hpCtaIn>.6 && hpOut<.5)?'auto':'none';
 
-      // ---- Transizione Hyperparts -> Documentation 4.0 [.744,.800]: il campo luminoso del monitor si espande fino al viewport ----
-      // gesto unico: crop (zoom sul punto luminoso), maschera (iride che si chiude), trasformazione (scale); il fondo vira da scuro a carta (sopra)
-      const hpToDocT = smooth(sub(s,.744,.800));
-      ecoHyperImg.style.opacity=(hpImgFadeIn*(1-hpToDocT)).toFixed(3);
-      ecoHyperImg.style.filter='blur('+(lerp(9,0,hpZoomOut)+lerp(0,16,hpToDocT)).toFixed(2)+'px)';
-      ecoHyperImg.style.transform='scale('+(lerp(1.28,1,hpZoomOut)*lerp(1,2.6,hpToDocT)).toFixed(3)+')';
-      ecoHyperImg.style.clipPath='circle('+lerp(150,8,hpToDocT).toFixed(1)+'% at 50% 18%)';
+      // ==== HYPER.LABQ — da qui in poi si usa "s" (raw), non più "sOld": è territorio nuovo, oltre la
+      // vecchia timeline. Stesso identico meccanismo di crossfade di Project -> Hyperparts qui sopra
+      // (hpImgFadeIn/pjImgExit): la foto di Hyperparts sfuma mentre quella di Hyper.LabQ è GIÀ visibile,
+      // stesso sticky, nessun buco nero fra le due — risolve esattamente quello che due sticky
+      // indipendenti non potevano fare (una foto non "sbircia" mentre l'altra è ancora in scena) ====
+      const hpPhotoExit = smooth(sub(s,.605,.635));   // Hyperparts: la foto esce
+      const lqPhotoIn   = smooth(sub(s,.610,.640));   // Hyper.LabQ: la foto entra, quasi sovrapposta
+      const lqZoomIn    = smooth(sub(s,.605,.660));   // stesso assestamento scala/sfocatura di hpZoomOut
 
-      // ---- DOCUMENTATION 4.0 [.800,.920]: soglia testuale, fondo carta, titolo dominante centrato — poi si ritira: non è un'appendice, è la soglia della Machine Map.
-      // Finisce a .920 (non più 1.0): tutta la timeline è traslata indietro di .144+.064 rispetto
-      // all'originale (vedi apertura del ponte e apertura Ecosistema, sopra), quindi resta un hold
-      // statico reale da .920 a 1.0 prima che la Scena 3 (Machine Map) prenda il sopravvento — stesso
-      // principio già accettato per la card editoriale di fine Capitolo 1 ----
-      const dcTitleIn    = smooth(sub(s,.800,.822));  // blocco che si rivela tramite maschera centrale + leggero scale: mai split-text, mai dal basso
-      // hold leggibile [.822,.843]: nessuna variabile qui, il titolo resta fermo e dominante
-      const dcAccentIn   = smooth(sub(s,.817,.832));  // piccolo accento rosso strutturale, non decorativo
-      const dcTitleShift = smooth(sub(s,.843,.860));  // il titolo si compatta e si alza leggermente, lascia spazio sotto
-      const dcSubIn      = smooth(sub(s,.863,.879));
-      // ritiro (titolo+accento+sottotitolo+paragrafo, tutti insieme) spostato in fondo — vedi dcParaOut:
-      // prima correva .906-.920, praticamente subito dopo l'ingresso del paragrafo (hold di soli .01,
-      // ~8vh di scroll: spariva quasi subito, segnalato come "troppo veloce")
-      const dcRetreat    = smooth(sub(s,.960,.976));  // titolo, sottotitolo e accento: ritiro delicato invariato — non devono restare sopra la mappa
-      // ---- riga mono: STESSA grammatica editoriale delle altre righe del prototipo (vedi .c1b-text .ph/.ph i) —
-      // wrapper overflow:hidden + riga intera che entra con translateY(100%->0), resta leggibile in hold, esce con
-      // translateY(0->-100%). Nessuna rotazione, nessuno spostamento laterale, nessuno scatto.
-      // hold reale ora [.894,.960] (~62vh): prima era [.894,.904], appena 8vh — il vero bug segnalato ----
-      const dcParaIn     = smooth(sub(s,.879,.894));  // ingresso: riga intera dal basso
-      const dcParaOut    = smooth(sub(s,.960,.976));   // uscita: stessa maschera verticale, verso l'alto — sincronizzata con dcRetreat
+      ecoHyperImg.style.opacity=(hpImgFadeIn*(1-hpPhotoExit)).toFixed(3);
+      ecoHyperImg.style.filter='blur('+lerp(0,14,hpPhotoExit).toFixed(2)+'px)';
+      ecoHyperImg.style.transform='scale('+lerp(1,1.18,hpPhotoExit).toFixed(3)+')';
 
-      dcTitle.style.opacity=(dcTitleIn*(1-dcRetreat)).toFixed(3);
-      dcTitle.style.clipPath='inset(0 '+((1-dcTitleIn)*50).toFixed(1)+'% 0 '+((1-dcTitleIn)*50).toFixed(1)+'%)';
-      dcTitle.style.transform='translateY(-'+(lerp(0,3,dcTitleShift)+lerp(0,2.5,dcRetreat)).toFixed(2)+'vh) scale('+(lerp(1.06,1,dcTitleIn)*lerp(1,.85,dcTitleShift)*lerp(1,.94,dcRetreat)).toFixed(3)+')';
-      dcAccent.style.opacity=(dcAccentIn*(1-dcRetreat)).toFixed(3);
-      dcAccent.style.transform='scaleX('+lerp(.2,1,dcAccentIn).toFixed(3)+')';
-      dcSub.style.opacity=(dcSubIn*(1-dcRetreat)).toFixed(3);
-      dcPara.style.transform='translateY('+lerp(lerp(100,0,dcParaIn),-100,dcParaOut).toFixed(2)+'%)';
-      // stesso richiamo "Scroll" dell'hero, qui perché "Documenti 4.0" ora ci si atterra con un salto
-      // diretto (vedi capitolo1.js): senza aver scrollato fin qui organicamente, non è scontato capire
-      // che si può continuare a scorrere. Stessa opacità di dcSub: appare/sparisce insieme al resto
-      if(dcHint) dcHint.style.opacity=(dcSubIn*(1-dcRetreat)).toFixed(3);
+      // ecoLabQImg (opacity/filter/transform/clip-path) è impostato una sola volta più sotto, dove si
+      // gestisce anche l'uscita verso Documentation 4.0 — stessa formula "ingresso*(1-uscita)" di
+      // ecoHyperImg qui sopra, non serve scriverla due volte
+
+      // titolo dominante -> sottotitolo -> hold -> riallineamento -> descrizione -> CTA -> hold reale:
+      // stessa identica grammatica di Hyperparts, solo appesa in coda alla stessa timeline (s raw)
+      const lqTitleWipe = smooth(sub(s,.660,.705));
+      const lqSubIn     = smooth(sub(s,.701,.723));
+      // hold titolo+sottotitolo insieme [.723,.744]
+      const lqRegroup   = smooth(sub(s,.744,.766));
+      const lqDescIn    = smooth(sub(s,.778,.794));
+      const lqCtaIn     = smooth(sub(s,.805,.823));
+      // hold reale della CTA [.823,.850]: CTA e titolo restano fermi e cliccabili
+
+      const lqOut = smooth(sub(s,.850,.887));
+      lqGroup.style.transform='translateY(-'+lerp(0,6,lqRegroup).toFixed(2)+'vh)';
+      lqTitle.style.opacity=(lqTitleWipe*(1-lqOut)).toFixed(3);
+      lqTitle.style.clipPath='inset(0 '+((1-lqTitleWipe)*100).toFixed(1)+'% 0 0)';
+      lqTitle.style.transform='scale('+lerp(1.05,1,lqTitleWipe).toFixed(3)+')';
+      lqSub.style.opacity=(lqSubIn*(1-lqOut)).toFixed(3);
+      lqSub.style.transform='translateX('+((1-lqSubIn)*-10).toFixed(1)+'px)';
+      lqDesc.style.opacity=(lqDescIn*(1-lqOut)).toFixed(3);
+      lqDesc.style.transform='translateY('+((1-lqDescIn)*10).toFixed(1)+'px)';
+      lqCtaRow.style.opacity=(lqCtaIn*(1-lqOut)).toFixed(3);
+      lqCtaRow.style.pointerEvents=(lqCtaIn>.6 && lqOut<.5)?'auto':'none';
+
+      // ---- uscita di scena, verso Documentation 4.0 (scena indipendente successiva): fino a .98, non
+      // oltre — stesso principio già applicato altrove, niente scroll morto prima del cambio scena.
+      // Qui il fondo carta di Documentation dà comunque un segnale di cambio scena immediato (a
+      // differenza del confine Hyperparts/Hyper.LabQ, stesso identico colore di fondo su entrambe) ----
+      const labToDoc = smooth(sub(s,.850,.98));
+      ecoLabQImg.style.opacity=(lqPhotoIn*(1-labToDoc)).toFixed(3);
+      ecoLabQImg.style.filter='blur('+(lerp(9,0,lqZoomIn)+lerp(0,16,labToDoc)).toFixed(2)+'px)';
+      ecoLabQImg.style.transform='scale('+(lerp(1.28,1,lqZoomIn)*lerp(1,2.6,labToDoc)).toFixed(3)+')';
+      ecoLabQImg.style.clipPath='circle('+lerp(150,8,labToDoc).toFixed(1)+'% at 50% 18%)';
     }
 
     function loop2(){ sP2+=(pRaw2-sP2)*0.08; render2(sP2); requestAnimationFrame(loop2); }
@@ -195,6 +211,48 @@
     window.__snapScene2Instant=function(){ readScroll2(); sP2=pRaw2; render2(sP2); };
   }
 
+  // Hyper.LabQ non è più una scena indipendente: è tornata dentro lo stesso sticky di Hyperparts (vedi
+  // render2 sopra, blocco "HYPER.LABQ") — serviva lo stesso sticky condiviso per poter fare un vero
+  // crossfade fra le due foto, impossibile fra due sticky separati (una foto non può "sbircia" mentre
+  // l'altra è ancora in scena). Vedi il commento su "sOld"/k in cima a render2 per come si è fatto
+  // spazio in coda senza ricalcolare le soglie di Ponte/Ecosistema/Project 2.0/Hyperparts.
+
+  // ---- DOCUMENTATION 4.0 — scena indipendente (proprio sticky/scroll): prima viveva dentro scene2,
+  // spostata qui per fare posto a Hyper.LabQ senza toccare le soglie di Ponte/Ecosistema/Project 2.0/
+  // Hyperparts. Stesse identiche soglie di prima (erano [.800,1.0] su scene2, 940vh), solo rimappate
+  // sulla propria timeline locale [0,1] — comportamento identico, cambia solo il contenitore ----
+  const sceneDoc40=$('sceneDoc40');
+  if(sceneDoc40 && !reduce){
+    let pRawD40=0, sPD40=0;
+    function readScrollD40(){ const denom=Math.max(1,sceneDoc40.offsetHeight-innerHeight); pRawD40=clamp((scrollY-sceneDoc40.offsetTop)/denom,0,1); }
+    function renderD40(s){
+      const dcTitleIn    = smooth(sub(s,0,.11));    // blocco che si rivela tramite maschera centrale + leggero scale
+      // hold leggibile [.11,.16]: nessuna variabile qui, il titolo resta fermo e dominante
+      const dcAccentIn   = smooth(sub(s,.085,.16));
+      const dcTitleShift = smooth(sub(s,.215,.30));
+      const dcSubIn      = smooth(sub(s,.315,.395));
+      const dcParaIn     = smooth(sub(s,.395,.47));
+      // hold reale [.47,.80] (~62% della scena): il tempo di leggere il paragrafo per intero
+      // fino a .98, stesso principio delle altre due uscite di scena qui sopra: non lo aveva chiesto
+      // esplicitamente, ma stesso identico problema (spazio nero prima del cambio scena verso Machine Map)
+      const dcRetreat    = smooth(sub(s,.80,.98));
+      const dcParaOut    = smooth(sub(s,.80,.98));
+
+      dcTitle.style.opacity=(dcTitleIn*(1-dcRetreat)).toFixed(3);
+      dcTitle.style.clipPath='inset(0 '+((1-dcTitleIn)*50).toFixed(1)+'% 0 '+((1-dcTitleIn)*50).toFixed(1)+'%)';
+      dcTitle.style.transform='translateY(-'+(lerp(0,3,dcTitleShift)+lerp(0,2.5,dcRetreat)).toFixed(2)+'vh) scale('+(lerp(1.06,1,dcTitleIn)*lerp(1,.85,dcTitleShift)*lerp(1,.94,dcRetreat)).toFixed(3)+')';
+      dcAccent.style.opacity=(dcAccentIn*(1-dcRetreat)).toFixed(3);
+      dcAccent.style.transform='scaleX('+lerp(.2,1,dcAccentIn).toFixed(3)+')';
+      dcSub.style.opacity=(dcSubIn*(1-dcRetreat)).toFixed(3);
+      dcPara.style.transform='translateY('+lerp(lerp(100,0,dcParaIn),-100,dcParaOut).toFixed(2)+'%)';
+      if(dcHint) dcHint.style.opacity=(dcSubIn*(1-dcRetreat)).toFixed(3);
+    }
+    function loopD40(){ sPD40+=(pRawD40-sPD40)*0.08; renderD40(sPD40); requestAnimationFrame(loopD40); }
+    addEventListener('scroll',readScrollD40,{passive:true});
+    readScrollD40(); loopD40();
+    window.__snapDoc40Instant=function(){ readScrollD40(); sPD40=pRawD40; renderD40(sPD40); };
+  }
+
   // Documentation 4.0 = Machine Map = soglia del Capitolo 03: UN SOLO sticky (mapServicesSticky), UN SOLO progresso
   // di scroll (render3/s), tre layer sovrapposti — mai due sticky indipendenti che si rincorrono, mai margin-top
   // negativo. La mappa nasce contenuta dentro il campo carta della scena Documentation e cresce fino a 100vw×100vh
@@ -205,7 +263,7 @@
   const mapStage=$('mapServicesTransition'), mapFrame=$('ecoMapFrame'), mapChrome=$('docMapChrome'), mapOutro=$('mapOutro'),
         fsTarget=$('mapServicesSticky'), fsBtn=$('mapFsBtn'), fsFallback=$('mapFsFallback'),
         mapFsIcon=$('mapFsIcon'), mapFsBtnText=$('mapFsBtnText'), docMapIframe=$('docMapIframe'), docMapLoading=$('docMapLoading'),
-        ch3Banner=$('ch3Banner'), svcOpenH=$('svcOpenH'), svcOpenSub=$('svcOpenSub');
+        ch3Banner=$('ch3Banner'), svcOpenH=$('svcOpenH');
   if(mapStage && mapFrame){
     const mapCompact = window.matchMedia('(max-width:820px)').matches;
     // micro-label di caricamento, nessuno spinner/overlay: scompare all'evento load (con fallback nel caso sia già risolto prima dell'attach)
@@ -247,9 +305,7 @@
         svcOpenH.style.clipPath='inset(0 '+((1-headIn)*100).toFixed(1)+'% 0 0)';
         svcOpenH.style.transform='scale('+lerp(1.10,1,headIn).toFixed(3)+')';
       }
-      // fase 6 [.68,.74]: sottotitolo — inizia mentre il titolo sta ancora rivelandosi
-      if(svcOpenSub) svcOpenSub.style.opacity=smooth(sub(s,.68,.74)).toFixed(3);
-      // fase 7 [.74,1.0]: hold netto e leggibile — banner, titolo e sottotitolo restano fermi sul nero pieno per
+      // fase 7 [.74,1.0]: hold netto e leggibile — banner e titolo restano fermi sul nero pieno per
       // una porzione reale di scroll (ancora quasi una viewport intera, solo .04 più corta di prima); l'arco dei
       // servizi (sezione successiva, separata, senza margin-top negativo) inizia solo dopo la fine di questo hold
     }
@@ -488,7 +544,14 @@
     function renderQuality(s){
       // ---- scena 1 — apertura [.00,.25]: carta sale piena (niente fade), poi banner, poi titolo in blocco
       // unico con maschera orizzontale + lieve scale-down, poi sottotitolo dopo una breve pausa ----
-      const paperRise=smooth(sub(s,0,.061));
+      // preQuality: stesso principio di preBridge (Capitolo 1 -> Ecosistema, vedi render2) — lo sticky
+      // dell'arco Servizi si sblocca nativamente nelle ultime 100vh del suo scroll, PRIMA che "s" (legato
+      // all'inizio di qualitySection) inizi a muoversi: restava nero fermo per tutta quella finestra, il
+      // vero "spazio nero" segnalato (fatto notare dal capo). preQuality segue lo scroll reale (non
+      // smussato) e anticipa lì la salita della carta, così è già in movimento mentre l'arco sta ancora
+      // sbloccandosi, invece di restare ferma in attesa
+      const preQuality=smooth(clamp((scrollY-(qualitySection.offsetTop-innerHeight))/innerHeight,0,1));
+      const paperRise=Math.max(preQuality, smooth(sub(s,0,.061)));
       if(qualityPaper) qualityPaper.style.transform='translateY('+((1-paperRise)*101).toFixed(2)+'%)';
       if(qualityBanner) qualityBanner.style.transform='translateX('+lerp(120,0,smooth(sub(s,.038,.098))).toFixed(2)+'%)';
       if(qualityH2){
