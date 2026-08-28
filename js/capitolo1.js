@@ -1,6 +1,6 @@
 (function(){
   const $=id=>document.getElementById(id);
-  const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),testWall=$('testWall'),menuBtn=$('menuBtn'),
+  const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),testWall=$('testWall'),testWallMove=$('testWallMove'),menuBtn=$('menuBtn'),
         glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),
         chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),chSub=$('chSub'),ch1Img=$('ch1Img'),ch1ImgVeil=$('ch1ImgVeil'),
         overlay=$('overlay'),closeBtn=$('closeBtn'),root=document.documentElement,body=document.body,
@@ -128,6 +128,9 @@
   }
 
   let rect0={left:0,top:0}, l0Off=0, l1Off=0, l2Off=0;
+  // stesso aggancio (in alto a sx) del vecchio titolo testuale, riusato anche per il nuovo SVG —
+  // vedi rect0Test/testWallMove sotto
+  let rect0Test={left:0,top:0};
   const DOCK={x:38,y:78,scale:.8};    // font grande, quasi metà viewport
   function measure(){
     heroMove.style.transform='none';
@@ -141,6 +144,13 @@
     if(l0&&l1&&l2){
       const w0=l0.offsetWidth, w1=l1.offsetWidth, w2=l2.offsetWidth, maxW=Math.max(w0,w1,w2);
       l0Off=-(maxW-w0)/2; l1Off=-(maxW-w1)/2; l2Off=-(maxW-w2)/2;
+    }
+    // SVG di test: le 3 righe (.line1/2/3) sono già posizionate dall'artwork originale, non centrate
+    // via margin:auto come le vecchie .l0/.l1/.l2 — quindi qui non serve calcolare un riallineamento,
+    // basta misurare il rettangolo "naturale" (non trasformato) per l'aggancio in alto a sx
+    if(testWallMove){
+      testWallMove.style.transform='none';
+      rect0Test=testWallMove.getBoundingClientRect();
     }
     buildBanner();
     if(reduce) render(pRaw);
@@ -233,6 +243,13 @@
     glossWrap.style.setProperty('--l1Shift',(l1Off*alignDock1).toFixed(1)+'px');
     glossWrap.style.setProperty('--l2Shift','0px');
     heroMove.style.opacity=heroOut.toFixed(3);
+    // SVG di test: stesso identico aggancio (dock) e stessa dissolvenza (heroOut) del titolo testuale
+    // sopra — prima restava fermo per tutto il Capitolo 1, sovrapponendosi alle scene successive
+    if(testWallMove){
+      const scT=1-(1-DOCK.scale)*dock, txT=(DOCK.x-rect0Test.left)*dock, tyT=(DOCK.y-rect0Test.top)*dock;
+      testWallMove.style.transform='translate('+txT.toFixed(1)+'px,'+tyT.toFixed(1)+'px) scale('+scT.toFixed(4)+')';
+      testWallMove.style.opacity=heroOut.toFixed(3);
+    }
     tiltK=tiltFade;
     gloss.style.opacity=shadowOut.toFixed(3);   // riflesso e drop-shadow: spariscono nel primo terzo del docking, non insieme al movimento
     titleBase.style.textShadow=titleShadow(shadowOut);   // idem per l'ombra materica: quando il titolo è chiaramente in moto, niente ombra dietro
@@ -250,7 +267,15 @@
     // partenza = metà esatta del massimo raggiungibile su QUESTO schermo (non più un fisso 65px):
     // prima il salto piccolo->grande arrivava fino a 4,6x su schermi larghi, e il triangolo iniziale
     // leggeva come troppo piccolo. Restando proporzionale al massimo, il rapporto è sempre 2x su ogni schermo
-    const bgSide=Math.min(innerWidth*.28,innerHeight*.28,300), smSide=bgSide/2, barW=bannerBW;
+    // su mobile il triangolo deve restare ESATTAMENTE all'angolo della pagina (non spostato sopra
+    // le icone: tentativo precedente, scartato — un triangolo d'angolo che non è più nell'angolo
+    // perde il suo senso). Il tetto di dimensione tiene conto della VERA forma (metà rettangolo,
+    // clip-path taglia in diagonale): l'angolo in alto a sinistra del riquadro è trasparente, quindi
+    // il rosso non tocca l'ultima icona finché lato < 1187 - (x+y dell'angolo icona più vicino al
+    // triangolo) — verificato via screenshot, icona più vicina a (369,776) → lato max ~42, con
+    // margine di sicurezza 38
+    const isMobileTriangle=innerWidth<820;
+    const bgSide=isMobileTriangle ? Math.min(innerWidth*.28,innerHeight*.16,38) : Math.min(innerWidth*.28,innerHeight*.28,300), smSide=bgSide/2, barW=bannerBW;
     const grow=lerp(smSide,bgSide,reveal);
     const curW=lerp(grow,barW,migrate);
     const curH=lerp(lerp(grow,3,migrate),bannerH,fillBar);
@@ -424,6 +449,38 @@
     })();
   }
 
+  // mobile, niente hover: la nuvoletta nome+descrizione (sopra, .heroBadgeTip) non comparirebbe mai.
+  // Stesso principio già usato per il sottomenu (menuItems sopra): primo tocco mostra invece di
+  // navigare, secondo tocco (icona già aperta) naviga per davvero. Attivo solo sotto 820px: su
+  // desktop il comportamento hover/click resta invariato
+  if(heroBadges){
+    const badges=[...heroBadges.querySelectorAll('.heroBadge')];
+    badges.forEach(badge=>{
+      badge.addEventListener('click',e=>{
+        if(!isMobileMenu()) return;
+        if(!badge.classList.contains('tapShow')){
+          e.preventDefault();
+          badges.forEach(b=>{ b.classList.remove('tapShow'); b.style.removeProperty('--tipShift'); });
+          badge.classList.add('tapShow');
+          // le icone vicine al bordo (prima/ultima della riga) hanno la nuvoletta centrata che esce
+          // dallo schermo — la sposto quel tanto che basta per restare dentro, con 8px di margine
+          const tip=badge.querySelector('.heroBadgeTip');
+          if(tip){
+            const r=tip.getBoundingClientRect();
+            let shift=0;
+            if(r.left<8) shift=8-r.left;
+            else if(r.right>innerWidth-8) shift=(innerWidth-8)-r.right;
+            if(shift) badge.style.setProperty('--tipShift',shift.toFixed(1)+'px');
+          }
+        }
+      });
+    });
+    document.addEventListener('click',e=>{
+      if(!isMobileMenu()) return;
+      if(!e.target.closest('.heroBadge')) badges.forEach(b=>b.classList.remove('tapShow'));
+    });
+  }
+
   // "Documenti 4.0" salta subito al punto giusto, senza scorrere visibilmente attraverso tutto il
   // Capitolo 1 e mezzo Ecosistema per arrivarci (la destinazione è molto lontana dall'hero) — stesso
   // link, ma con Lenis in modalità "immediate" invece del suo scroll animato di default.
@@ -432,6 +489,10 @@
   // è già arrivato — quindi dopo il salto forzo anche sP al valore reale e sincronizzo scene2
   const badgeDoc40=$('badgeDoc40');
   if(badgeDoc40) badgeDoc40.addEventListener('click',e=>{
+    // su mobile il gestore tap-to-show (sopra) ha già chiamato preventDefault per il primo tocco
+    // (mostra solo la nuvoletta, non naviga) — se è già successo, questo salto immediato non deve
+    // scattare lo stesso: altrimenti il primo tocco naviga comunque, la nuvoletta non si vede mai
+    if(e.defaultPrevented) return;
     e.preventDefault();
     const target=document.getElementById('doc40Start');
     if(lenisInstance) lenisInstance.scrollTo(target,{immediate:true});

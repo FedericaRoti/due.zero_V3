@@ -78,8 +78,17 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 /* stessa centratura di .center (che sostituisce): inset:0 + flex, così occupa lo stesso spazio
    del titolo precedente invece di aggiungersi sopra o sotto */
 .testWall{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;padding-bottom:22vh}
+/* testWallMove riceve il transform di aggancio (dock, in alto a sx) + opacity (heroOut): stesso
+   principio di heroMove per il vecchio titolo — .testWall resta il contenitore statico che centra,
+   .testWallMove è quello che si sposta/rimpicciolisce/sparisce durante lo scroll (vedi capitolo1.js) */
+.testWallMove{position:relative;transform-origin:left top;will-change:transform,opacity}
 .testWallInner{position:relative;width:min(840px,82vw)} /* ~ larghezza del vecchio titolo (839.7px a 1440px), misura approssimativa */
-.testWallInner img{display:block;width:100%;height:auto}
+.testWallInner svg{display:block;width:100%;height:auto}
+/* le 3 righe, ciascuna spostabile per conto proprio (stesso schema di .title .l0/.l1/.l2): serve per
+   l'aggancio in alto a sx, dove le righe più corte si riallineano al bordo sinistro della più lunga */
+.testWallInner .line1{transform:translateX(var(--wl1Shift,0px))}
+.testWallInner .line2{transform:translateX(var(--wl2Shift,0px))}
+.testWallInner .line3{transform:translateX(var(--wl3Shift,0px))}
 .testWallShine{position:absolute;left:0;top:0;
   filter:brightness(0) invert(1) drop-shadow(0 0 18px rgba(255,255,255,.18));
   -webkit-mask-image:linear-gradient(125deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0) calc(var(--gp,45%) - 22%),
@@ -149,7 +158,11 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 /* pillola col nome: stesso trattamento del pulsante MENU, sfondo incluso stavolta — senza sfondo il
    testo si leggeva poco contro la label/icone dietro. Due righe: nome del servizio sopra, descrizione
    sotto, centrate */
-.heroBadgeTip{position:absolute;left:50%;bottom:calc(100% + 40px);z-index:2;transform:translateX(-50%) translateY(4px);
+/* --tipShift (0px di default, impostata in JS solo per le icone vicine al bordo su mobile):
+   sposta l'intera nuvoletta senza toccare il posizionamento base, che resta quello centrato
+   sull'icona per tutte le altre */
+.heroBadgeTip{position:absolute;left:50%;bottom:calc(100% + 40px);z-index:2;
+  transform:translateX(calc(-50% + var(--tipShift,0px))) translateY(4px);
   display:flex;flex-direction:column;gap:2px;align-items:center;text-align:center;
   padding:10px 16px;border-radius:14px;border:1px solid rgba(237,237,234,.32);
   background:rgba(10,10,10,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
@@ -166,7 +179,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .heroBadgeTip::after{content:'';position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);
   width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;
   border-top:6px solid var(--black)}
-.heroBadge:hover .heroBadgeTip{opacity:1;transform:translateX(-50%) translateY(0)}
+.heroBadge:hover .heroBadgeTip{opacity:1;transform:translateX(calc(-50% + var(--tipShift,0px))) translateY(0)}
+/* mobile, niente hover: stesso stato acceso da hover, ma da una classe (vedi capitolo1.js) attivata
+   al tocco invece che dal mouse — primo tocco mostra la nuvoletta, secondo tocco naviga */
+.heroBadge.tapShow .roll-icon,.heroBadge.tapShow .roll-text{opacity:1}
+.heroBadge.tapShow .static-icon,.heroBadge.tapShow .static-text{opacity:0}
+.heroBadge.tapShow .heroBadgeTip{opacity:1;transform:translateX(calc(-50% + var(--tipShift,0px))) translateY(0)}
 /* effetto legato al PRIMO scroll (non al caricamento): se lo scroll parte veloce i badge rischiano di
    sparire prima di essere notati, quindi proprio nell'istante in cui iniziano a sfumare fanno un piccolo
    "pop" che cattura l'occhio invece di svanire silenziosamente */
@@ -912,6 +930,25 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   /* menu: stesso margine laterale degli altri elementi mobile, e area toccabile portata a ~44px */
   .topbar{padding:0 20px}
   .menuBtn{padding:13px 18px}
+  /* nuvoletta nome+descrizione icone: su una riga sola (white-space:nowrap, come su desktop) alcune
+     descrizioni sono più larghe dello schermo intero — su testo normale, spezza su 2 righe invece
+     di sfondare i bordi. Lo spostamento --tipShift (JS) gestisce comunque le icone di bordo */
+  .heroBadgeTip{white-space:normal;max-width:170px}
+  /* etichetta+sottotitolo sopra le icone: la vera causa del testo su 3 righe da una parola NON era
+     il padding, ma .heroEco stesso — position:absolute;left:50% SENZA right e width:auto, per cui
+     lo shrink-to-fit calcola la larghezza disponibile come "da metà schermo al bordo destro" (metà
+     larghezza reale, verificato: 187.5px su 375, non l'intera larghezza) — poi il transform
+     translateX(-50%) ricentra visivamente il box, ma quello succede DOPO che la larghezza è già
+     stata decisa, quindi non lo corregge. Stesso identico bug già risolto altrove in questo file
+     per i banner di capitolo (vedi nota sopra). Fix: larghezza esplicita, non più auto */
+  /* bottom più alto (non più basso: "bottom" è la distanza dal fondo, aumentarla sposta il blocco
+     VERSO l'alto, verso il titolo) — riduce apposta la distanza dal titolo, andando contro la nota
+     originale sopra ("vicina alle icone, lontana dal titolo"): scelta esplicita, su questo schermo
+     il titolo non può cambiare abbastanza di dimensione da risolverlo da solo */
+  .heroEco{width:min(340px,88vw);padding:0 12px;bottom:190px}
+  /* icone più alte: provato 52px, ma con 7 icone su 375px di larghezza la riga sfora lo schermo
+     (margine reale per crescere restando su una riga: ~0px, verificato). Rimandato a quando si
+     decide come alleggerire la riga (gap più stretto, meno icone visibili, ecc.) */
   /* .ch1Img prima era nascosta qui sotto 820px ("il blocco titolo+sottotitolo occupa quasi tutta la
      larghezza, un'immagine che sbordi ci finirebbe sopra") — quel problema non c'è più: da quando è
      full-bleed con inset (non più un riquadro laterale) e ha il velo di leggibilità chiaro sotto il
