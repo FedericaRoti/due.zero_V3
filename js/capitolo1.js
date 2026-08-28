@@ -144,8 +144,11 @@
     bannerH=compact?Math.min(Math.max(64,vh*0.08),86):118; bannerBW=bw;
     // resta a destra (gli ALTRI banner, Cap.02/03/04/05, si sono allineati a questo lato — vedi CSS),
     // ma l'altezza (0.30vh, a metà schermo) era troppo bassa rispetto a dove stanno gli altri quattro
-    // (9-11vh, in alto): alzato sugli stessi valori già in uso altrove
-    bannerLeft=vw-(mobile?20:38)-bw; bannerTop=vh*(mobile?0.07:(compact?0.055:0.09));
+    // (9-11vh, in alto): alzato sugli stessi valori già in uso altrove.
+    // Su mobile 0.08 (non 0.07): verificato dal vivo che il pulsante MENU finisce a 53px dal bordo
+    // schermo — 0.07vh lasciava solo 3.8px di margine, praticamente a contatto. Stesso valore
+    // (8vh) allineato anche su Cap.02/03/04/05 in CSS, per avere tutti i banner allo stesso livello
+    bannerLeft=vw-(mobile?20:38)-bw; bannerTop=vh*(mobile?0.08:(compact?0.055:0.09));
     chBanner.style.left=bannerLeft+'px'; chBanner.style.top=bannerTop+'px';
     chBanner.style.width=bw+'px'; chBanner.style.height=bannerH+'px';
   }

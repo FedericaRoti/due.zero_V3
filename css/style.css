@@ -871,7 +871,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .qualityIntro{padding:0 8vw}
   .qualityIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
   .qualityIntro p{max-width:80vw}
-  .qualityBanner{width:min(70vw,420px);right:20px;top:7vh}
+  .qualityBanner{width:min(70vw,420px);right:20px;top:8vh}
   .qualityMethod{padding:0 8vw}
   .qualityCodeMask{width:84vw;height:clamp(90px,17vh,150px)}
   .qualityCode{height:clamp(90px,17vh,150px);font-size:clamp(56px,20vw,120px)}
@@ -885,7 +885,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .newsSection{padding:16vh 8vw}
   .newsIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
   .newsIntro p{max-width:80vw}
-  .newsBanner{width:min(70vw,420px);right:20px;top:7vh}
+  .newsBanner{width:min(70vw,420px);right:20px;top:8vh}
 
   /* Footer: titolo mai tagliato, logo già sotto la CTA nel flusso naturale (nessun riordino necessario),
      blocchi contatti/sede/esplora impilati, legal libero di andare su due righe */
@@ -992,9 +992,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .c1b-text .phGroupGap{margin-top:1.3em}
   .chBanner{padding:0 18px}          /* larghezza calcolata in JS: vedi buildBanner() */
   .chBanner .bt{font-size:13px}
-  .ch2Banner{right:20px;width:min(86vw,420px);padding:0 18px}
+  /* top:8vh qui (non 5.5vh ereditato dal breakpoint "compact" sopra, riga ~907): su telefono
+     5.5vh finiva sotto il pulsante MENU (verificato dal vivo: 8.3px di sovrapposizione reale).
+     8vh allinea questo banner allo stesso livello di tutti gli altri (Cap.01/03/04/05) */
+  .ch2Banner{right:20px;width:min(86vw,420px);padding:0 18px;top:8vh}
   .ch2BannerText{font-size:13px}
-  .ch3Banner{right:20px;width:min(86vw,420px);padding:0 18px}
+  .ch3Banner{right:20px;width:min(86vw,420px);padding:0 18px;top:8vh}
   .ch3BannerText{font-size:13px}
   /* chrome della mappa: il titolo a sinistra e il bottone a destra si sovrapponevano di pochi px,
      tagliando "Machine Map — Interattiva". Il blocco sinistro ora si ferma prima del bottone e va a capo.
