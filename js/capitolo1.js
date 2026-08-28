@@ -89,8 +89,12 @@
   // testo della card a BLOCCHI-FRASE (non parola per parola): stesso gesto "riga che si rivela" del titolo capitolo.
   // ogni voce dell'array è una riga (.ph è display:block, va a capo da sola) — gli a capo qui sono
   // esattamente quelli indicati dal capo (foto del testo), non affidati al wrap naturale del contenitore
-  const phrases=["Siamo l'ufficio tecnico documentazione che affianca",
-    "l'industria manifatturiera e il settore terziario B2B.",
+  // tentativo precedente (a-capo forzato su ogni frase) scartato: troppe righe in più, l'ultimo
+  // gruppo usciva dalla card coprendo il piè di pagina. Testo di nuovo naturale (a-capo del
+  // browser, come sempre), &nbsp; solo dove un a-capo spezzerebbe un'espressione unica (es.
+  // "settore terziario") — non aggiunge altezza, impedisce solo il taglio in quel punto preciso
+  const phrases=["Siamo l'ufficio tecnico&nbsp;documentazione che affianca",
+    "l'industria manifatturiera e il settore&nbsp;terziario B2B.",
     'Con il nostro ecosistema di servizi e il metodo 2.0 Project',
     "governiamo l'intero ciclo di vita dei contenuti tecnici.",
     'Metodologia, conformità normativa e software proprietari',
@@ -98,8 +102,15 @@
     'Garantiamo efficienza operativa e rigorosa precisione',
     'in ogni singola fase della catena industriale.'];
   // 4 gruppi, uno per frase (2 righe ciascuno): spazio visibile e permanente dopo OGNI frase, non solo
-  // tra le due coppie — la comparsa resta a coppie (vedi phLine), ma la separazione visiva è per frase
-  const mkGroup=arr=>arr.map(t=>'<span class="ph"><i>'+t+'</i></span>').join(' ');
+  // tra le due coppie — la comparsa resta a coppie (vedi phLine), ma la separazione visiva è per frase.
+  // Su desktop ogni riga è pensata per stare da sola (2 .ph separati, ognuno la propria riga). Su
+  // mobile non serve più quel taglio netto: un solo .ph per gruppo, testo unito, così dopo l'ultima
+  // parola di una frase il testo continua con la frase successiva invece di andare a capo vuoto —
+  // deciso una volta alla costruzione della pagina (non re-imposta al resize, come buildBanner sopra)
+  const isMobileCard=innerWidth<820;
+  const mkGroup=isMobileCard
+    ? arr=>'<span class="ph"><i>'+arr.join(' ')+'</i></span>'
+    : arr=>arr.map(t=>'<span class="ph"><i>'+t+'</i></span>').join(' ');
   // phGroupGap anche sul 1° gruppo (non solo dal 2° in poi): serve lo stesso spazio protettivo
   // sopra ciascun gruppo, altrimenti il primo (nessun gruppo precedente da coprire, ma comunque
   // soggetto allo zoom) sconfina nell'header non avendo margine sopra di sé
@@ -115,7 +126,13 @@
   // i gruppi a destra (1,3) allineano la frase dal suo inizio (left), non dalla fine (right):
   // il blocco resta spostato a destra via translateX, ma il testo parte da un bordo comune invece
   // di finire su un bordo comune — quindi tutti e 4 i gruppi sono ora text-align:left
-  phGroupEls.forEach(el=>{ el.style.textAlign='left'; });
+  phGroupEls.forEach((el,i)=>{
+    // su mobile tutte e 4 le frasi sono centrate (richiesta esplicita) — l'origine dello zoom
+    // (transformOrigin, in render) resta 'left' anche qui: il BOX del gruppo occupa comunque tutta
+    // la larghezza disponibile a prescindere dall'allineamento del testo al suo interno, quindi la
+    // sicurezza contro l'overflow non cambia
+    el.style.textAlign=isMobileCard ? 'center' : 'left';
+  });
 
   let bannerLeft=0,bannerTop=0,bannerBW=660,bannerH=118;
   function buildBanner(){
@@ -236,8 +253,15 @@
     // cosi c'è il tempo di leggerla. REVEAL=.04 (le 2 righe della frase, stagger .005/durata .035 l'una),
     // PAUSE=.045 tra una frase e la successiva (3 pause), margine residuo finale ~.022 prima che la scena
     // prosegua — stesso principio della singola pausa tra coppie di prima, solo ripetuto per ogni frase
+    // su mobile c'è un solo .ph per gruppo (testo unito, vedi mkGroup sopra): phLines.length===4
+    // invece di 8, "i" è già l'indice del gruppo — niente sfasamento interno, un solo reveal
     const phLine    = i=>{
-      const REVEAL=.04, PAUSE=.045, group=Math.floor(i/2), local=i%2;
+      const REVEAL=.04, PAUSE=.045;
+      if(phLines.length===phGroupEls.length){
+        const g0=.6828+i*(REVEAL+PAUSE);
+        return smooth(sub(s,g0,g0+.035));
+      }
+      const group=Math.floor(i/2), local=i%2;
       const g0=.6828+group*(REVEAL+PAUSE);
       return smooth(sub(s,g0+local*.005,g0+local*.005+.035));
     };
@@ -354,8 +378,19 @@
     // fisico della card (76vh, gap tra le frasi, distanza da header/footer) è lo stesso vincolo
     // di prima e non è cambiato — cambia solo la qualità percepita del movimento, non quanto
     // spazio serve, quindi il margine di sicurezza già trovato resta valido
-    const GROUP_REVEAL=.04, GROUP_PAUSE=.045, ZOOM_REVEAL=.06, PERSPECTIVE=900, Z_PEAK=210;
-    const GROUP_X=[-70,70,-190,190]; // 1° un po' a sx, 2° un po' a dx, 3° molto più a sx (oltre -170), 4° di conseguenza a dx
+    const GROUP_REVEAL=.04, GROUP_PAUSE=.045, ZOOM_REVEAL=.06, PERSPECTIVE=900;
+    // su mobile lo spread sx/dx rendeva le frasi illeggibili (schermo troppo stretto per lo
+    // spostamento calibrato su desktop) — restano centrate, tengono solo lo zoom
+    const isMobileZoom=innerWidth<820;
+    const GROUP_X=isMobileZoom ? [0,0,0,0] : [-70,70,-190,190]; // 1° un po' a sx, 2° un po' a dx, 3° molto più a sx (oltre -170), 4° di conseguenza a dx
+    // stesso Z_PEAK=210 (~1.3x) del desktop era troppo per mobile: lì il testo occupa già quasi
+    // tutta la larghezza della card (margine reale ~11px per lato, verificato), quindi lo stesso
+    // zoom tagliava intere parole ai bordi. Ridotto per mobile, con l'overflow:hidden della card
+    // che gestisce comunque una clip pulita sulle righe più lunghe al picco, invece di tagli pesanti
+    // testo ora centrato anche su mobile (era text-align:left, l'origine 'left' serviva a quello):
+    // con l'origine al centro la crescita si divide sui due lati, il margine disponibile va diviso
+    // di conseguenza — Z_PEAK mobile ridotto e riverificato dal vivo (era tarato per l'origine 'left')
+    const Z_PEAK=isMobileZoom ? 90 : 210;
     phGroupEls.forEach((el,g)=>{
       const g0=.6828+g*(GROUP_REVEAL+GROUP_PAUSE);
       const tZoom=smooth(sub(s,g0,g0+ZOOM_REVEAL));

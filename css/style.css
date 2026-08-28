@@ -329,6 +329,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    paragrafo leggero — contenuto perché sono 3 stacchi non 1, il testo deve restare nell'altezza
    fissa della card (76vh) */
 .c1b-text .phGroupGap{margin-top:1em}
+/* a-capo controllato per il piè della card1b su mobile (vedi index.html e regola sotto 820px) */
+.mobileBreak{display:none}
 
 /* ================= CAPITOLO 2 — ECOSISTEMA (asset reali, no SVG generico) ================= */
 /* 940vh, non più 860: la sola apertura (titolo da solo -> sparisce -> sottotitolo da solo) aveva
@@ -975,7 +977,19 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      che su telefono stretto (320px, 5 frasi che vanno su 2-3 righe ciascuna) faceva toccare il
      testo contro intestazione e piè di card — verificato: -17px e -60px di sovrapposizione reale.
      Minimo riportato più vicino al valore originale, solo per questa fascia */
-  .c1b-text{font-size:clamp(22px,6vw,28px);line-height:1.32}
+  .c1b-text{font-size:clamp(22px,6vw,26px);line-height:1.32}
+  /* piè "due.zero | technical communication revolution": su schermo stretto va su 3 righe col
+     a-capo naturale del browser — a-capo controllato invece (vedi .mobileBreak e index.html):
+     "due.zero |" sulla prima riga, il resto sulla seconda. Spaziatura/dimensione leggermente
+     ridotte per far stare comodamente la seconda riga senza andare su una terza */
+  /* stesso bug di .heroEco (vedi nota altrove in questo file): left:50% senza right, con
+     width:auto, dimezza la larghezza disponibile per l'a-capo (shrink-to-fit la calcola da metà
+     schermo al bordo, non sull'intera larghezza) — larghezza esplicita per il fix */
+  .card1b .c1b-head,.card1b .c1b-foot{letter-spacing:.03em;font-size:9px;width:88%;text-align:center}
+  .mobileBreak{display:inline}
+  /* margine tra alcuni gruppi al picco dello zoom era ridotto a 0.5px (verificato) — c'era spazio
+     libero (45.6px) per allargarlo in sicurezza */
+  .c1b-text .phGroupGap{margin-top:1.3em}
   .chBanner{padding:0 18px}          /* larghezza calcolata in JS: vedi buildBanner() */
   .chBanner .bt{font-size:13px}
   .ch2Banner{right:20px;width:min(86vw,420px);padding:0 18px}
