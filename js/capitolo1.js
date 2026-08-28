@@ -1,4 +1,10 @@
 (function(){
+  // disattiva il ripristino automatico dello scroll del browser (default "auto"): senza questo,
+  // un semplice refresh riporta l'utente all'esatto scrollY di prima, indipendentemente dal sistema
+  // di ritorno qui sotto (che gestisce solo "vai a una pagina e torna indietro", non il refresh) —
+  // i due meccanismi convivevano senza che il secondo fosse mai disattivato. Va impostato il prima
+  // possibile, prima che il browser abbia la possibilità di ripristinare per conto suo
+  if('scrollRestoration' in history) history.scrollRestoration='manual';
   const $=id=>document.getElementById(id);
   const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),testWall=$('testWall'),testWallMove=$('testWallMove'),menuBtn=$('menuBtn'),
         glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),
