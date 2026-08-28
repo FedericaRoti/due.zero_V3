@@ -18,7 +18,11 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    del previsto (verificato: con top:25% su una sezione di 520vh si atterrava già a ritiro del titolo
    iniziato, invece che a titolo completo). Il valore qui è target_s*(altezza_sezione_vh-100), già calcolato */
 .scene .chapterAnchor{top:472.7vh}
-.sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black)}
+/* 100svh non 100vh: su mobile 100vh è l'altezza MASSIMA (barra indirizzo nascosta) — al primo
+   caricamento, con la barra ancora visibile, tutto ciò che è ancorato in basso (icone, triangolo)
+   finiva sotto la barra, coperto. 100svh è l'altezza minima garantita (barra sempre visibile),
+   stesso fix già usato altrove in questo file (.mapServicesSticky) — su desktop è identico a 100vh */
+.sticky{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--black)}
 .ambient{position:absolute;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(480px circle at var(--mx) var(--my),rgba(255,255,255,.05),rgba(255,255,255,0) 70%)}
 
