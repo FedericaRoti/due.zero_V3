@@ -1107,16 +1107,14 @@ kp8KdRRAgAEAgR8fvoTw5CEAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 197 109)">
   </div>
 </section>
 
-<!-- Capitolo 04 — Qualità: metodo, validazione, tracciabilità (non badge/certificazioni). Un solo sticky,
-     quattro gesti in sequenza: apertura (carta calda + banner + titolo), metodo (DQ/IQ/OQ/PQ, una sigla
-     alla volta), tracciabilità (foglio tecnico + firma), chiusura (nero + titolo + CTA). -->
+<!-- Capitolo 04 — Qualità: TEST 3, versione completa a flusso (niente più sticky/scroll-jack da
+     nessuna parte, su nessuna larghezza) — apertura, DQ/IQ/OQ/PQ (tutte e quattro insieme, non una
+     alla volta), tracciabilità, chiusura, una sotto l'altra. Stesso principio già in uso su mobile
+     per questa sezione, esteso a ogni larghezza. Senza #qualitySticky nel DOM, il JS dedicato in
+     capitoli.js (che richiede quell'elemento) non parte proprio: nessuna riga da disattivare lì. -->
 <section class="qualitySection" id="qualitySection">
-  <!-- banner+titolo+sottotitolo già COMPLETI qui (~25%), non solo iniziati — subito dopo (.25) l'intro
-       inizia a ritrarsi verso il metodo DQ/IQ/OQ/PQ, quindi questa è l'ultima finestra utile -->
   <div class="chapterAnchor" id="qualityStart" aria-hidden="true"></div>
-  <div class="qualitySticky" id="qualitySticky">
-    <div class="qualityPaper" id="qualityPaper"></div>
-
+  <div class="qualityFlow" id="qualityFlow">
     <div class="qualityIntro" id="qualityIntro">
       <div class="qualityBanner">CAPITOLO 04 | QUALITÀ</div>
       <h2>LA QUALITÀ<br>NON SI CONTROLLA<br>ALLA FINE</h2>
@@ -1133,7 +1131,6 @@ kp8KdRRAgAEAgR8fvoTw5CEAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 197 109)">
           <div class="qualityCode" data-def="Prestazioni verificate.">PQ</div>
         </div>
       </div>
-      <div class="qualityDefinition" id="qualityDefinition">PROGETTAZIONE VERIFICATA.</div>
     </div>
 
     <div class="qualityRecord" id="qualityRecord">
