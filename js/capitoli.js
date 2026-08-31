@@ -6,8 +6,7 @@
         ecoOpenH=$('ecoOpenH'), ecoOpenSub=$('ecoOpenSub'),
         ecoProjectImg=$('ecoProjectImg'), ecoProjectVeil=$('ecoProjectVeil'), pjGroup=$('pjGroup'), pjTitle=$('pjTitle'), pjSub=$('pjSub'), pjDesc=$('pjDesc'), pjCtaRow=$('pjCtaRow'),
         hpGroup=$('hpGroup'), hpTitle=$('hpTitle'), hpSub=$('hpSub'), hpDesc=$('hpDesc'), hpCtaRow=$('hpCtaRow'), ecoHyperImg=$('ecoHyperImg'),
-        ecoLabQImg=$('ecoLabQImg'), lqGroup=$('lqGroup'), lqTitle=$('lqTitle'), lqSub=$('lqSub'), lqDesc=$('lqDesc'), lqCtaRow=$('lqCtaRow'),
-        dcTitle=$('dcTitle'), dcAccent=$('dcAccent'), dcSub=$('dcSub'), dcPara=$('dcPara'), dcHint=$('dcHint');
+        ecoLabQImg=$('ecoLabQImg'), lqGroup=$('lqGroup'), lqTitle=$('lqTitle'), lqSub=$('lqSub'), lqDesc=$('lqDesc'), lqCtaRow=$('lqCtaRow');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), sub=(p,a,b)=>clamp((p-a)/(b-a),0,1), smooth=t=>t*t*(3-2*t), lerp=(a,b,t)=>a+(b-a)*t;
 
@@ -217,40 +216,23 @@
   // l'altra è ancora in scena). Vedi il commento su "sOld"/k in cima a render2 per come si è fatto
   // spazio in coda senza ricalcolare le soglie di Ponte/Ecosistema/Project 2.0/Hyperparts.
 
-  // ---- DOCUMENTATION 4.0 — scena indipendente (proprio sticky/scroll): prima viveva dentro scene2,
-  // spostata qui per fare posto a Hyper.LabQ senza toccare le soglie di Ponte/Ecosistema/Project 2.0/
-  // Hyperparts. Stesse identiche soglie di prima (erano [.800,1.0] su scene2, 940vh), solo rimappate
-  // sulla propria timeline locale [0,1] — comportamento identico, cambia solo il contenitore ----
+  // ---- DOCUMENTATION 4.0 — TEST scroll site-wide: non più uno sticky/scroll-jack proprio, blocco
+  // compatto in flusso con reveal one-shot quando raggiunge il viewport (stesso principio di Cap.4/
+  // Cap.5/News/Footer sotto), non un progresso continuo legato al pixel di scroll ----
   const sceneDoc40=$('sceneDoc40');
   if(sceneDoc40 && !reduce){
-    let pRawD40=0, sPD40=0;
-    function readScrollD40(){ const denom=Math.max(1,sceneDoc40.offsetHeight-innerHeight); pRawD40=clamp((scrollY-sceneDoc40.offsetTop)/denom,0,1); }
-    function renderD40(s){
-      const dcTitleIn    = smooth(sub(s,0,.11));    // blocco che si rivela tramite maschera centrale + leggero scale
-      // hold leggibile [.11,.16]: nessuna variabile qui, il titolo resta fermo e dominante
-      const dcAccentIn   = smooth(sub(s,.085,.16));
-      const dcTitleShift = smooth(sub(s,.215,.30));
-      const dcSubIn      = smooth(sub(s,.315,.395));
-      const dcParaIn     = smooth(sub(s,.395,.47));
-      // hold reale [.47,.80] (~62% della scena): il tempo di leggere il paragrafo per intero
-      // fino a .98, stesso principio delle altre due uscite di scena qui sopra: non lo aveva chiesto
-      // esplicitamente, ma stesso identico problema (spazio nero prima del cambio scena verso Machine Map)
-      const dcRetreat    = smooth(sub(s,.80,.98));
-      const dcParaOut    = smooth(sub(s,.80,.98));
-
-      dcTitle.style.opacity=(dcTitleIn*(1-dcRetreat)).toFixed(3);
-      dcTitle.style.clipPath='inset(0 '+((1-dcTitleIn)*50).toFixed(1)+'% 0 '+((1-dcTitleIn)*50).toFixed(1)+'%)';
-      dcTitle.style.transform='translateY(-'+(lerp(0,3,dcTitleShift)+lerp(0,2.5,dcRetreat)).toFixed(2)+'vh) scale('+(lerp(1.06,1,dcTitleIn)*lerp(1,.85,dcTitleShift)*lerp(1,.94,dcRetreat)).toFixed(3)+')';
-      dcAccent.style.opacity=(dcAccentIn*(1-dcRetreat)).toFixed(3);
-      dcAccent.style.transform='scaleX('+lerp(.2,1,dcAccentIn).toFixed(3)+')';
-      dcSub.style.opacity=(dcSubIn*(1-dcRetreat)).toFixed(3);
-      dcPara.style.transform='translateY('+lerp(lerp(100,0,dcParaIn),-100,dcParaOut).toFixed(2)+'%)';
-      if(dcHint) dcHint.style.opacity=(dcSubIn*(1-dcRetreat)).toFixed(3);
+    let doc40Revealed=false;
+    function checkDoc40Reveal(){
+      if(doc40Revealed) return;
+      const r=sceneDoc40.getBoundingClientRect();
+      if(r.top<innerHeight*0.85){
+        doc40Revealed=true;
+        sceneDoc40.classList.add('revealed');
+        removeEventListener('scroll',checkDoc40Reveal);
+      }
     }
-    function loopD40(){ sPD40+=(pRawD40-sPD40)*0.08; renderD40(sPD40); requestAnimationFrame(loopD40); }
-    addEventListener('scroll',readScrollD40,{passive:true});
-    readScrollD40(); loopD40();
-    window.__snapDoc40Instant=function(){ readScrollD40(); sPD40=pRawD40; renderD40(sPD40); };
+    addEventListener('scroll',checkDoc40Reveal,{passive:true});
+    checkDoc40Reveal();
   }
 
   // Documentation 4.0 = Machine Map = soglia del Capitolo 03: UN SOLO sticky (mapServicesSticky), UN SOLO progresso
@@ -262,8 +244,7 @@
   // fermi e leggibili per un hold reale (oltre una viewport) prima che l'arco dei servizi prenda il posto.
   const mapStage=$('mapServicesTransition'), mapFrame=$('ecoMapFrame'), mapChrome=$('docMapChrome'), mapOutro=$('mapOutro'),
         fsTarget=$('mapServicesSticky'), fsBtn=$('mapFsBtn'), fsFallback=$('mapFsFallback'),
-        mapFsIcon=$('mapFsIcon'), mapFsBtnText=$('mapFsBtnText'), docMapIframe=$('docMapIframe'), docMapLoading=$('docMapLoading'),
-        ch3Banner=$('ch3Banner'), svcOpenH=$('svcOpenH');
+        mapFsIcon=$('mapFsIcon'), mapFsBtnText=$('mapFsBtnText'), docMapIframe=$('docMapIframe'), docMapLoading=$('docMapLoading');
   if(mapStage && mapFrame){
     const mapCompact = window.matchMedia('(max-width:820px)').matches;
     // micro-label di caricamento, nessuno spinner/overlay: scompare all'evento load (con fallback nel caso sia già risolto prima dell'attach)
@@ -274,40 +255,29 @@
     // geometria "contenuta" di partenza: margini standard su desktop, più stretti su mobile — stessa card (top/left/right/height) usata altrove nel prototipo
     const mapMargin = mapCompact ? {left:3,top:5,width:94,height:90} : {left:6,top:12,width:88,height:76};
     let sP3=1; // progress corrente (scope condiviso con il gestore fullscreen); reduced motion resta a 1 (stabile, nessuna riscrittura inline)
+    // TEST scroll site-wide: banner+titolo Servizi non vivono più qui (erano la causa di un hold
+    // immobile di ~104vh sul nero, segnalato) — sono un blocco separato a flusso, vedi .servicesIntro
+    // più sotto. Restano solo le fasi della mappa (cresce, resta stabile, il nero la copre); le soglie
+    // sono riscalate ×400/220=1.8182 sulla nuova altezza della sezione (era 500vh/denom 400vh, ora
+    // 320vh/denom 220vh) per mantenere l'IDENTICA corsa fisica in vh di prima, con un margine di
+    // ~20vh prima che lo sticky si sblocchi, non più i vecchi ~104vh completamente fermi
     function render3(s){
       if(reduce) return; // reduced motion: la CSS dedicata mostra già mappa piena e outro disattivato, JS non tocca nulla
       if(fsTarget && fsTarget.classList.contains('isFullscreen')) return; // in fullscreen il CSS (!important) comanda, render3 non scrive mai
-      // fase 1 [0,.16]: da mappa contenuta a piena, animando left/top/width/height (mai scale, per non perdere nitidezza)
-      const growT = smooth(sub(s,0,.16));
+      // fase 1 [0,.2909]: da mappa contenuta a piena, animando left/top/width/height (mai scale, per non perdere nitidezza)
+      const growT = smooth(sub(s,0,.2909));
       mapFrame.style.left=lerp(mapMargin.left,0,growT).toFixed(2)+'vw';
       mapFrame.style.top=lerp(mapMargin.top,0,growT).toFixed(2)+'vh';
       mapFrame.style.width=lerp(mapMargin.width,100,growT).toFixed(2)+'vw';
       mapFrame.style.height=lerp(mapMargin.height,100,growT).toFixed(2)+'vh';
       mapFrame.style.borderColor='rgba(20,20,18,'+(0.12*(1-growT)).toFixed(3)+')';
-      // fase 2 [.16,.40]: mappa piena, stabile ed esplorabile — nessuna variabile
-      // fase 3 [.40,.50]: il nero sale dal basso e copre la mappa; chrome/bottone fullscreen sfumano [.40,.44],
-      // ben prima che il nero raggiunga la metà del viewport (~.45 con questa finestra)
-      if(mapOutro) mapOutro.style.transform='translateY('+lerp(100,0,smooth(sub(s,.40,.50))).toFixed(2)+'%)';
-      if(mapChrome) mapChrome.style.opacity=(1-smooth(sub(s,.40,.44))).toFixed(3);
-      // fase 4 [.52,.60]: banner rosso "Capitolo 03 | Servizi" entra con UNA sola traslazione orizzontale da destra
-      // (mai un fade). Prima iniziava a .48, mentre l'outro (nero, finisce a .50) copriva ancora solo l'80-100%
-      // della mappa: il banner compariva sopra la mappa ancora parzialmente visibile. Ora parte 2 punti dopo la
-      // fine dell'outro, con un margine di sicurezza reale, non solo teorico
-      if(ch3Banner){
-        const bannerIn = smooth(sub(s,.52,.60));
-        ch3Banner.style.transform='translateX('+lerp(120,0,bannerIn).toFixed(2)+'%)';
-      }
-      // fase 5 [.58,.70]: titolo "Otto servizi. Un processo continuo." in blocco unico — maschera rettangolare
-      // sinistra->destra + lieve scale-down, mai un fade — inizia mentre il banner sta ancora entrando
-      // (stessa struttura di prima, solo l'intera sequenza spostata avanti di .04 insieme al banner)
-      if(svcOpenH){
-        const headIn = smooth(sub(s,.58,.70));
-        svcOpenH.style.clipPath='inset(0 '+((1-headIn)*100).toFixed(1)+'% 0 0)';
-        svcOpenH.style.transform='scale('+lerp(1.10,1,headIn).toFixed(3)+')';
-      }
-      // fase 7 [.74,1.0]: hold netto e leggibile — banner e titolo restano fermi sul nero pieno per
-      // una porzione reale di scroll (ancora quasi una viewport intera, solo .04 più corta di prima); l'arco dei
-      // servizi (sezione successiva, separata, senza margin-top negativo) inizia solo dopo la fine di questo hold
+      // fase 2 [.2909,.7273]: mappa piena, stabile ed esplorabile — nessuna variabile
+      // fase 3 [.7273,.9091]: il nero sale dal basso e copre la mappa; chrome/bottone fullscreen sfumano
+      // [.7273,.8000], ben prima che il nero raggiunga la metà del viewport
+      if(mapOutro) mapOutro.style.transform='translateY('+lerp(100,0,smooth(sub(s,.7273,.9091))).toFixed(2)+'%)';
+      if(mapChrome) mapChrome.style.opacity=(1-smooth(sub(s,.7273,.8000))).toFixed(3);
+      // [.9091,1.0]: margine di ~20vh completamente fermo prima che lo sticky si sblocchi — il nero è già
+      // pieno, non c'è altro da animare qui; il blocco .servicesIntro segue subito dopo senza stacco visibile
     }
     if(reduce){
       // niente coreografia: la mappa passa direttamente da contenuta a visibile (CSS statica dedicata), chiusura netta senza outro animato
@@ -358,6 +328,25 @@
         document.addEventListener('webkitfullscreenchange', onFsChange);
       }
     }
+  }
+
+  // ---- Soglia Capitolo 03 (banner + titolo Servizi) — TEST scroll site-wide: non più il terzo layer
+  // dello sticky della mappa (era la causa dell'hold di ~104vh fermi sul nero, segnalato), blocco
+  // compatto in flusso con reveal one-shot, stesso principio di Cap.4/Cap.5/News/Footer ----
+  const servicesIntro=$('servicesIntro');
+  if(servicesIntro && !reduce){
+    let svcIntroRevealed=false;
+    function checkSvcIntroReveal(){
+      if(svcIntroRevealed) return;
+      const r=servicesIntro.getBoundingClientRect();
+      if(r.top<innerHeight*0.85){
+        svcIntroRevealed=true;
+        servicesIntro.classList.add('revealed');
+        removeEventListener('scroll',checkSvcIntroReveal);
+      }
+    }
+    addEventListener('scroll',checkSvcIntroReveal,{passive:true});
+    checkSvcIntroReveal();
   }
 
   // Servizi — card a scroll orizzontale (dalla bozza duezero-scroll, riscritta senza librerie, stessa
