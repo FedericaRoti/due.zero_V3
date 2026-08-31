@@ -1000,28 +1000,28 @@ kp8KdRRAgAEAgR8fvoTw5CEAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 197 109)">
   </div>
 </div>
 
-<!-- DOCUMENTATION 4.0 — cambio di scala: da componente/macchina a parco macchine. TEST scroll site-wide:
-     una sola tappa testuale, niente sticky/scroll-jack — blocco compatto in flusso normale con reveal
-     one-shot al raggiungimento del viewport (stesso principio già usato per Cap.4/Cap.5), non più un
-     hold a percentuale di scroll fisso. -->
+<!-- DOCUMENTATION 4.0 — cambio di scala: da componente/macchina a parco macchine. Fondo carta, nessuna foto
+     aggiuntiva. Scena indipendente (sticky/scroll proprio): il fondo carta segnala da solo il cambio di
+     scena, quindi qui non serve il crossfade fra foto che invece serve tra Hyperparts e Hyper.LabQ
+     (stesso sfondo scuro su entrambe — vedi capitoli.js, blocco HYPER.LABQ dentro render2). -->
 <div class="sceneDoc40" id="sceneDoc40">
   <div class="chapterAnchor" id="doc40Start" aria-hidden="true"></div>
-  <div id="sceneDoc">
-    <h3 class="dc-title" id="dcTitle">Documentation 4.0</h3>
-    <span class="dc-accent" id="dcAccent" aria-hidden="true"></span>
-    <p class="dc-sub" id="dcSub">La mappatura del parco macchine</p>
-    <p class="dc-text"><i id="dcPara">Il risultato visivo del nostro ecosistema in continua evoluzione.<br>Una mappa interattiva per tracciare in tempo reale<br>il parco macchine documentato per i nostri clienti nel mondo.<br>Siti produttivi, matricole e contenuti tecnici aggiornati,<br>per garantire tracciabilità e rintracciabilità storica globale.</i></p>
+  <div class="stickyDoc40" id="stickyDoc40">
+    <div id="sceneDoc">
+      <h3 class="dc-title" id="dcTitle">Documentation 4.0</h3>
+      <span class="dc-accent" id="dcAccent" aria-hidden="true"></span>
+      <p class="dc-sub" id="dcSub">La mappatura del parco macchine</p>
+      <p class="dc-text"><i id="dcPara">Il risultato visivo del nostro ecosistema in continua evoluzione.<br>Una mappa interattiva per tracciare in tempo reale<br>il parco macchine documentato per i nostri clienti nel mondo.<br>Siti produttivi, matricole e contenuti tecnici aggiornati,<br>per garantire tracciabilità e rintracciabilità storica globale.</i></p>
+      <!-- sfondo chiaro qui (carta), non nero come nell'hero: serve la variante scura del richiamo -->
+      <div class="hint hintDark" id="dcHint" aria-hidden="true"><span class="hintArrow">↓</span> Scroll</div>
+    </div>
   </div>
 </div>
 
-<!-- Documentation 4.0 = Machine Map — UN SOLO sticky, un solo progresso di scroll: la mappa nasce
-     contenuta dentro il campo carta del blocco Documentation e cresce fino a 100vw×100vh (mai
-     transform:scale, solo left/top/width/height per restare nitida), resta protagonista stabile per
-     una fase di esplorazione, poi un campo nero sale dal basso e la copre. La soglia del Capitolo 03
-     (banner + titolo) non vive più in questo sticky: era la causa di un lungo hold immobile sul nero
-     (fino a ~104vh completamente fermi, segnalato) — ora è un blocco separato subito dopo, a flusso
-     normale con reveal one-shot (vedi .servicesIntro sotto), stesso principio di Cap.4/Cap.5. Lo sfondo
-     nero prosegue senza stacco: .mapOutro copre già tutto quando questo sticky si sblocca. -->
+<!-- Documentation 4.0 È la Machine Map, ed è anche la soglia del Capitolo 03 — UN SOLO sticky, un solo progresso di
+     scroll, tre layer sovrapposti: mappa (cresce da contenuta a schermo intero e resta protagonista), outro nero
+     (sale e la chiude), soglia Cosa Facciamo (banner + titolo + sottotitolo, entrano nello stesso viewport già durante la
+     chiusura, restano fermi per un hold reale, poi l'arco dei servizi prende il posto in una sezione successiva). -->
 <section class="mapServicesTransition" id="mapServicesTransition">
   <div class="mapServicesSticky" id="mapServicesSticky">
 
@@ -1067,18 +1067,16 @@ kp8KdRRAgAEAgR8fvoTw5CEAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 197 109)">
     <!-- layer 2: unico elemento di chiusura, sale dal basso e copre la mappa con nero pieno -->
     <div class="mapOutro" id="mapOutro" aria-hidden="true"></div>
 
-  </div>
-</section>
+    <!-- layer 3: soglia Capitolo 03 — banner + titolo + sottotitolo, stesso sticky, stesso progresso -->
+    <div class="servicesIntroLayer" id="servicesIntroLayer">
+      <div class="ch3Banner" id="ch3Banner" aria-hidden="true">
+        <span class="ch3BannerText" id="ch3BannerText">Capitolo 03 | Cosa Facciamo</span>
+      </div>
+      <div class="svc-open" id="svcOpen">
+        <h2 class="svc-open-h" id="svcOpenH">Sei servizi.<br>Un processo continuo</h2>
+      </div>
+    </div>
 
-<!-- Soglia Capitolo 03 — banner + titolo, blocco compatto in flusso (una sola tappa, come Cap.4/Cap.5):
-     sfondo nero continua direttamente da .mapOutro sopra, nessuno stacco visibile. Reveal one-shot al
-     raggiungimento del viewport, non più un hold a percentuale di scroll fisso. -->
-<section class="servicesIntro" id="servicesIntro">
-  <div class="ch3Banner" id="ch3Banner" aria-hidden="true">
-    <span class="ch3BannerText" id="ch3BannerText">Capitolo 03 | Cosa Facciamo</span>
-  </div>
-  <div class="svc-open" id="svcOpen">
-    <h2 class="svc-open-h" id="svcOpenH">Sei servizi.<br>Un processo continuo</h2>
   </div>
 </section>
 
