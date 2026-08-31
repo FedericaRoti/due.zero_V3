@@ -134,7 +134,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    vicinanza deve leggersi come "la label parla delle icone", non del titolo sopra.
    Con le icone così vicine la nuvoletta-tooltip (sopra l'icona) ci finirebbe dentro: risolto in JS
    attenuando la label quando un'icona è sotto hover, invece di allontanarla di nuovo dalle icone */
-.heroEco{position:absolute;left:50%;bottom:140px;transform:translateX(-50%);z-index:5;
+/* left:0;right:0;margin:0 auto (non left:50%+transform:translateX(-50%)): quella tecnica, senza una
+   larghezza esplicita, fa calcolare allo shrink-to-fit lo spazio disponibile come "da metà contenitore
+   al bordo destro" (metà reale, non l'intera larghezza) — bug già trovato e risolto una volta su
+   mobile con una larghezza esplicita lì, ma non alla radice. left:0;right:0 dà la larghezza piena
+   del contenitore, margin:0 auto centra il risultato (che resta comunque limitato da max-width) —
+   stessa tecnica standard per un box centrato con max-width in posizionamento assoluto, valida a
+   ogni larghezza: la regola mobile sotto si limita a restringere width, il centraggio arriva da qui */
+.heroEco{position:absolute;left:0;right:0;bottom:140px;margin:0 auto;z-index:5;
   display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;
   max-width:780px;padding:0 24px;opacity:0;pointer-events:none;transition:opacity .4s ease}
 .heroEcoLabel{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
@@ -313,7 +320,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .card1b{position:absolute;top:12vh;left:6vw;right:6vw;height:76vh;z-index:6;background:var(--paper);color:var(--ink);
   display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
   box-shadow:0 6px 18px rgba(0,0,0,.08);border:1px solid rgba(20,20,18,.12);opacity:0;transform-origin:center;will-change:transform}
-.card1b .c1b-head,.card1b .c1b-foot{position:absolute;left:50%;transform:translateX(-50%);
+/* left:0;right:0 (non left:50%+transform:translateX(-50%)): quella tecnica, senza una larghezza
+   esplicita, fa calcolare allo shrink-to-fit lo spazio disponibile come "da metà contenitore al
+   bordo destro" (metà reale, non l'intera larghezza) — bug già trovato e risolto una volta per
+   .heroEco/.c1b-foot su mobile, ma il fix era scoped solo lì: qui si corregge alla radice, valido
+   a ogni larghezza. Il centraggio del testo arriva per eredità da .card1b{text-align:center} */
+.card1b .c1b-head,.card1b .c1b-foot{position:absolute;left:0;right:0;
   font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(20,20,18,.5);opacity:0}
 .card1b .c1b-head{top:34px}.card1b .c1b-foot{bottom:34px}
 .card1b .c1b-head .idx{color:var(--red)}
@@ -985,10 +997,10 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      a-capo naturale del browser — a-capo controllato invece (vedi .mobileBreak e index.html):
      "due.zero |" sulla prima riga, il resto sulla seconda. Spaziatura/dimensione leggermente
      ridotte per far stare comodamente la seconda riga senza andare su una terza */
-  /* stesso bug di .heroEco (vedi nota altrove in questo file): left:50% senza right, con
-     width:auto, dimezza la larghezza disponibile per l'a-capo (shrink-to-fit la calcola da metà
-     schermo al bordo, non sull'intera larghezza) — larghezza esplicita per il fix */
-  .card1b .c1b-head,.card1b .c1b-foot{letter-spacing:.03em;font-size:9px;width:88%;text-align:center}
+  /* la regola base ora usa left:0;right:0 (fix alla radice, non più left:50%+transform) — qui la
+     larghezza esplicita (88%, per l'a-capo controllato) va ricentrata con margin:0 auto, non più
+     con translateX che non esiste più nella regola base */
+  .card1b .c1b-head,.card1b .c1b-foot{letter-spacing:.03em;font-size:9px;width:88%;margin:0 auto;text-align:center}
   .mobileBreak{display:inline}
   /* margine tra alcuni gruppi al picco dello zoom era ridotto a 0.5px (verificato) — c'era spazio
      libero (45.6px) per allargarlo in sicurezza */
