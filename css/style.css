@@ -232,9 +232,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    originale — su un riquadro più alto che largo (tablet in verticale, 821-1023px) l'altezza calcolata
    non arriva a coprire il box, restano fasce nere sopra/sotto (segnalato). Sotto 820px il fix già
    esisteva (background-size:cover, vedi più sotto in questo file) ma non copriva questa fascia —
-   stesso fix, nuovo range esplicito. Non tocca .ecoProjectImg (Capitolo 2, da rivedere a parte). */
+   stesso fix, nuovo range esplicito. .ecoProjectImg (Capitolo 2) ha la stessa geometria di box
+   (inset:-4vh -4vw) e lo stesso problema — qui il background-size è animato da JS (zoom-in scroll-
+   driven, 340%->130%), serve !important per vincere sull'inline style, come già fa il fix mobile */
 @media (min-width:821px) and (max-width:1023px){
   .ch1Img{background-size:cover}
+  .ecoProjectImg{background-size:cover !important}
 }
 /* velo SCURO (non più chiaro): il titolo ora è testo chiaro su nero, non scuro su carta. Più denso
    nella fascia centrale (dove il testo è centrato) e più leggero verso i bordi alto/basso, non un
