@@ -490,29 +490,124 @@
   }
 
   // ================= CAPITOLO 04 — QUALITÀ =================
-  // TEST 4: niente più un unico sticky che rimappa la velocità dello scroll (troppo lento o troppo
-  // veloce a seconda della scena, segnalato). Quattro scene a piena altezza, sfondo pieno alternato
-  // (paper/nero/paper/nero — mantiene il "tutto schermo" e lo stacco netto tra scene), scroll-snap
-  // per l'arrivo netto (vedi html{scroll-snap-type} in style.css) e un reveal one-shot quando ogni
-  // scena raggiunge il viewport — stesso principio già usato per News/Footer sotto, non un progresso
-  // continuo legato al pixel di scroll: il ritmo di lettura resta 1:1 col gesto fisico dell'utente.
-  if(!reduce){
-    ['qualityIntro','qualityMethod','qualityRecord','qualityFinal'].forEach(id=>{
-      const el=$(id);
-      if(!el) return;
-      let revealed=false;
-      function check(){
-        if(revealed) return;
-        const r=el.getBoundingClientRect();
-        if(r.top<innerHeight*0.85){
-          revealed=true;
-          el.classList.add('revealed');
-          removeEventListener('scroll',check);
-        }
+  // Un solo sticky, quattro gesti in sequenza legati direttamente allo scroll (nessuno smoothing artificiale,
+  // stesso principio "risposta immediata" già usato per la Machine Map). A differenza dell'arco Servizi, qui
+  // l'hold su ogni sigla è esplicitamente richiesto: si riusa il tecnica ramp+hold per singola tappa.
+  const qualitySection=$('qualitySection'), qualitySticky=$('qualitySticky');
+  if(qualitySection && qualitySticky && !reduce){
+    const qualityPaper=$('qualityPaper'), qualityIntro=$('qualityIntro'),
+          qualityBanner=qualityIntro&&qualityIntro.querySelector('.qualityBanner'),
+          qualityH2=qualityIntro&&qualityIntro.querySelector('h2'),
+          qualityP=qualityIntro&&qualityIntro.querySelector('p'),
+          qualityMethod=$('qualityMethod'),
+          qualityEyebrow=qualityMethod&&qualityMethod.querySelector('.qualityEyebrow'),
+          qualityCodeMaskEl=qualityMethod&&qualityMethod.querySelector('.qualityCodeMask'),
+          qualityCodeStrip=$('qualityCodeStrip'), qualityDefinition=$('qualityDefinition'),
+          qualityRecord=$('qualityRecord'), qualityMeta=qualityRecord&&qualityRecord.querySelector('.qualityMeta'),
+          qualityFinal=$('qualityFinal'), qualityFinalH=qualityFinal&&qualityFinal.querySelector('h3'),
+          qualityCta=qualityFinal&&qualityFinal.querySelector('.qualityCta');
+
+    const QUALITY_STEPS=[
+      {code:'DQ',text:'PROGETTAZIONE VERIFICATA.'},
+      {code:'IQ',text:'INSTALLAZIONE VERIFICATA.'},
+      {code:'OQ',text:'OPERATIVITÀ VERIFICATA.'},
+      {code:'PQ',text:'PRESTAZIONI VERIFICATE.'}
+    ];
+    const qCount=QUALITY_STEPS.length; // 4 — fisso, non un elenco variabile come l'arco
+
+    // pannello definizione: cambia con breve maschera verticale quando la sigla frontale cambia (stesso
+    // principio già usato per il pannello Servizi), nessun contatore numerico
+    let qualityActiveIdx=-1;
+    function setQualityDefinition(idx){
+      if(idx===qualityActiveIdx || !qualityDefinition) return;
+      qualityActiveIdx=idx;
+      qualityDefinition.style.clipPath='inset(0 0 100% 0)';
+      setTimeout(()=>{
+        qualityDefinition.textContent=QUALITY_STEPS[idx].text;
+        void qualityDefinition.offsetWidth;
+        qualityDefinition.style.clipPath='inset(0 0 0% 0)';
+      },190);
+    }
+
+    // quattro tappe con rampa + hold (a differenza dell'arco Servizi, qui l'hold leggibile per sigla è
+    // esplicitamente richiesto): 3 transizioni per 4 sigle, stesso principio "N-1 passi per N elementi"
+    function qualityCodePos(s){
+      const START=.269, END=.756, STEPS=qCount-1, stepW=(END-START)/STEPS;
+      let sum=0;
+      for(let k=0;k<STEPS;k++){
+        const start=START+k*stepW, rampEnd=start+stepW*0.60;
+        sum+=smooth(sub(s,start,rampEnd));
       }
-      addEventListener('scroll',check,{passive:true});
-      check();
-    });
+      return sum; // 0..3, monotono
+    }
+
+    function renderQuality(s){
+      // ---- scena 1 — apertura [.00,.25]: carta sale piena (niente fade), poi banner, poi titolo in blocco
+      // unico con maschera orizzontale + lieve scale-down, poi sottotitolo dopo una breve pausa ----
+      // preQuality: stesso principio di preBridge (Capitolo 1 -> Ecosistema, vedi render2) — lo sticky
+      // dell'arco Servizi si sblocca nativamente nelle ultime 100vh del suo scroll, PRIMA che "s" (legato
+      // all'inizio di qualitySection) inizi a muoversi: restava nero fermo per tutta quella finestra, il
+      // vero "spazio nero" segnalato (fatto notare dal capo). preQuality segue lo scroll reale (non
+      // smussato) e anticipa lì la salita della carta, così è già in movimento mentre l'arco sta ancora
+      // sbloccandosi, invece di restare ferma in attesa
+      const preQuality=smooth(clamp((scrollY-(qualitySection.offsetTop-innerHeight))/innerHeight,0,1));
+      const paperRise=Math.max(preQuality, smooth(sub(s,0,.061)));
+      if(qualityPaper) qualityPaper.style.transform='translateY('+((1-paperRise)*101).toFixed(2)+'%)';
+      if(qualityBanner) qualityBanner.style.transform='translateX('+lerp(120,0,smooth(sub(s,.038,.098))).toFixed(2)+'%)';
+      if(qualityH2){
+        const headIn=smooth(sub(s,.076,.144));
+        qualityH2.style.clipPath='inset(0 '+((1-headIn)*100).toFixed(1)+'% 0 0)';
+        qualityH2.style.transform='scale('+lerp(1.06,1,headIn).toFixed(3)+')';
+      }
+      if(qualityP) qualityP.style.opacity=smooth(sub(s,.151,.189)).toFixed(3);
+      // hold di lettura vero: prima il ritiro iniziava esattamente dove finiva l'ingresso del
+      // sottotitolo, zero pausa — spariva subito, "troppo veloce" segnalato. Inserita una pausa reale
+      if(qualityIntro){
+        const introOut=smooth(sub(s,.220,.263)); // il titolo iniziale si ritrae tramite crop
+        qualityIntro.style.clipPath='inset(0 0 0 '+(introOut*100).toFixed(1)+'%)';
+      }
+
+      // ---- scena 2 — metodo: la maschera dei codici e la definizione entrano con una semplice
+      // dissolvenza (non un crop: un crop orizzontale relativo al viewport ritarderebbe la comparsa di un
+      // testo ancorato a sinistra, creando un vuoto), poi riga eyebrow, poi DQ/IQ/OQ/PQ una alla volta con
+      // hold leggibile — il ciclo dei quattro codici (vedi qualityCodePos) ha ora +135vh reali di corsa,
+      // il doppio di prima: "molto molto veloce" segnalato, restava a malapena ~34vh a codice; infine il
+      // metodo esce tramite crop, come richiesto, prima della tracciabilità ----
+      if(qualityCodeMaskEl) qualityCodeMaskEl.style.opacity=smooth(sub(s,.227,.263)).toFixed(3);
+      if(qualityDefinition) qualityDefinition.style.opacity=smooth(sub(s,.227,.263)).toFixed(3);
+      if(qualityEyebrow) qualityEyebrow.style.opacity=smooth(sub(s,.248,.284)).toFixed(3);
+      if(qualityCodeStrip){
+        const pos=qualityCodePos(s);
+        qualityCodeStrip.style.transform='translateY(-'+(pos*(100/qCount)).toFixed(2)+'%)';
+        setQualityDefinition(clamp(Math.round(pos),0,qCount-1));
+      }
+      if(qualityMethod){
+        const methodOut=smooth(sub(s,.764,.814)); // il metodo esce tramite crop
+        qualityMethod.style.clipPath='inset(0 0 0 '+(methodOut*100).toFixed(1)+'%)';
+      }
+
+      // ---- scena 3 — tracciabilità: entra dal basso come un foglio tecnico (solo translateY,
+      // niente ombra/card) — la risalita parte presto e generosa, così è già ben visibile quando il metodo
+      // sparisce (evita qualunque vuoto nel mezzo); il testo domina, poi metadati e firma dopo una pausa ----
+      if(qualityRecord) qualityRecord.style.transform='translateY('+lerp(100,0,smooth(sub(s,.685,.828))).toFixed(2)+'%)';
+      if(qualityMeta) qualityMeta.style.opacity=smooth(sub(s,.856,.907)).toFixed(3);
+
+      // ---- scena 4 — chiusura: un campo nero (il layer stesso) sale sopra la carta, poi titolo,
+      // poi CTA — nessun box pieno, solo testo ----
+      if(qualityFinal) qualityFinal.style.transform='translateY('+lerp(100,0,smooth(sub(s,.929,.971))).toFixed(2)+'%)';
+      if(qualityFinalH) qualityFinalH.style.opacity=smooth(sub(s,.957,.986)).toFixed(3);
+      if(qualityCta) qualityCta.style.opacity=smooth(sub(s,.979,1.0)).toFixed(3);
+    }
+
+    // risposta diretta allo scroll, nessuno smoothing artificiale — stesso principio già richiesto e
+    // verificato per la Machine Map, per evitare qualunque ritardo percepito su una sezione così lunga
+    function readScrollQ(){
+      const denom=Math.max(1,qualitySection.offsetHeight-innerHeight);
+      renderQuality(clamp((scrollY-qualitySection.offsetTop)/denom,0,1));
+    }
+    addEventListener('scroll',readScrollQ,{passive:true});
+    readScrollQ();
+    setQualityDefinition(0); // prima sigla/definizione già scritte in HTML: nessun crossfade spurio al primo frame
   }
 
   // ================= CAPITOLO 05 — NEWS =================
