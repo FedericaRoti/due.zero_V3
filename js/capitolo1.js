@@ -107,7 +107,12 @@
   // mobile non serve più quel taglio netto: un solo .ph per gruppo, testo unito, così dopo l'ultima
   // parola di una frase il testo continua con la frase successiva invece di andare a capo vuoto —
   // deciso una volta alla costruzione della pagina (non re-imposta al resize, come buildBanner sopra)
-  const isMobileCard=innerWidth<820;
+  // soglia 820->1280 (non 1024): il testo a sinistra e i gruppi con spostamento fisso in px (vedi
+  // GROUP_X sotto, fino a ±190px) uscivano dal bordo della card ben oltre i 1024px inizialmente
+  // scelti (verificato dal vivo fino a 1060px) — lo spostamento è in px fissi, non proporzionale
+  // alla larghezza, quindi resta sicuro solo su schermi genuinamente larghi. 1280 riusa lo stesso
+  // valore già in uso altrove nel file per "laptop compatti" (vedi css, banner/titoli)
+  const isMobileCard=innerWidth<1280;
   const mkGroup=isMobileCard
     ? arr=>'<span class="ph"><i>'+arr.join(' ')+'</i></span>'
     : arr=>arr.map(t=>'<span class="ph"><i>'+t+'</i></span>').join(' ');
@@ -384,7 +389,10 @@
     const GROUP_REVEAL=.04, GROUP_PAUSE=.045, ZOOM_REVEAL=.06, PERSPECTIVE=900;
     // su mobile lo spread sx/dx rendeva le frasi illeggibili (schermo troppo stretto per lo
     // spostamento calibrato su desktop) — restano centrate, tengono solo lo zoom
-    const isMobileZoom=innerWidth<820;
+    // soglia 820->1280 (non 1024, vedi isMobileCard sopra per il calcolo): lo spread desktop (fino
+    // a ±190px, in pixel fissi non proporzionali) tagliava il testo ben oltre i 1024px inizialmente
+    // scelti — verificato dal vivo a 1060px, frase tagliata a sinistra
+    const isMobileZoom=innerWidth<1280;
     const GROUP_X=isMobileZoom ? [0,0,0,0] : [-70,70,-190,190]; // 1° un po' a sx, 2° un po' a dx, 3° molto più a sx (oltre -170), 4° di conseguenza a dx
     // stesso Z_PEAK=210 (~1.3x) del desktop era troppo per mobile: lì il testo occupa già quasi
     // tutta la larghezza della card (margine reale ~11px per lato, verificato), quindi lo stesso

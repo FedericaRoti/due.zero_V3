@@ -228,6 +228,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   background-image:url('../img/01-DOCTEC.jpg');background-repeat:no-repeat;
   background-size:106% auto;background-position:62% 48%;
   opacity:0;pointer-events:none;will-change:opacity}
+/* 106% auto (larghezza fissa, altezza automatica) presume un riquadro proporzionato come lo scatto
+   originale — su un riquadro più alto che largo (tablet in verticale, 821-1023px) l'altezza calcolata
+   non arriva a coprire il box, restano fasce nere sopra/sotto (segnalato). Sotto 820px il fix già
+   esisteva (background-size:cover, vedi più sotto in questo file) ma non copriva questa fascia —
+   stesso fix, nuovo range esplicito. Non tocca .ecoProjectImg (Capitolo 2, da rivedere a parte). */
+@media (min-width:821px) and (max-width:1023px){
+  .ch1Img{background-size:cover}
+}
 /* velo SCURO (non più chiaro): il titolo ora è testo chiaro su nero, non scuro su carta. Più denso
    nella fascia centrale (dove il testo è centrato) e più leggero verso i bordi alto/basso, non un
    semplice degradé dall'alto in basso pensato per un blocco ancorato in fondo */
@@ -334,6 +342,20 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    nel caso più stretto a 320px) — il testo leggeva piccolo rispetto allo spazio davvero occupato.
    Valori verificati con misure reali (non a stima) da 320 a 1920px dopo l'aumento */
 .c1b-text{font-weight:600;text-transform:uppercase;font-size:clamp(22px,2.8vw,44px);line-height:1.28;max-width:min(82vw,860px);letter-spacing:-.005em}
+/* card1b in 821-1279px usa il trattamento mobile (4 righe unite, centrate — vedi isMobileCard in
+   capitolo1.js, soglia allineata a 1280 per lo stesso motivo di GROUP_X/isMobileZoom sotto), ma il
+   font ereditava il clamp calcolato per il layout desktop a 8 righe separate (~26px a inizio fascia):
+   con solo 4 righe l'altezza fissa della card (76vh) restava poco riempita, troppo spazio vuoto
+   sopra/sotto (segnalato). Scala dedicata, più vicina al respiro verticale reale disponibile con 4
+   righe invece di 8. Va DOPO la regola base qui sopra: a parità di specificità (una classe), in CSS
+   vince l'ordine nel file, non la media query */
+@media (min-width:821px) and (max-width:1279px){
+  /* min(3.5vw,4vh), non solo vw: la card ha altezza fissa (76vh) — su schermi bassi (es. 700px)
+     scalare solo per larghezza sconfinava sul piè della card (segnalato, verificato: 7.3px di
+     sovrapposizione a 990x700, corretto e riverificato). 4vh tiene il font proporzionato all'altezza
+     reale disponibile invece che alla sola larghezza */
+  .c1b-text{font-size:clamp(26px,min(3.5vw,4vh),34px);line-height:1.3}
+}
 .c1b-text .ph{display:block;overflow:hidden}
 .c1b-text .ph i{display:block;font-style:normal;transform:translateY(100%)}
 .c1b-text .phGroup{display:block}
