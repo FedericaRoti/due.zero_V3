@@ -785,11 +785,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .newsSection.revealed .linkedinCta{opacity:1;transform:translateY(0)}
 
 /* ================= FOOTER — chiusura editoriale, non un footer basso tradizionale =================
-   Nessuno sticky: è un blocco normale nel flusso, alto almeno 135vh, che entra in scena una sola volta
-   quando il footer raggiunge il viewport (classe .revealed aggiunta via scroll listener leggero, non
-   IntersectionObserver, per restare coerenti con lo stile del resto del file — ma qui il trigger è
-   "on-enter" una tantum, non un progresso continuo legato allo scroll: niente sticky, niente scene). */
-.siteFooter{position:relative;min-height:150vh;background:var(--black);color:var(--paper);
+   Nessuno sticky: è un blocco normale nel flusso, alto quanto il suo contenuto reale, che entra in
+   scena una sola volta quando il footer raggiunge il viewport (classe .revealed aggiunta via scroll
+   listener leggero, non IntersectionObserver, per restare coerenti con lo stile del resto del file —
+   ma qui il trigger è "on-enter" una tantum, non un progresso continuo legato allo scroll: niente
+   sticky, niente scene). min-height:150vh rimosso: su schermi dove il contenuto reale (eyebrow+titolo+
+   paragrafo+logo+blocchi info+legale) non arrivava a 150vh, restava una fascia nera vuota sotto il
+   contenuto, su ogni misura di schermo (segnalato) — ora il fondo nero finisce dove finisce il testo. */
+.siteFooter{position:relative;background:var(--black);color:var(--paper);
   padding:10vh 6vw 12vh;overflow:hidden;display:flex;flex-direction:column}
 
 .footerEyebrow{display:block;font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);
