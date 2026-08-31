@@ -457,7 +457,11 @@
   // subito al tap, ha una gestione dedicata sotto (apre il sottomenu la prima volta)
   overlay.querySelectorAll('a:not(.menuMain)').forEach(a=>a.addEventListener('click',closeOverlay));
   addEventListener('keydown',e=>{if(e.key==='Escape')closeOverlay();});
-  const isMobileMenu=()=>matchMedia('(max-width:820px)').matches;
+  // rinominato da isMobileMenu: non è più "solo sotto 820px" — un dispositivo touch (hover:none o
+  // pointer:coarse) attiva lo stesso comportamento "tocca per aprire" a QUALUNQUE larghezza, non solo
+  // su schermi stretti. Prima un tablet/iPad largo ma touch (es. 834px, iPad Pro verticale) riceveva
+  // il comportamento desktop (sottomenu solo su hover, mai raggiungibile col dito) — segnalato
+  const isTouchMenu=()=>matchMedia('(max-width:820px), (hover:none), (pointer:coarse)').matches;
 
   // sottomenu Ecosistema 4.0 / Servizi: desktop a lato con hover + piccolo ritardo alla chiusura (così
   // muovendosi in diagonale verso il pannello non si chiude prima di arrivarci); mobile ad accordion,
@@ -482,7 +486,7 @@
     }
     if(toggle) toggle.addEventListener('click',toggleAccordion);
     if(main) main.addEventListener('click',e=>{
-      if(isMobileMenu()){ e.preventDefault(); toggleAccordion(); }
+      if(isTouchMenu()){ e.preventDefault(); toggleAccordion(); }
       else closeOverlay();   // desktop: comportamento invariato, naviga e chiude il menu
     });
   });
@@ -531,7 +535,7 @@
     const badges=[...heroBadges.querySelectorAll('.heroBadge')];
     badges.forEach(badge=>{
       badge.addEventListener('click',e=>{
-        if(!isMobileMenu()) return;
+        if(!isTouchMenu()) return;
         if(!badge.classList.contains('tapShow')){
           e.preventDefault();
           badges.forEach(b=>{ b.classList.remove('tapShow'); b.style.removeProperty('--tipShift'); });
@@ -550,7 +554,7 @@
       });
     });
     document.addEventListener('click',e=>{
-      if(!isMobileMenu()) return;
+      if(!isTouchMenu()) return;
       if(!e.target.closest('.heroBadge')) badges.forEach(b=>b.classList.remove('tapShow'));
     });
   }

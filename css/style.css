@@ -308,7 +308,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    usato per Privacy/Cookie in footer — testo statico, più spento, cursor:default */
 .overlay .submenu .submenuStatic{cursor:default;color:rgba(237,237,234,.25)}
 
-@media (max-width:820px){
+/* max-width:820px, (hover:none), (pointer:coarse): non solo schermi stretti — un dispositivo touch
+   (es. iPad Pro verticale, 834px largo) va in accordion a qualunque larghezza, altrimenti il pannello
+   proverebbe comunque a comparire come riquadro laterale fisso pensato per il mouse (il suo
+   posizionamento verticale, in capitolo1.js, è calcolato solo dentro l'evento mouseenter, che sul
+   touch non scatta mai) — stessa soglia isTouchMenu() usata in capitolo1.js per l'interazione */
+@media (max-width:820px), (hover:none), (pointer:coarse){
   .menuItem{flex-wrap:wrap}
   .menuToggle{display:inline-flex;align-items:center;justify-content:center;background:none;border:none;
     cursor:pointer;margin-left:auto;transition:transform .25s ease}
