@@ -2,6 +2,10 @@
   --geo:'Big Shoulders Display',sans-serif;--mono:'IBM Plex Mono',monospace;--mx:50vw;--my:44vh;
   --hero-font:'Bebas Neue',sans-serif} /* solo per .title (scritta centrale hero): il resto del sito resta su --geo */
 *{margin:0;padding:0;box-sizing:border-box}
+/* alcuni blocchi (es. .qualityMethod/.qualityFinal) usano margin negativo per un fondo a tutta
+   larghezza dentro un contenitore con padding — senza questo, quel margine negativo sfonda il bordo
+   del viewport e genera scroll orizzontale sull'intera pagina (verificato: scrollWidth>clientWidth) */
+html,body{overflow-x:hidden}
 body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* 1020vh, non più 760: la nuova sequenza (titolo da solo -> immagine -> sottotitolo, ciascuno con
@@ -671,20 +675,19 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 }
 
 /* ================= CAPITOLO 04 — QUALITÀ ================= */
-/* TEST 4: niente più un unico sticky che rimappa la velocità dello scroll (segnalato: alcune scene
-   troppo lente, altre "sorpassate" senza riuscire a leggerle). Quattro scene a piena altezza,
-   ciascuna con scroll-snap-align (arrivo netto, "tutto schermo" come piaceva del Cap.03) e un
-   reveal one-shot via classe .revealed quando raggiungono il viewport (vedi capitoli.js — stesso
-   principio già usato per News/Footer, non un progresso continuo legato al pixel di scroll). Sfondo
-   alternato paper/nero/paper/nero: il TEST 3 (flusso puro, tutto paper) risultava "una tavola
-   piatta" — qui il cambio di sfondo pieno segna lo stacco tra una scena e l'altra anche senza pin. */
+/* TEST 5: niente più schermo-intero+snap (bocciato: "passa da una pagina intera a un'altra, non mi
+   piace" — troppo scatto secco per uno scroll da dito). Quattro blocchi compatti in flusso normale,
+   altezza pari al contenuto, stesso principio già in uso per Documentation 4.0/News/Footer: un solo
+   reveal one-shot via classe .revealed quando la scena raggiunge il viewport (vedi capitoli.js), non
+   un progresso continuo legato al pixel di scroll. Sfondo alternato paper/nero/paper/nero mantenuto
+   dal test precedente: il TEST 3 (flusso puro, tutto paper) risultava "una tavola piatta" — qui il
+   cambio di sfondo pieno segna lo stacco tra una scena e l'altra anche senza schermo intero/snap. */
 .qualitySection{position:relative;background:var(--paper)}
 .qualitySection .chapterAnchor{top:0}
 .qualityFlow{display:flex;flex-direction:column}
 
 .qualityIntro,.qualityMethod,.qualityRecord,.qualityFinal{
-  position:static;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;
-  justify-content:center;align-items:flex-start;padding:16vh 6vw;scroll-snap-align:start}
+  position:static;display:flex;flex-direction:column;align-items:flex-start;padding:16vh 6vw}
 .qualityBanner{position:static;display:inline-flex;align-items:center;width:fit-content;
   height:clamp(64px,8vh,90px);padding:0 28px;margin-bottom:28px;background:var(--red);color:#fff;
   font-family:var(--mono);font-size:clamp(15px,1.6vw,22px);letter-spacing:.06em;text-transform:uppercase;
@@ -757,12 +760,6 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 .qualityFinal.revealed h3{opacity:1;transform:translateY(0)}
 .qualityFinal.revealed .qualityCta{opacity:1;transform:translateY(0)}
-
-/* arrivo netto a ogni scena: solo dove c'è scroll-snap-align (le 4 scene sopra), il resto del sito
-   continua a scorrere libero. "proximity" non "mandatory": aggancia solo quando lo scroll si sta
-   già fermando vicino a un punto, non forza uno scatto ad ogni gesto — verificato che non litiga
-   con Lenis (scroll smooth già attivo sul resto del sito) */
-html{scroll-snap-type:y proximity}
 
 /* ================= CAPITOLO 05 — NEWS =================
    Ridotta alla sola apertura (contenuti editoriali non ancora pronti): non più tre scene in sequenza,
@@ -879,8 +876,11 @@ html{scroll-snap-type:y proximity}
      è già gestita dalla media query (max-width:1023px) della sezione card */
   .svc-open{max-width:88vw}
   .svc-open-h{font-size:clamp(40px,11vw,80px)}
-  /* Capitolo 05 — News: apertura più compatta su mobile/tablet */
-  .newsSection{padding:16vh 8vw}
+  /* Capitolo 05 — News: apertura più compatta su mobile/tablet. Padding-top 16vh->21vh: il banner
+     (top:8vh, alto ~8vh) finiva a ~16vh, esattamente dove iniziava il titolo — zero margine reale,
+     quasi a contatto (segnalato). 21vh lascia un respiro reale (~5vh) tra la base del banner e il
+     titolo, stessa logica già verificata per gli altri banner di capitolo in questa sessione */
+  .newsSection{padding:21vh 8vw}
   .newsIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
   .newsIntro p{max-width:80vw}
   .newsBanner{width:min(70vw,420px);right:20px;top:8vh}
@@ -1048,9 +1048,8 @@ html{scroll-snap-type:y proximity}
   .svcStage{display:none}
   .svcMobileList{display:block}
 
-  /* Capitolo 04 — Qualità: niente reveal-on-scroll, tutto già visibile e fermo (le scene restano
-     a piena altezza con sfondo alternato: solo l'animazione di comparsa è disattivata, non lo
-     scroll-snap, che è un salto istantaneo e non un'animazione) */
+  /* Capitolo 04 — Qualità: già un blocco compatto in flusso di suo — qui solo niente reveal-on-scroll,
+     tutto già visibile e fermo (stesso schema di Documentation 4.0/News/Footer) */
   .qualityBanner,.qualityIntro p,.qualityEyebrow,.qualityCodeStrip,.qualityRecordLabel,
   .qualityMeta,.qualityFinal h3,.qualityCta{opacity:1;transform:none}
   .qualityIntro h2,.qualityRecord h3{clip-path:none}
