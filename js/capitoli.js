@@ -594,7 +594,10 @@
 
       // ---- scena 4 — chiusura: un campo nero (il layer stesso) sale sopra la carta, poi titolo,
       // poi CTA — nessun box pieno, solo testo ----
-      if(qualityFinal) qualityFinal.style.transform='translateY('+lerp(100,0,smooth(sub(s,.929,.971))).toFixed(2)+'%)';
+      // finestra allargata .929-.971 (~23vh) -> .917-.98 (~35vh, +50%): saliva troppo veloce (segnalato).
+      // Parte subito dopo la fine del fade dei metadati di tracciabilità (.907), stesso piccolo margine
+      // di pausa di prima (~.01), non tocca nient'altro della sequenza
+      if(qualityFinal) qualityFinal.style.transform='translateY('+lerp(100,0,smooth(sub(s,.917,.98))).toFixed(2)+'%)';
       if(qualityFinalH) qualityFinalH.style.opacity=smooth(sub(s,.957,.986)).toFixed(3);
       if(qualityCta) qualityCta.style.opacity=smooth(sub(s,.979,1.0)).toFixed(3);
     }
