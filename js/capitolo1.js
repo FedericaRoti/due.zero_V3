@@ -153,7 +153,11 @@
     // Su mobile 0.08 (non 0.07): verificato dal vivo che il pulsante MENU finisce a 53px dal bordo
     // schermo — 0.07vh lasciava solo 3.8px di margine, praticamente a contatto. Stesso valore
     // (8vh) allineato anche su Cap.02/03/04/05 in CSS, per avere tutti i banner allo stesso livello
-    bannerLeft=vw-(mobile?20:38)-bw; bannerTop=vh*(mobile?0.08:(compact?0.055:0.09));
+    // "compact" (0.055vh): il pulsante MENU finisce a un'altezza FISSA (~49px, non legata a vh —
+    // .topbar è alta 62px fissi), mentre 0.055vh si RIMPICCIOLISCE con l'altezza — su schermi bassi
+    // (verificato a 680px) il banner risaliva sopra il pulsante, sovrapposto. Math.max con un pavimento
+    // fisso (65px) garantisce margine anche quando vh è piccolo, restando proporzionale quando è grande
+    bannerLeft=vw-(mobile?20:38)-bw; bannerTop=mobile?vh*0.08:(compact?Math.max(65,vh*0.08):vh*0.09);
     chBanner.style.left=bannerLeft+'px'; chBanner.style.top=bannerTop+'px';
     chBanner.style.width=bw+'px'; chBanner.style.height=bannerH+'px';
   }

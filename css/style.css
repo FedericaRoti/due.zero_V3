@@ -941,9 +941,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   /* laptop compatti: tutti i banner (Cap.1, Cap.2, Cap.3) si riducono insieme, stessa scala, mai giganti */
   .chBanner{padding:0 22px}
   .chBanner .bt{font-size:clamp(14px,1.8vw,20px)}
-  .ch2Banner{top:5.5vh;width:min(43vw,460px);height:clamp(64px,8vh,86px);padding:0 22px}
+  /* top:5.5vh -> max(65px,8vh): il pulsante MENU finisce a un'altezza fissa (~49px, .topbar è alta
+     62px fissi), mentre 5.5vh si rimpicciolisce con l'altezza — su schermi bassi (verificato a
+     1150x680) il banner si sovrapponeva al pulsante. Stesso fix di buildBanner() in capitolo1.js */
+  .ch2Banner{top:max(65px,8vh);width:min(43vw,460px);height:clamp(64px,8vh,86px);padding:0 22px}
   .ch2BannerText{font-size:clamp(14px,1.8vw,20px)}
-  .ch3Banner{top:5.5vh;width:min(43vw,460px);height:clamp(64px,8vh,86px);padding:0 22px}
+  .ch3Banner{top:max(65px,8vh);width:min(43vw,460px);height:clamp(64px,8vh,86px);padding:0 22px}
   .ch3BannerText{font-size:clamp(14px,1.8vw,20px)}
   .eco-open-h{font-size:clamp(56px,8.8vw,150px)}
   /* Machine Map + soglia Cap.03: su laptop compatti lo stage unico resta alla stessa altezza del desktop
