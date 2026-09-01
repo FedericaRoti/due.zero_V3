@@ -611,7 +611,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* centrato come le altre aperture di capitolo (chapter1/eco-open) — prima era ancorato a sinistra,
    incoerente con le scene iniziali precedenti */
-.svc-open{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+.svc-open{position:absolute;inset:0;margin:0 auto;display:flex;flex-direction:column;justify-content:center;
   align-items:center;text-align:center;pointer-events:none;padding:0 6vw}
 .svc-open-h{color:#EDEDEA;font-family:var(--geo);font-weight:800;text-transform:uppercase;font-size:clamp(46px,7.2vw,118px);
   line-height:.92;letter-spacing:-.01em;clip-path:inset(0 100% 0 0);transform:scale(1.10);transform-origin:center;
