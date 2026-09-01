@@ -322,8 +322,8 @@
     <nav class="legend" id="legend">
       <div class="lh">Indice | contenuti</div>
       <a href="#chapter1Start" id="legFirst"><span class="n">01</span><span>Chi siamo</span></a>
-      <a href="#scene2"><span class="n">02</span><span>Ecosistema</span></a>
-      <a href="#servizi"><span class="n">03</span><span>Cosa Facciamo</span></a>
+      <a href="#ecosistemaStart"><span class="n">02</span><span>Ecosistema</span></a>
+      <a href="#servicesStart"><span class="n">03</span><span>Cosa Facciamo</span></a>
       <a href="#qualityStart"><span class="n">04</span><span>Qualità</span></a>
       <a href="#newsStart"><span class="n">05</span><span>News</span></a>
     </nav>
@@ -907,6 +907,11 @@ kp8KdRRAgAEAgR8fvoTw5CEAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 197 109)">
 
 <!-- ================= CAPITOLO 2 — ECOSISTEMA (asset reali) ================= -->
 <div class="scene2" id="scene2">
+  <!-- il link di menu puntava a #scene2 (l'inizio grezzo della sezione, s=0): atterrava prima che
+       titolo (s>=.072) e sottotitolo (s>=.140) fossero rivelati, sembrava "non essere arrivato da
+       nessuna parte" (segnalato). Stesso pattern già in uso per chapter1Start/qualityStart/newsStart:
+       ancora un punto di scroll oltre entrambe le soglie, prima che inizi il ritiro (s>=.19) -->
+  <div class="chapterAnchor" id="ecosistemaStart" aria-hidden="true"></div>
   <div class="sticky2" id="sticky2">
     <!-- Ponte Cap.1 -> Cap.2: il perimetro della card finale si espande e diventa il campo nero -->
     <div class="ecoBridge" id="ecoBridge" aria-hidden="true"></div>
@@ -1023,6 +1028,12 @@ kp8KdRRAgAEAgR8fvoTw5CEAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 197 109)">
      (sale e la chiude), soglia Cosa Facciamo (banner + titolo + sottotitolo, entrano nello stesso viewport già durante la
      chiusura, restano fermi per un hold reale, poi l'arco dei servizi prende il posto in una sezione successiva). -->
 <section class="mapServicesTransition" id="mapServicesTransition">
+  <!-- "Cosa Facciamo" nel menu deve atterrare qui, non su Documentation 4.0: la scena che porta lo
+       stesso nome del capitolo ("CAPITOLO 03 | COSA FACCIAMO", banner rosso + "Sei servizi. Un
+       processo continuo") è questa, non l'apertura di Documentation 4.0/Machine Map che la precede
+       (corretto dopo un primo tentativo sbagliato). s=.75: banner completo a .60, titolo completo
+       a .70, poi hold fino a 1.0 — punto stabile dentro l'hold, non a metà di un'animazione -->
+  <div class="chapterAnchor" id="servicesStart" aria-hidden="true"></div>
   <div class="mapServicesSticky" id="mapServicesSticky">
 
     <!-- layer 1: mappa (chrome + iframe), logica interna invariata -->
@@ -1206,8 +1217,8 @@ kp8KdRRAgAEAgR8fvoTw5CEAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 197 109)">
     <div class="footerBlock footerLinks">
       <span class="footerLabel">ESPLORA</span>
       <a href="#chapter1Start">Chi siamo</a>
-      <a href="#scene2">Ecosistema</a>
-      <a href="#servizi">Cosa Facciamo</a>
+      <a href="#ecosistemaStart">Ecosistema</a>
+      <a href="#servicesStart">Cosa Facciamo</a>
       <a href="#qualityStart">Qualità</a>
       <a href="#newsStart">News</a>
     </div>
@@ -1228,7 +1239,7 @@ kp8KdRRAgAEAgR8fvoTw5CEAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 197 109)">
        aperto anche spostandosi verso di lui, con un piccolo ritardo alla chiusura — vedi capitolo1.js),
        su mobile diventa una tendina classica ad accordion, aperta/chiusa dal pulsante [+] dedicato -->
   <div class="menuItem" id="miEco">
-    <a href="#scene2" class="menuMain"><span class="oi">02</span> Ecosistema 4.0</a>
+    <a href="#ecosistemaStart" class="menuMain"><span class="oi">02</span> Ecosistema 4.0</a>
     <button class="menuToggle" aria-label="Sottomenu Ecosistema 4.0" aria-expanded="false"><span class="plus">[+]</span></button>
     <div class="submenu">
       <a href="https://www.duezero.eu/DueZeroProject/Default.aspx" target="_blank" rel="noopener noreferrer">2.0 Project</a>
@@ -1236,7 +1247,7 @@ kp8KdRRAgAEAgR8fvoTw5CEAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 197 109)">
     </div>
   </div>
   <div class="menuItem" id="miSrv">
-    <a href="#servizi" class="menuMain"><span class="oi">03</span> Cosa Facciamo</a>
+    <a href="#servicesStart" class="menuMain"><span class="oi">03</span> Cosa Facciamo</a>
     <button class="menuToggle" aria-label="Sottomenu Cosa Facciamo" aria-expanded="false"><span class="plus">[+]</span></button>
     <div class="submenu">
       <!-- non ancora cliccabili: ogni servizio avrà una pagina dedicata non ancora creata (stesso

@@ -383,6 +383,11 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    .sceneDoc40 sotto) — tolto esattamente lo spazio che occupava (.800-1.0 della vecchia timeline),
    nessuna soglia sub(s,...) di Ponte/Ecosistema/Project 2.0/Hyperparts è stata toccata */
 .scene2{position:relative;height:1050vh;background:var(--black)}
+/* stesso principio di .scene .chapterAnchor sopra: target_s*(altezza_sezione_vh-100). Qui target_s
+   è calcolato sulla timeline "vecchia" (sOld=s/k, k=650/1050 — vedi capitoli.js) su cui sono scritte
+   le soglie di reveal di titolo/sottotitolo: sOld=.153 (oltre headIn.072 e subIn.140, prima di
+   retreat.19) equivale a s=.0947, quindi .0947*(1050-100)=89.97 -> 90vh */
+.scene2 .chapterAnchor{top:90vh}
 .sticky2{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black);perspective:1200px}
 
 /* fondo Hyperparts (invariato, gestito da render2 come prima) — bgPaper2 è sparito insieme a
@@ -536,6 +541,9 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    banner e titolo del Capitolo 03 entrano nello STESSO viewport già durante la chiusura, mai dopo un vuoto nero;
    restano poi fermi e leggibili per un hold reale (oltre una viewport) prima che l'arco dei servizi prenda il posto. */
 .mapServicesTransition{position:relative;height:500vh;background:var(--black);overflow:visible}
+/* stesso principio di .scene .chapterAnchor: target_s*(altezza_sezione_vh-100). s=.75 (banner
+   completo a .60, titolo a .70, poi hold fino a 1.0) * (500-100) = 300vh */
+.mapServicesTransition .chapterAnchor{top:300vh}
 .mapServicesSticky{position:sticky;top:0;height:100vh;width:100%;overflow:hidden;background:var(--paper)}
 
 /* layer 1 — mappa: chrome + iframe, invariati nella logica interna */
