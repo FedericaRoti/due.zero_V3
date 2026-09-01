@@ -934,8 +934,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .qualityFinal{padding:0 8vw}
   .qualityFinal h3{font-size:clamp(32px,8.5vw,60px);max-width:86vw}
 
-  /* Capitolo 05 — News: apertura più compatta su mobile/tablet */
-  .newsSection{padding:16vh 8vw}
+  /* Capitolo 05 — News: apertura più compatta su mobile/tablet. Padding-top separato dal banner
+     (non più semplice 16vh): il banner è position:absolute a top:8vh, alto fino a 90px — con solo
+     16vh di padding il titolo, primo figlio in flusso, gli finiva praticamente attaccato sotto
+     (già toccava su iPad 820x1180, verificato). calc(8vh+90px+40px) garantisce sempre uno stacco
+     reale sotto il banner, qualunque sia l'altezza dello schermo */
+  .newsSection{padding:calc(8vh + 90px + 40px) 8vw 16vh}
   .newsIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
   .newsIntro p{max-width:80vw}
   .newsBanner{width:min(70vw,420px);right:20px;top:8vh}
