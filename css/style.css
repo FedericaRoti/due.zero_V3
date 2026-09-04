@@ -1239,8 +1239,17 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      — la versione reduced-motion copiata sopra lo allineava a sinistra, mai notato. padding-bottom:64px
      aggiunto: prima il testo toccava la mappa senza respiro (segnalato) */
   #sceneDoc{position:static;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;color:var(--ink);pointer-events:auto;padding:100px 38px 64px}
-  .dc-title,.dc-sub,.dc-text,.dc-accent{opacity:1;transform:none;clip-path:none}
+  .dc-text,.dc-accent{opacity:1;transform:none;clip-path:none}
   .dc-text i{transform:none}
+  /* ANIMAZIONE D'ENTRATA titolo+sottotitolo: stessa identica tecnica di .pj-title/.hp-title/.lq-title
+     sopra (richiesto esplicitamente "la stessa cosa"), reveal one-shot su #sceneDoc40.revealed
+     (checkDoc40Reveal in capitoli.js) — non .dc-text/.dc-accent sopra, solo titolo e sottotitolo.
+     Sottotitolo alla stessa misura di .c1b-text/.pj-sub (clamp(22px,6vw,26px)) */
+  .dc-title{opacity:0;transform:scale(1.06);clip-path:none;pointer-events:auto;
+    transition:opacity .5s ease .15s,transform .5s ease .15s}
+  .dc-sub{opacity:0;transform:scale(1.06);font-size:clamp(22px,6vw,26px);pointer-events:auto;
+    transition:opacity .5s ease .3s,transform .5s ease .3s}
+  #sceneDoc40.revealed .dc-title,#sceneDoc40.revealed .dc-sub{opacity:1;transform:scale(1)}
   .mapServicesTransition{height:auto}
   /* background:black, non il --paper ereditato di base: quel chiaro è pensato per essere coperto da
      .mapOutro (nero, sale dal basso) prima che appaia il banner — disattivato sotto per il touch,

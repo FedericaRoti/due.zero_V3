@@ -519,12 +519,12 @@
     checkScene2Reveal();
   }
 
-  // Touch: reveal one-shot per titolo+sottotitolo di Project 2.0/Hyperparts/Hyper.LabQ (richiesto
-  // esplicitamente, "piccolo zoom" — vedi css/style.css), stesso identico meccanismo di
-  // checkScene2Reveal sopra, un trigger indipendente per ciascuna delle 3 fasce (entrano una alla
-  // volta scrollando, non tutte insieme all'apertura di Ecosistema)
+  // Touch: reveal one-shot per titolo+sottotitolo di Project 2.0/Hyperparts/Hyper.LabQ/Documentation 4.0
+  // (richiesto esplicitamente, "piccolo zoom" — vedi css/style.css), stesso identico meccanismo di
+  // checkScene2Reveal sopra, un trigger indipendente per ciascuna fascia (entrano una alla volta
+  // scrollando, non tutte insieme all'apertura di Ecosistema)
   if(isTouch && !reduce){
-    ['ecoImgWrapProject','ecoImgWrapHyper','ecoImgWrapLabQ'].forEach(wrapId=>{
+    ['ecoImgWrapProject','ecoImgWrapHyper','ecoImgWrapLabQ','sceneDoc40'].forEach(wrapId=>{
       const wrap=$(wrapId);
       if(!wrap) return;
       let revealed=false;
