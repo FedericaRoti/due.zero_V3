@@ -9,9 +9,13 @@
         ecoLabQImg=$('ecoLabQImg'), lqGroup=$('lqGroup'), lqTitle=$('lqTitle'), lqSub=$('lqSub'), lqDesc=$('lqDesc'), lqCtaRow=$('lqCtaRow'),
         dcTitle=$('dcTitle'), dcAccent=$('dcAccent'), dcSub=$('dcSub'), dcPara=$('dcPara'), dcHint=$('dcHint');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Cap.2 (Ecosistema): touch tratta il capitolo come reduced-motion, sezioni statiche in flusso
+  // invece di scroll-jack. Riusa lo stesso ramo CSS/JS già esistente per reduce, solo esteso da
+  // (isTouch||reduce) — nessuna nuova logica
+  const isTouch=window.matchMedia('(hover:none), (pointer:coarse)').matches;
   const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), sub=(p,a,b)=>clamp((p-a)/(b-a),0,1), smooth=t=>t*t*(3-2*t), lerp=(a,b,t)=>a+(b-a)*t;
 
-  if(!reduce){
+  if(!reduce && !isTouch){
     // ---- UNA sola progressione di scroll + UNO smoothing per tutto il Capitolo 2 ----
     let pRaw2=0, sP2=0;
     function readScroll2(){ const denom=Math.max(1,scene2.offsetHeight-innerHeight); pRaw2=clamp((scrollY-scene2.offsetTop)/denom,0,1); }
@@ -222,7 +226,9 @@
   // Hyperparts. Stesse identiche soglie di prima (erano [.800,1.0] su scene2, 940vh), solo rimappate
   // sulla propria timeline locale [0,1] — comportamento identico, cambia solo il contenitore ----
   const sceneDoc40=$('sceneDoc40');
-  if(sceneDoc40 && !reduce){
+  // Touch: stesso gate isolato mai esteso a isTouch del blocco Qualità sopra — lasciava
+  // transform/clip-path inline su .dc-title ecc. (verificato: translateY(-3vh) scale(.85) residuo)
+  if(sceneDoc40 && !reduce && !isTouch){
     let pRawD40=0, sPD40=0;
     function readScrollD40(){ const denom=Math.max(1,sceneDoc40.offsetHeight-innerHeight); pRawD40=clamp((scrollY-sceneDoc40.offsetTop)/denom,0,1); }
     function renderD40(s){
@@ -309,8 +315,11 @@
       // una porzione reale di scroll (ancora quasi una viewport intera, solo .04 più corta di prima); l'arco dei
       // servizi (sezione successiva, separata, senza margin-top negativo) inizia solo dopo la fine di questo hold
     }
-    if(reduce){
-      // niente coreografia: la mappa passa direttamente da contenuta a visibile (CSS statica dedicata), chiusura netta senza outro animato
+    if(reduce || isTouch){
+      // niente coreografia: la mappa passa direttamente da contenuta a visibile (CSS statica dedicata), chiusura netta senza outro animato.
+      // Touch: isTouch aggiunto qui — readScroll3/render3 scrivevano left/top/width/height
+      // inline su #ecoMapFrame ad ogni scroll, calcolati su mapStage.offsetHeight ormai "auto" (collassato
+      // dal CSS statico): denominatore quasi nullo, sP3 instabile, mappa che salta/ridimensiona scrollando
     } else {
       // nessuno smoothing: si usa il progresso reale dello scroll (pRaw3) direttamente, così la mappa cresce ed esce
       // nello stesso istante in cui l'utente scorre, senza ritardo né "recupero" quando si è già superata la fase
@@ -489,12 +498,74 @@
     }
   }
 
+  // Touch: reveal one-shot per banner+titolo+elenco della prima scena di Cap.2 su touch,
+  // stesso meccanismo di checkCh1Reveal (capitolo1.js) / checkNewsReveal sotto — non lo scroll-jack
+  // continuo (render2/loop2, disattivato per isTouch, mai eseguito nemmeno una volta qui)
+  if(isTouch && !reduce){
+    let scene2Revealed=false;
+    function checkScene2Reveal(){
+      if(scene2Revealed) return;
+      const r=scene2.getBoundingClientRect();
+      if(r.top<innerHeight*0.85){
+        scene2Revealed=true;
+        scene2.classList.add('revealed');
+        removeEventListener('scroll',checkScene2Reveal);
+      }
+    }
+    addEventListener('scroll',checkScene2Reveal,{passive:true});
+    checkScene2Reveal();
+  }
+
+  // Touch: reveal one-shot per banner+titolo della soglia Cap.3 (solo questi due,
+  // richiesto esplicitamente — non le card/lista sotto), stesso meccanismo di checkScene2Reveal sopra
+  if(isTouch && !reduce){
+    const servicesIntroLayer=$('servicesIntroLayer');
+    if(servicesIntroLayer){
+      let scene3Revealed=false;
+      function checkScene3Reveal(){
+        if(scene3Revealed) return;
+        const r=servicesIntroLayer.getBoundingClientRect();
+        if(r.top<innerHeight*0.85){
+          scene3Revealed=true;
+          servicesIntroLayer.classList.add('revealed');
+          removeEventListener('scroll',checkScene3Reveal);
+        }
+      }
+      addEventListener('scroll',checkScene3Reveal,{passive:true});
+      checkScene3Reveal();
+    }
+  }
+
+  // Touch: reveal one-shot per banner+titolo+sottotitolo della PRIMA scena di Cap.4
+  // (qualityIntro, richiesto esplicitamente — non metodo/tracciabilità/chiusura sotto), stesso
+  // meccanismo di checkScene2Reveal/checkScene3Reveal sopra
+  if(isTouch && !reduce){
+    const qualityIntroEl=$('qualityIntro');
+    if(qualityIntroEl){
+      let qualityIntroRevealed=false;
+      function checkQualityIntroReveal(){
+        if(qualityIntroRevealed) return;
+        const r=qualityIntroEl.getBoundingClientRect();
+        if(r.top<innerHeight*0.85){
+          qualityIntroRevealed=true;
+          qualityIntroEl.classList.add('revealed');
+          removeEventListener('scroll',checkQualityIntroReveal);
+        }
+      }
+      addEventListener('scroll',checkQualityIntroReveal,{passive:true});
+      checkQualityIntroReveal();
+    }
+  }
+
   // ================= CAPITOLO 04 — QUALITÀ =================
   // Un solo sticky, quattro gesti in sequenza legati direttamente allo scroll (nessuno smoothing artificiale,
   // stesso principio "risposta immediata" già usato per la Machine Map). A differenza dell'arco Servizi, qui
   // l'hold su ogni sigla è esplicitamente richiesto: si riusa il tecnica ramp+hold per singola tappa.
   const qualitySection=$('qualitySection'), qualitySticky=$('qualitySticky');
-  if(qualitySection && qualitySticky && !reduce){
+  // Touch: gate indipendente dal blocco Cap.2/3 sopra (chiuso a riga 494) — mai esteso a
+  // isTouch, continuava a scrivere transform inline (es. qualityBanner fermo a translateX(120%)) anche
+  // con il CSS statico attivo, rendendo tutto invisibile/fuori schermo
+  if(qualitySection && qualitySticky && !reduce && !isTouch){
     const qualityPaper=$('qualityPaper'), qualityIntro=$('qualityIntro'),
           qualityBanner=qualityIntro&&qualityIntro.querySelector('.qualityBanner'),
           qualityH2=qualityIntro&&qualityIntro.querySelector('h2'),

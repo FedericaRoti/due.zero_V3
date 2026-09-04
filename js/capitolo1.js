@@ -12,6 +12,8 @@
         overlay=$('overlay'),closeBtn=$('closeBtn'),root=document.documentElement,body=document.body,
         preloader=$('preloader'),heroBadges=$('heroBadges'),heroEco=$('heroEco');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Capitolo 1: stesso principio di isTouch in js/capitoli.js
+  const isTouch=window.matchMedia('(hover:none), (pointer:coarse)').matches;
 
   let lenisInstance=null;
   if(window.Lenis && !reduce){ lenisInstance=new Lenis({lerp:0.09,smoothWheel:true}); (function raf(t){lenisInstance.raf(t);requestAnimationFrame(raf);})(); }
@@ -580,10 +582,32 @@
     if(window.__snapDoc40Instant) window.__snapDoc40Instant();
   });
 
-  if(!reduce){
+  if(!reduce && !isTouch){
     let raf=null,px=0,py=0;
     addEventListener('mousemove',e=>{px=e.clientX;py=e.clientY;if(!raf)raf=requestAnimationFrame(()=>{onMove(px,py);raf=null;});});
     loop();
+  }
+
+  // Touch: reveal one-shot per banner+titolo+elenco di Cap.1 su touch, stesso identico
+  // meccanismo di checkNewsReveal/checkFooterReveal in js/capitoli.js — non lo scroll-jack continuo
+  // sopra (disattivato per isTouch). Solo per touch: su desktop questi elementi hanno già la loro
+  // animazione via loop()/render(s), aggiungere anche questo li farebbe scattare due volte
+  if(isTouch && !reduce){
+    const ch1Wrap=$('ecoImgWrapCh1');
+    if(ch1Wrap){
+      let ch1Revealed=false;
+      function checkCh1Reveal(){
+        if(ch1Revealed) return;
+        const r=ch1Wrap.getBoundingClientRect();
+        if(r.top<innerHeight*0.85){
+          ch1Revealed=true;
+          ch1Wrap.classList.add('revealed');
+          removeEventListener('scroll',checkCh1Reveal);
+        }
+      }
+      addEventListener('scroll',checkCh1Reveal,{passive:true});
+      checkCh1Reveal();
+    }
   }
   readScroll();
   window.addEventListener('load',measure); measure();

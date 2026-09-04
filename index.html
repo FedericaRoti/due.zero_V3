@@ -11,7 +11,7 @@
 <link rel="preload" href="fonts/BigShouldersDisplay-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/IBMPlexMono-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?vtest=18">
 </head>
 <body>
 
@@ -41,6 +41,10 @@
          (non un riquadro), sfumato sul bordo sinistro, che entra a fuoco durante lo scroll. È sorella
          di .chapter1, non figlia: ha una sua timeline (entra prima del titolo, esce con la card) e se
          fosse dentro .chapter1 erediterebbe l'opacità 0 fino a metà scena -->
+    <!-- wrapper trasparente su desktop (nessuno stile fuori dal blocco touch in fondo al CSS): stesso
+         principio di .ecoImgWrap in Ecosistema, qui per dare a .ch1Img un contenitore relative su cui
+         fare da sfondo nella versione statica touch -->
+    <div class="ecoImgWrap" id="ecoImgWrapCh1">
     <div class="ch1Img" id="ch1Img" aria-hidden="true"></div>
     <div class="ch1ImgVeil" id="ch1ImgVeil" aria-hidden="true"></div>
     <!-- titolo + sottotitolo sono un blocco unico ancorato in basso: il titolo non ha più una sua
@@ -67,6 +71,7 @@
     </div>
     <!-- banner che si costruisce a quadrati -->
     <div class="chBanner" id="chBanner"><span class="bt">Capitolo 1 | Chi siamo</span></div>
+    </div><!-- /ecoImgWrapCh1 -->
 
     <div class="center">
       <div class="heroMove" id="heroMove">
@@ -81,13 +86,12 @@
       </div>
     </div>
 
-    <div class="triangle" id="triangle" aria-hidden="true"></div>
-
     <!-- SVG inline (non <img>): serve poter muovere le 3 righe (.line1/2/3) singolarmente e
          agganciarle allo stesso aggancio in alto a sinistra che aveva il vecchio titolo testuale —
          un <img src=".svg"> non espone il DOM interno a CSS/JS del documento che lo include.
          testWallMove riceve lo stesso transform (dock) e la stessa opacity (heroOut) di heroMove,
          calcolati in capitolo1.js — .testWall resta il contenitore statico che centra (come .center) -->
+    <div class="heroGroup" id="heroGroup">
     <div class="testWall" id="testWall" aria-hidden="true">
       <div class="testWallMove" id="testWallMove">
         <div class="testWallInner">
@@ -318,24 +322,6 @@
         </div>
       </div>
     </div>
-
-    <nav class="legend" id="legend">
-      <div class="lh">Indice | contenuti</div>
-      <a href="#chapter1Start" id="legFirst"><span class="n">01</span><span>Chi siamo</span></a>
-      <a href="#ecosistemaStart"><span class="n">02</span><span>Ecosistema</span></a>
-      <a href="#servicesStart"><span class="n">03</span><span>Cosa Facciamo</span></a>
-      <a href="#qualityStart"><span class="n">04</span><span>Qualità</span></a>
-      <a href="#newsStart"><span class="n">05</span><span>News</span></a>
-    </nav>
-
-    <div class="card1b" id="card1b">
-      <span class="c1b-head"><span class="idx">01</span> | Chi siamo</span>
-      <p class="c1b-text" id="c1bText">Da vent'anni affianchiamo l'industria manifatturiera B2B nell'intero ciclo di vita della documentazione tecnica e dei contenuti multilingua. Metodologia, conformità normativa, un metodo di lavoro unico e software proprietari per trasformare i dati di progetto in documenti digitali chiari e innovativi, oggi asset strategici integrati nei processi aziendali.</p>
-      <span class="c1b-foot">due.zero |<br class="mobileBreak"> technical communication revolution</span>
-    </div>
-
-    <div class="hint" id="hint"><span class="hintArrow" aria-hidden="true">↓</span> Scroll</div>
-
     <!-- label che spiega le icone sotto: stessa visibilità/lifecycle di .heroBadges (badgesShown in JS),
          non è il titolo — piccola, non deve competere con esso -->
     <div class="heroEco" id="heroEco">
@@ -807,6 +793,26 @@ EWAAWJUKniTEQ4QAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 -1 -5)">
         </svg>
       </span>
     </div>
+    <div class="triangle" id="triangle" aria-hidden="true"></div>
+    </div><!-- /heroGroup -->
+
+    <nav class="legend" id="legend">
+      <div class="lh">Indice | contenuti</div>
+      <a href="#chapter1Start" id="legFirst"><span class="n">01</span><span>Chi siamo</span></a>
+      <a href="#ecosistemaStart"><span class="n">02</span><span>Ecosistema</span></a>
+      <a href="#servicesStart"><span class="n">03</span><span>Cosa Facciamo</span></a>
+      <a href="#qualityStart"><span class="n">04</span><span>Qualità</span></a>
+      <a href="#newsStart"><span class="n">05</span><span>News</span></a>
+    </nav>
+
+    <div class="card1b" id="card1b">
+      <span class="c1b-head"><span class="idx">01</span> | Chi siamo</span>
+      <p class="c1b-text" id="c1bText">Da vent'anni affianchiamo l'industria manifatturiera B2B nell'intero ciclo di vita della documentazione tecnica e dei contenuti multilingua. Metodologia, conformità normativa, un metodo di lavoro unico e software proprietari per trasformare i dati di progetto in documenti digitali chiari e innovativi, oggi asset strategici integrati nei processi aziendali.</p>
+      <span class="c1b-foot">due.zero |<br class="mobileBreak"> technical communication revolution</span>
+    </div>
+
+    <div class="hint" id="hint"><span class="hintArrow" aria-hidden="true">↓</span> Scroll</div>
+
   </div>
 </div>
 
@@ -841,6 +847,9 @@ EWAAWJUKniTEQ4QAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 -1 -5)">
     </div>
 
     <!-- Ponte verso 2.0 PROJECT: crop ravvicinato del telefono che va a fuoco -->
+    <!-- wrapper trasparente su desktop (nessuno stile fuori dal blocco touch in fondo al CSS): serve solo
+         per dare a .ecoProjectImg un contenitore relative su cui fare da sfondo nella versione statica -->
+    <div class="ecoImgWrap" id="ecoImgWrapProject">
     <div class="ecoProjectImg" id="ecoProjectImg" aria-hidden="true"></div>
     <div class="ecoProjectVeil" id="ecoProjectVeil" aria-hidden="true"></div>
 
@@ -863,8 +872,10 @@ EWAAWJUKniTEQ4QAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 -1 -5)">
         </div>
       </div>
     </div>
+    </div><!-- /ecoImgWrapProject -->
 
     <!-- HYPERPARTS — campo fotografico immersivo (eco_hyperparts_bg.jpg), titolo dominante, nessun numero interno -->
+    <div class="ecoImgWrap" id="ecoImgWrapHyper">
     <div class="ecoHyperImg" id="ecoHyperImg" aria-hidden="true"></div>
     <div id="sceneHyper">
       <div class="hp-group" id="hpGroup">
@@ -884,10 +895,12 @@ EWAAWJUKniTEQ4QAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 -1 -5)">
         </div>
       </div>
     </div>
+    </div><!-- /ecoImgWrapHyper -->
 
     <!-- HYPER.LABQ — stesso sticky di Hyperparts (non una scena indipendente): serve per poter fare un
          vero crossfade fra le due foto quando cambia scena (due sticky separati non possono farlo, una
          foto non può comparire mentre l'altra è ancora visibile) — vedi capitoli.js, render2. -->
+    <div class="ecoImgWrap" id="ecoImgWrapLabQ">
     <div class="ecoLabQImg" id="ecoLabQImg" aria-hidden="true"></div>
     <div id="sceneLabQContent">
       <div class="lq-group" id="lqGroup">
@@ -907,6 +920,7 @@ EWAAWJUKniTEQ4QAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 -1 -5)">
         </div>
       </div>
     </div>
+    </div><!-- /ecoImgWrapLabQ -->
   </div>
 </div>
 
@@ -1171,7 +1185,7 @@ EWAAWJUKniTEQ4QAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 -1 -5)">
 </div>
 
 <script src="js/vendor/lenis.min.js"></script>
-<script src="js/capitolo1.js"></script>
-<script src="js/capitoli.js"></script>
+<script src="js/capitolo1.js?vtest=18"></script>
+<script src="js/capitoli.js?vtest=18"></script>
 </body>
 </html>

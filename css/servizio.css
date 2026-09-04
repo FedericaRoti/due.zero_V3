@@ -178,10 +178,16 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
 
 @media (max-width:820px){
   .svcHero{grid-template-columns:1fr;padding:12vh 8vw 7vh;min-height:auto}
-  .svcHeroVisual{order:-1;margin:0 -8vw 4vh;min-height:auto;aspect-ratio:16/10}
+  /* margin-top riserva lo spazio per il cluster triangolo+pillola (absolute, ancorato a .svcHero,
+     non spostato da "order"): senza, l'immagine (order:-1) parte da sotto il padding-top di .svcHero
+     (12vh) e si sovrappone al fondo della pillola (bottom reale ~7vh+91px). Il margine qui è la
+     DIFFERENZA tra dove serve arrivare (7vh+107px dalla cima di .svcHero) e dove il padding-top
+     porta già il contenuto (12vh) — non va sommato al padding, altrimenti l'immagine scende troppo */
+  .svcHeroVisual{order:-1;margin:calc(107px - 5vh) -8vw 4vh;min-height:auto;aspect-ratio:16/10}
   .svcHeroMark{left:8vw;top:7vh;width:40px;height:40px}
   .svcHeroVisual::after{width:40px;height:40px}
-  .svcBack{top:calc(7vh + 40px + 14px);left:8vw}
+  .svcBack{top:calc(7vh + 40px + 14px);left:8vw;z-index:5}
+  .svcHeroMark{z-index:5}
   /* niente riserva qui: su mobile l'immagine sta sopra il testo (order:-1), quindi il blocco
      eyebrow/titolo parte già ben sotto al cluster triangolo+pillola, non serve compensare */
   .svcHeroText{padding-top:0}

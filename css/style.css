@@ -1142,3 +1142,325 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .footerEyebrow,.footerIntro h2,.footerIntro p,.footerMainCta,.footerLogo,.footerBlock{
     opacity:1;transform:none;clip-path:none;transition:none}
 }
+
+/* ==================== VERSIONE TOUCH/MOBILE ====================
+   Capitolo 2 (Ecosistema) su touch: stesse identiche regole già usate sopra per
+   prefers-reduced-motion, duplicate qui perché non si può fare l'OR fra due media query diverse
+   in una condizione sola. Il JS smette di scrivere stili inline su questi elementi quando isTouch
+   (vedi js/capitoli.js, !reduce&&!isTouch) — nessun conflitto con l'inline, nessun !important. */
+@media (hover:none), (pointer:coarse){
+  /* prima fascia (banner+titolo+elenco): resta nera, come nella scena originale */
+  .scene2{height:auto;background:var(--black)}
+  .sticky2{position:static;height:auto;overflow:visible;background:none;perspective:none;display:flex;flex-direction:column;gap:0;padding:0}
+  .ecoBg,.ecoBridge{display:none}
+  .eco-open{position:static;color:#EDEDEA;padding:0 38px 90px}
+  /* banner: stessa forma dell'originale (taglio a spigolo, rosso), ma in-flow invece che absolute
+     top-right — necessario per stare dentro una fascia normale invece che sovrapposto allo sticky.
+     align-self:flex-end: a destra, posizione originale (corretto dopo un primo tentativo a sinistra,
+     poi rifiutato — "devono essere a destra nella loro posizione originale") */
+  /* stessi valori identici di .chBanner (Cap.1) sotto: richiesto esplicitamente "devono essere
+     uguali" — un po' più in alto e più staccato dal bordo destro rispetto al primo tentativo */
+  /* ANIMAZIONE D'ENTRATA: stessa tecnica di Cap.1/News (transform di partenza + transition + classe
+     .revealed via reveal one-shot in capitoli.js) — non la "barra che cresce" originale di
+     .ch2BannerBar (semplificata via display:none già da prima, per lo stesso motivo per cui il banner
+     usa la stessa forma semplice di chBanner/newsBanner: "tutti i banner devono essere identici").
+     Nessuno stile inline residuo qui da neutralizzare: render2/loop2 sono già del tutto disattivati per
+     isTouch (mai eseguiti nemmeno una volta, a differenza di render() in capitolo1.js) */
+  .ch2Banner{position:static;opacity:1;align-self:flex-end;display:inline-flex;width:auto;height:auto;
+    margin:max(64px,8vh) 54px 90px 0;padding:16px 28px;
+    background:var(--red);clip-path:polygon(100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 0);pointer-events:auto;
+    transform:translateX(120%);transition:transform .6s ease}
+  .ch2BannerBar{display:none}
+  .ch2BannerText{opacity:1;transform:none}
+  .eco-open-h{opacity:0;transform:scale(1.06);clip-path:inset(0 100% 0 0);color:#EDEDEA;
+    transition:opacity .5s ease .15s,transform .5s ease .15s,clip-path .7s cubic-bezier(.4,0,.2,1) .15s}
+  .eco-open-sub{opacity:0;max-height:0;color:rgba(237,237,234,.7);
+    transition:opacity .5s ease .5s,max-height .6s ease .5s}
+  #scene2.revealed .ch2Banner{transform:translateX(0)}
+  #scene2.revealed .eco-open-h{opacity:1;transform:scale(1);clip-path:inset(0 0 0 0)}
+  #scene2.revealed .eco-open-sub{opacity:1;max-height:600px}
+  .eco-subList li{color:rgba(237,237,234,.75)}
+  .eco-lbl{
+    position:static;display:block;opacity:1;transform:none;filter:none;clip-path:none;text-align:left;max-width:640px}
+
+  /* Project/Hyperparts/Hyper.LabQ: immagine come sfondo della fascia, testo sopra (già bianco, invariato) */
+  .ecoImgWrap{position:relative;min-height:80vh;display:flex;align-items:flex-end;overflow:hidden}
+  /* .ecoProjectImg non ha MAI un background-size in CSS: nel design originale lo scrive solo il JS
+     (zoom scroll-driven, 340%->130%), disattivato qui — senza, restava alla dimensione naturale
+     dell'immagine, non copriva la fascia (segnalato "zona della foto inutile"/bordo). .ecoHyperImg e
+     .ecoLabQImg avevano già cover di base, non serviva per loro */
+  .ecoProjectImg{background-size:cover !important;background-position:center !important}
+  .ecoProjectImg,.ecoHyperImg,.ecoLabQImg{position:absolute;inset:0 !important;opacity:1 !important;transform:none !important}
+  /* velo unico e più scuro per tutte e 3 (segnalato: foto diverse per contrasto/leggibilità tra loro —
+     "metti le 3 foto uguali per sfondo e scritte"). .ecoHyperImg/.ecoLabQImg avevano il gradiente già
+     incorporato nel background-image (stessi valori di .ecoProjectVeil, ma tarati per foto diverse:
+     insufficiente sulla foto più chiara di Hyperparts, quasi ok su LabQ) — qui sovrascritto con UN
+     solo velo più forte, identico per tutte e 3, separato dalla foto invece che incorporato */
+  .ecoProjectVeil{position:absolute;inset:0;opacity:1 !important;
+    background:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%) !important}
+  .ecoHyperImg,.ecoLabQImg{background-blend-mode:normal}
+  .ecoHyperImg{background-image:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%),url('../img/eco_hyperparts_bg.jpg') !important}
+  .ecoLabQImg{background-image:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%),url('../img/eco_hyperlabq_bg.jpg') !important}
+  #sceneProject,#sceneHyper,#sceneLabQContent{position:relative;z-index:2;display:flex;flex-direction:column;
+    align-items:flex-start;gap:14px;padding:38px;max-width:none}
+  .pj-group,.hp-group,.lq-group{transform:none}
+  .pj-title,.pj-sub,.pj-desc,.hp-title,.hp-sub,.hp-desc,.lq-title,.lq-sub,.lq-desc{
+    opacity:1 !important;transform:none !important;clip-path:none !important;pointer-events:auto;
+    text-shadow:0 1px 6px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.6) !important}
+  .pj-cta,.hp-cta,.lq-cta,.eco-cta-row,.eco-storeBadge{opacity:1;pointer-events:auto}
+
+  /* ---- Capitolo 3 (Documentation 4.0 + Cosa Facciamo) e Capitolo 4 (Qualità): stesse identiche
+     regole già usate sopra per prefers-reduced-motion (righe 1094-1135), duplicate qui per lo stesso
+     motivo del blocco Capitolo 2 sopra — niente OR fra media query diverse in una condizione sola.
+     Il fallback reduced-motion era già completo per queste sezioni, semplicemente non si attivava
+     per i device touch senza quella preferenza di sistema attiva. */
+  .sceneDoc40{height:auto}
+  .stickyDoc40{position:static;height:auto;overflow:visible;background:none}
+  /* padding:0 nell'originale reduced-motion lasciava il titolo attaccato ai bordi (sotto il pulsante
+     MENU in alto, tagliato a destra) — mai visto, la preferenza reduced-motion non viene quasi mai
+     testata con contenuto reale. 100px 38px, stessi valori di .qualitySticky/.svc-open */
+  /* align-items/text-align:center, non flex-start: l'originale desktop (#sceneDoc riga 529) è centrato
+     — la versione reduced-motion copiata sopra lo allineava a sinistra, mai notato. padding-bottom:64px
+     aggiunto: prima il testo toccava la mappa senza respiro (segnalato) */
+  #sceneDoc{position:static;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;color:var(--ink);pointer-events:auto;padding:100px 38px 64px}
+  .dc-title,.dc-sub,.dc-text,.dc-accent{opacity:1;transform:none;clip-path:none}
+  .dc-text i{transform:none}
+  .mapServicesTransition{height:auto}
+  /* background:black, non il --paper ereditato di base: quel chiaro è pensato per essere coperto da
+     .mapOutro (nero, sale dal basso) prima che appaia il banner — disattivato sotto per il touch,
+     lasciava uno spiraglio chiaro tra la fine della mappa e il banner nero di Cap.03 (segnalato) */
+  .mapServicesSticky{position:static;height:auto;min-height:100svh;background:var(--black)}
+  /* sfumato in fondo alla mappa: il nero delle tile Mapbox non è lo stesso nero di --black, il confine
+     netto tra i due era brutto (segnalato). Non riattiviamo mapOutro/l'animazione a scroll originale —
+     richiederebbe di tornare a un'altezza di sezione scroll-jack, la stessa instabilità già trovata e
+     disattivata sopra (render3, sP3 instabile su un container ormai "auto") — solo un fade via CSS */
+  .mapLayer::after{content:'';position:absolute;left:0;right:0;bottom:0;height:160px;
+    background:linear-gradient(to bottom, transparent, var(--black));pointer-events:none;z-index:4}
+  /* position:relative, non static: .docMapChrome ha inset:0 e si aspetta .mapLayer come contenitore
+     posizionato (così su desktop) — con static perde l'ancoraggio e si allarga a coprire l'intera
+     sezione invece che solo l'area mappa (verificato via elementsFromPoint + bounding rect) */
+  .mapLayer{position:relative}
+  .docMapChrome{opacity:1}
+  .ecoMapFrame{position:relative;left:auto;top:auto;width:100%;height:100svh;opacity:1;border:0}
+  .mapOutro{display:none}
+  /* background:black qui: .mapServicesSticky è chiaro di base (il layer scuro che su desktop lo copre
+     prima che appaia il titolo è .mapOutro, appena disattivato sopra) — senza, titolo ed etichetta
+     bianchi (#EDEDEA) restano su sfondo chiaro, praticamente invisibili (verificato: bg calcolato
+     rgb(237,237,234) dietro testo bianco) */
+  /* display:flex;flex-direction:column aggiunto: senza, era un blocco normale e il banner (sotto)
+     finiva a sinistra per default invece che a destra come chBanner/ch2Banner (segnalato "non allineato") */
+  .servicesIntroLayer{position:static;pointer-events:auto;background:var(--black);display:flex;flex-direction:column}
+  /* stessi valori identici di .ch2Banner/.chBanner (richiesto "allinealo ai primi 2") */
+  /* clip-path uguale a chBanner/ch2Banner (22px, non i 34px ereditati dalla regola base) — richiesto
+     "tutti e 5 identici", il taglio d'angolo era rimasto diverso */
+  /* ANIMAZIONE D'ENTRATA (banner+titolo, richiesto solo questi due per Cap.3): stessa tecnica di
+     Cap.1/2/News — transform/clip-path di partenza (stato nascosto originale, non più forzati a
+     "none") + transition + classe .revealed via reveal one-shot in capitoli.js (checkScene3Reveal).
+     render3 (scroll-jack originale) resta disattivato per isTouch, nessuno stile inline residuo da
+     neutralizzare qui (stesso caso di Cap.2, diverso da Cap.1) */
+  .ch3Banner{position:static;opacity:1;align-self:flex-end;width:auto;height:auto;transform:translateX(120%);
+    transition:transform .6s ease;margin:max(64px,8vh) 54px 90px 0;padding:16px 28px;background:var(--red);pointer-events:auto;
+    clip-path:polygon(100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 0)}
+  .svc-open{position:static;height:auto;max-width:none;padding:40px 38px 90px;color:#EDEDEA}
+  .svc-open-h{opacity:1;transform:scale(1.1);clip-path:inset(0 100% 0 0);color:#EDEDEA;
+    transition:transform .5s ease .15s,clip-path .7s cubic-bezier(.4,0,.2,1) .15s}
+  #servicesIntroLayer.revealed .ch3Banner{transform:translateX(0)}
+  #servicesIntroLayer.revealed .svc-open-h{transform:scale(1);clip-path:inset(0 0 0 0)}
+
+  .svcStage{display:none}
+  /* padding-bottom: 100px->50px, stesso motivo di .qualitySticky sotto — si sommava al margin-top del
+     banner Qualità subito dopo, doppio vuoto tra l'ultima card e "CAPITOLO 04" (segnalato) */
+  .svcMobileList{display:block;padding-bottom:50px}
+
+  .qualitySection{height:auto;background:var(--paper)}
+  /* background:paper qui: .qualitySticky e' nero di base (il layer chiaro che su desktop lo copre
+     durante lo scroll e' .qualityPaper, appena disattivato sotto) -- senza, il testo scuro (--ink) di
+     qualityIntro/Method/Record resta su sfondo nero, invisibile (stesso bug di .servicesIntroLayer
+     sopra, ma invertito). .qualityFinal ha gia' il suo nero esplicito, non ne risente */
+  /* padding-top:0, non 100px: .ch3Banner (sopra) non ha NESSUN padding sul proprio contenitore, il
+     margin-top del banner (max(80px,11vh)) basta da solo — qui si sommavano i due, ~200px di vuoto
+     puro prima del banner invece di ~100px come Cap.03 (segnalato "spostato in basso"). Stessa
+     correzione su .newsSection sotto. padding-bottom:0, non 50px: si sommava al margin-top del banner
+     News subito dopo (117px totali contro i 68px di .svcMobileList->Cap.04, segnalato "05 più alto") —
+     .qualityFinal ha già un suo padding interno (60px, dentro il nero), non serve altro fuori */
+  .qualitySticky{position:static;height:auto;overflow:visible;display:flex;flex-direction:column;gap:64px;padding:0 38px 0;background:var(--paper)}
+  .qualityPaper{display:none}
+  .qualityIntro,.qualityMethod,.qualityRecord,.qualityFinal{position:static;clip-path:none;transform:none;
+    pointer-events:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0}
+  /* width/height:auto: la regola base fissava min(46vw,560px) e un'altezza clamp — box più largo del
+     testo, iniziava troppo a sinistra rispetto agli altri (segnalato). clip-path 22px come gli altri 4.
+     white-space:nowrap + font-size:13px: gli altri banner hanno uno span dedicato (.ch3BannerText ecc.)
+     che sotto gli 820px viene fissato a 13px da una regola preesistente (riga ~1061) — qui il testo è
+     diretto nel div, senza andava a capo su 2 righe (font più grande, nessun nowrap), altezza diversa
+     dagli altri 4 (segnalato "triangolo/box diverso"). margin-right: 54px richiesti MENO il padding-right
+     proprio di .qualitySticky (38px,
+     già "consumato" dal contenitore) — senza la sottrazione il bordo destro non arriva al bordo vero */
+  /* ANIMAZIONE D'ENTRATA (solo scena 1 — banner+titolo+sottotitolo — richiesto esplicitamente,
+     metodo/tracciabilità/chiusura restano statici per ora): stessa tecnica di Cap.1/2/3 — transform/
+     clip-path/opacity di partenza (stato nascosto originale) + transition + classe .revealed via
+     checkQualityIntroReveal in capitoli.js. render/loop di Qualità restano disattivati per isTouch
+     (fix precedente), nessuno stile inline residuo da neutralizzare */
+  .qualityBanner{position:static;align-self:flex-end;width:auto;height:auto;white-space:nowrap;
+    font-size:13px;transform:translateX(120%);transition:transform .6s ease;
+    margin:max(64px,8vh) calc(54px - 38px) 90px 0;padding:16px 28px;
+    clip-path:polygon(100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 0)}
+  .qualityIntro h2{opacity:1;transform:scale(1.06);clip-path:inset(0 100% 0 0);
+    transition:transform .5s ease .15s,clip-path .7s cubic-bezier(.4,0,.2,1) .15s}
+  .qualityIntro p{opacity:0;transition:opacity .5s ease .5s}
+  #qualityIntro.revealed .qualityBanner{transform:translateX(0)}
+  #qualityIntro.revealed h2{transform:scale(1);clip-path:inset(0 0 0 0)}
+  #qualityIntro.revealed p{opacity:1}
+  .qualityEyebrow,.qualityDefinition,.qualityMeta,.qualityFinal h3,.qualityCta{
+    opacity:1;transform:none;clip-path:none}
+  .qualityCodeMask{position:static;height:auto;overflow:visible;width:auto;opacity:1}
+  .qualityCodeStrip{position:static;transform:none;display:flex;flex-direction:column;gap:22px}
+  .qualityCode{height:auto;font-size:clamp(48px,9vw,90px);display:flex;flex-direction:column;gap:6px}
+  .qualityCode::after{content:attr(data-def);font-family:var(--mono);font-size:14px;font-weight:400;
+    text-transform:none;letter-spacing:.03em;color:rgba(20,20,18,.65)}
+  .qualityDefinition{display:none}
+  .qualityFinal{background:var(--black);color:#EDEDEA;padding:60px 38px;margin:0 -38px}
+  .qualityFinal h3{color:#EDEDEA}
+  .qualityCta{color:#EDEDEA;pointer-events:auto}
+
+  /* padding:26vh 6vw di base pensato per desktop — su schermo touch stretto lasciava ~200px di vuoto
+     puro sopra il banner (segnalato "spazio enorme prima di News"). 100px 38px 90px, stesso ritmo
+     verticale di .qualitySticky, stesso gutter 38px usato ovunque nel touch */
+  .newsSection{padding:0 38px 90px}
+  /* Capitolo 05 — News: stesso identico banner dei primi 4 (richiesto "tutti e 5 identici"). .newsIntro
+     è già display:flex;flex-direction:column;align-items:center di base (mai toccato) — align-self:
+     flex-end sul banner basta, non serve altro sul contenitore. Stesso fix di .qualityBanner sopra:
+     white-space/font-size per non andare a capo, margin-right compensato per il padding di .newsSection
+     (ora 38px fisso, non più 8vw, per coerenza con lo stesso gutter usato altrove) */
+  /* transform:translateX(120%), non none: stato di partenza originale (fuori schermo a destra) — la
+     regola .newsSection.revealed .newsBanner{transform:translateX(0)} (già in style.css base) è più
+     specifica e vince quando scatta il reveal, facendolo scivolare dentro. "none" partiva già nella
+     posizione finale, niente da animare (segnalato "il banner non si anima più") */
+  .newsBanner{position:static;align-self:flex-end;width:auto;height:auto;white-space:nowrap;
+    font-size:13px;transform:translateX(120%);margin:max(64px,8vh) calc(54px - 38px) 90px 0;padding:16px 28px;
+    clip-path:polygon(100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 0)}
+  /* RIMOSSO: qui avevo forzato opacity:1/transition:none su titolo/paragrafo/CTA, pensando fossero
+     bloccati a opacity:0 per sempre — in realtà il reveal via scroll (checkNewsReveal in capitoli.js,
+     riga ~633) funziona già anche su touch, non è mai stato disattivato. Il test che mi aveva fatto
+     sospettare un bug usava uno scrollTo() istantaneo, non uno scroll naturale — l'animazione originale
+     (clip-path/opacity su .newsSection.revealed, righe 833-835) va lasciata intatta (segnalato "l'
+     animazione non c'è più" dopo questa riga) */
+
+  /* ---- Capitolo 1 (Chi siamo): stesso principio, sequenza in 3 fasce usando "order" sui figli diretti
+     di .sticky invece di spostare nodi HTML (tranne il wrapper immagine, necessario come per Ecosistema).
+     Nessun nodo esistente è stato spostato nel DOM: solo aggiunto un wrapper attorno a ch1Img/chapter1/
+     chBanner (già fratelli contigui). L'ordine visivo finale: 1) hero, 2) banner+titolo su foto, 3) card */
+  .scene{height:auto;background:var(--black)}
+  .sticky{position:static;height:auto;overflow:visible;perspective:none;display:flex;flex-direction:column;padding:0}
+  .ambient,.legend{display:none}
+  /* .center è SEMPRE display:none anche fuori da qui (vedi riga 50, "sostituito da .testWall") — il
+     titolo che si vede davvero sul sito è l'SVG (.testWall), verificato dal vivo sul sito reale.
+     Qui sotto si lavora su .testWall, non su .center */
+
+  /* fascia 1 — hero a schermo pieno, struttura rifatta: .heroGroup è un vero contenitore (spostati
+     .heroEco/.heroBadges/.triangle nel DOM per essere suoi figli, non più fratelli sparsi in
+     .sticky — i tentativi precedenti con "order" + offset calcolati a mano non reggevano al cambiare
+     di viewport, es. triangolo sovrapposto alle icone su un device e non su un altro). Un vero
+     min-height:100vh + flex-direction:column centra il gruppo, gap fisso invece di margini/calc
+     approssimati, e il triangolo si ancora al VERO angolo del gruppo (right:0;bottom:0), sempre
+     corretto qualunque sia l'altezza reale di titolo/etichetta/badge su quel viewport */
+  .heroGroup{order:1;position:relative;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;gap:40px;padding:90px 6vw 40px}
+  .testWall{position:relative;inset:auto;display:flex;justify-content:center;align-items:center}
+  .testWallMove{transform:none !important;opacity:1 !important}
+  /* .testWallShine (copia bianca mascherata da una banda diagonale, --gp) NON va toccata: è l'effetto
+     originale (rifiutato il tentativo precedente di renderla bianca intera, "deve tornare originale").
+     Senza il loop che aggiorna --gp resta ferma al valore di default in CSS (45%), che è comunque
+     un aspetto valido e voluto del design — non un bug */
+  /* right:0;bottom:0 esatti (non calcolati): il triangolo è ora figlio diretto di .heroGroup
+     (position:relative), lo stesso contenitore che racchiude anche heroEco/heroBadges — l'angolo è
+     quindi sempre quello vero del gruppo, non un'approssimazione basata su altezze misurate a mano
+     su UN viewport specifico */
+  .triangle{position:absolute !important;left:auto !important;top:auto !important;right:0;bottom:0;
+    width:65px !important;height:65px !important;opacity:1 !important;
+    clip-path:polygon(100% 0,100% 100%,0 100%,100% 0) !important}
+  .heroEco{position:static;left:auto;right:auto;bottom:auto;margin:0 auto;max-width:600px;
+    text-align:center;opacity:1 !important}
+  .heroBadges{position:static;left:auto;bottom:auto;transform:none;margin:0 auto;
+    opacity:1 !important;pointer-events:auto}
+
+  /* fascia 2 — banner+titolo+elenco su foto di sfondo (stesso trattamento di Project/Hyperparts).
+     justify-content:flex-end: in Ecosistema il testo è ancorato in FONDO alla fascia, dove il velo è
+     più scuro (.86-.90) — qui invece galleggiava a metà, in una zona più chiara (.40-.65) dello
+     stesso identico velo: stessi numeri, zona diversa. Corretto ancorando in basso come là */
+  #ecoImgWrapCh1{order:4;flex-direction:column;align-items:stretch;justify-content:flex-end}
+  .ch1Img,.ch1ImgVeil{position:absolute;inset:0 !important;opacity:1 !important}
+  /* velo del design originale (più scuro solo nella fascia centrale, pensato per un titolo
+     centrato in un viewport 100vh) qui non copriva a sufficienza titolo+elenco — segnalato
+     illeggibile. Primo tentativo troppo scuro (segnalato: "scurito più di prima", la foto si perdeva
+     del tutto) — via di mezzo, scuro dove serve (dove sta il testo, metà inferiore) ma la foto resta
+     visibile in alto */
+  /* stessi valori esatti del velo di Ecosistema (Project/Hyperparts/Hyper.LabQ), confermato funzionante
+     lì — non un nuovo tentativo a numeri diversi */
+  .ch1ImgVeil{background:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%) !important}
+  /* .ch-subList li era al 65% di opacità, molto più basso del testo equivalente in Ecosistema (.92) —
+     stessa causa della scarsa leggibilità, non solo il velo */
+  .ch-subList li{color:rgba(237,237,234,.92) !important}
+  /* + text-shadow, stessa tecnica già usata su .pj-desc (Ecosistema, testo su foto): il velo da solo
+     non bastava contro un dettaglio della foto denso quanto il testo (lo schermo del laptop) */
+  .ch-title .ln i,.ch-subList li{text-shadow:0 1px 6px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.6) !important}
+  /* z-index 2->4: era SOTTO .ch1ImgVeil (z-index:3, base CSS) — il velo scuro copriva letteralmente
+     il testo, invece di stare solo dietro. Causa reale di "il bianco non si vede", non un problema
+     di colore/font/foto — verificato con la catena di elementi genitori (tutti puliti) prima di
+     trovare questo */
+  .chapter1{position:relative;z-index:4;order:2;opacity:1 !important;padding:0 38px 90px;
+    display:flex;flex-direction:column;align-items:center}
+  /* pannello rimosso: in Ecosistema (Project/Hyperparts/LabQ) non c'è nessun pannello, solo velo +
+     text-shadow, ancorato in fondo alla fascia — richiesto esplicitamente di fare "esattamente quello
+     che hai fatto nel capitolo 2", non una tecnica nuova */
+  /* banner: stessa forma del Capitolo 2 (taglio a spigolo, rosso), qui in cima alla fascia invece che
+     costruito a quadrati via JS — order:1 lo mette prima di .chapter1 (order:2) senza spostarlo nel DOM,
+     dove sta fisicamente dopo. buildBanner() in JS scrive SEMPRE inline top/left/width/height (calcolati
+     per il posizionamento assoluto originale, mai disattivato) — con position:relative quei top/left
+     diventavano offset che spostavano il banner fuori dal flusso, sovrapponendolo al titolo sotto.
+     auto !important su tutti e 4 neutralizza l'inline, la dimensione la decide di nuovo il padding */
+  /* stessi valori identici di .ch2Banner sopra (richiesto esplicitamente "devono essere uguali") */
+  /* ANIMAZIONE D'ENTRATA (come Cap.05/News): transform:translateX(120%) di partenza (fuori campo a
+     destra), non più "none" fisso — #ecoImgWrapCh1.revealed sotto lo riporta a 0 quando la sezione
+     entra in vista. Stessa tecnica del reveal one-shot di News/Footer (checkCh1Reveal in capitolo1.js),
+     non lo scroll-jack continuo (disattivato per il touch, causa di instabilità già vista altrove) */
+  .chBanner{position:relative;z-index:4;order:1;opacity:1 !important;align-self:flex-end;
+    top:auto !important;left:auto !important;width:auto !important;height:auto !important;
+    margin:max(64px,8vh) 54px 90px 0;display:inline-flex;padding:16px 28px;background:var(--red);
+    clip-path:polygon(100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 0);
+    transform:translateX(120%);transition:transform .6s ease}
+  .chBanner .bt{opacity:1 !important}
+  /* titolo a righe: stato nascosto di base (translateY(106%), già in style.css riga 264) lasciato
+     intatto — qui solo transizione + ritardo scaglionato per riga, stesso principio dell'originale
+     desktop (chLine(i) in capitolo1.js, ogni riga parte poco dopo la precedente) */
+  .ch-title .ln i{transition:transform .6s cubic-bezier(.4,0,.2,1)}
+  .ch-title .ln:nth-child(1) i{transition-delay:.15s}
+  .ch-title .ln:nth-child(2) i{transition-delay:.23s}
+  .ch-title .ln:nth-child(3) i{transition-delay:.31s}
+  .ch-title .ln:nth-child(4) i{transition-delay:.39s}
+  /* overflow:hidden, non visible: serve per mascherare .ch-subInner mentre scorre dentro (stato
+     nascosto translateY(105%), già in style.css riga 268, lasciato intatto) — elenco in blocco unico,
+     non voce per voce, come conferma il commento originale ("titoletto + elenco... non voce per voce") */
+  .ch-sub{overflow:hidden}
+  .ch-subInner{transition:transform .55s cubic-bezier(.4,0,.2,1) .55s}
+  /* stato finale, scatta quando #ecoImgWrapCh1 entra in vista (checkCh1Reveal in capitolo1.js,
+     stesso meccanismo one-shot di checkNewsReveal — non gate-ato dallo scroll-jack disattivato sopra) */
+  #ecoImgWrapCh1.revealed .chBanner{transform:translateX(0)}
+  /* !important necessario qui: hidePreloader() chiama render(pRaw) una volta sola anche su touch
+     (mai disattivato — riga ~61 capitolo1.js), scrivendo uno style inline translateY(106%%)/(105%)
+     su questi elementi. Coincide col nascosto iniziale (nessun problema lì), ma senza !important
+     quello stile inline blocca per sempre questa regola quando scatta il reveal */
+  #ecoImgWrapCh1.revealed .ch-title .ln i{transform:translateY(0) !important}
+  #ecoImgWrapCh1.revealed .ch-subInner{transform:translateY(0) !important}
+
+  /* fascia 3 — card identità: carta chiara, come l'originale, solo in-flow invece che assoluta */
+  /* margin-top: la card era attaccata direttamente alla foto sopra, senza stacco (segnalato) — questa
+     card era una "modale" nel design originale (sale sopra tutto il resto), qui in flusso normale
+     serve uno spazio nero reale prima, non uno zero */
+  .card1b{order:5;position:static;height:auto;top:auto;left:auto;right:auto;margin:70px 6vw 0;padding:60px 6vw;
+    display:flex;flex-direction:column;gap:24px;opacity:1 !important;transform:none !important}
+  .card1b .c1b-head,.card1b .c1b-foot{position:static;opacity:1 !important}
+  .card1b .ph i{transform:none !important}
+
+  .hint{display:none}
+}
+/* ==================== FINE VERSIONE TOUCH/MOBILE ==================== */
