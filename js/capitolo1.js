@@ -5,6 +5,17 @@
   // i due meccanismi convivevano senza che il secondo fosse mai disattivato. Va impostato il prima
   // possibile, prima che il browser abbia la possibilità di ripristinare per conto suo
   if('scrollRestoration' in history) history.scrollRestoration='manual';
+  // refresh su un URL con ancora (es. dopo un click su una voce di menu, .../#servicesStart) atterrava
+  // a metà pagina: è il salto nativo del browser all'elemento con quell'id, un meccanismo diverso da
+  // scrollRestoration sopra (che riguarda solo la cronologia avanti/indietro). Si rimuove l'ancora solo
+  // sul reload vero, non su una visita diretta/link condiviso con l'ancora, che deve continuare a
+  // funzionare. performance.navigation (legacy) invece dell'equivalente moderno getEntriesByType('navigation'):
+  // verificato che qui, così presto durante il parsing, l'entry moderna può non essere ancora popolata
+  // (risultava undefined), mentre performance.navigation.type è sincrono fin dal primo istante
+  const isReload=performance.navigation&&performance.navigation.type===1;
+  if(location.hash && isReload){
+    history.replaceState(null,'',location.pathname+location.search);
+  }
   const $=id=>document.getElementById(id);
   const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),testWall=$('testWall'),testWallMove=$('testWallMove'),menuBtn=$('menuBtn'),
         glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),
