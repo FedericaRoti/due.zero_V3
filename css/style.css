@@ -1204,9 +1204,25 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   #sceneProject,#sceneHyper,#sceneLabQContent{position:relative;z-index:2;display:flex;flex-direction:column;
     align-items:flex-start;gap:14px;padding:38px;max-width:none}
   .pj-group,.hp-group,.lq-group{transform:none}
-  .pj-title,.pj-sub,.pj-desc,.hp-title,.hp-sub,.hp-desc,.lq-title,.lq-sub,.lq-desc{
+  .pj-desc,.hp-desc,.lq-desc{
     opacity:1 !important;transform:none !important;clip-path:none !important;pointer-events:auto;
     text-shadow:0 1px 6px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.6) !important}
+  /* ANIMAZIONE D'ENTRATA titolo+sottotitolo (richiesta esplicitamente, "piccolo zoom"): stessa
+     identica tecnica/valori di .eco-open-h sopra (scale 1.06->1), reveal one-shot via classe
+     .revealed sul wrapper #ecoImgWrapProject/Hyper/LabQ (checkProjectReveal/HyperReveal/LabQReveal
+     in capitoli.js) — non .pj-desc/.hp-desc/.lq-desc sopra, richiesto solo su titolo e sottotitolo.
+     Sottotitolo ingrandito alla stessa misura del testo della modale Cap.1 (.c1b-text riga 1040,
+     clamp(22px,6vw,26px)): a 28px (valore precedente) risultava "poco leggibile" sul telefono del
+     capo (iPhone 13 Pro Max) rispetto al testo della modale */
+  .pj-title,.hp-title,.lq-title{opacity:0;transform:scale(1.06);clip-path:none !important;pointer-events:auto;
+    text-shadow:0 1px 6px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.6);
+    transition:opacity .5s ease .15s,transform .5s ease .15s}
+  .pj-sub,.hp-sub,.lq-sub{opacity:0;transform:scale(1.06);font-size:clamp(22px,6vw,26px);pointer-events:auto;
+    text-shadow:0 1px 6px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.6);
+    transition:opacity .5s ease .3s,transform .5s ease .3s}
+  #ecoImgWrapProject.revealed .pj-title,#ecoImgWrapHyper.revealed .hp-title,#ecoImgWrapLabQ.revealed .lq-title,
+  #ecoImgWrapProject.revealed .pj-sub,#ecoImgWrapHyper.revealed .hp-sub,#ecoImgWrapLabQ.revealed .lq-sub{
+    opacity:1;transform:scale(1)}
   .pj-cta,.hp-cta,.lq-cta,.eco-cta-row,.eco-storeBadge{opacity:1;pointer-events:auto}
 
   /* ---- Capitolo 3 (Documentation 4.0 + Cosa Facciamo) e Capitolo 4 (Qualità): stesse identiche

@@ -519,6 +519,29 @@
     checkScene2Reveal();
   }
 
+  // Touch: reveal one-shot per titolo+sottotitolo di Project 2.0/Hyperparts/Hyper.LabQ (richiesto
+  // esplicitamente, "piccolo zoom" — vedi css/style.css), stesso identico meccanismo di
+  // checkScene2Reveal sopra, un trigger indipendente per ciascuna delle 3 fasce (entrano una alla
+  // volta scrollando, non tutte insieme all'apertura di Ecosistema)
+  if(isTouch && !reduce){
+    ['ecoImgWrapProject','ecoImgWrapHyper','ecoImgWrapLabQ'].forEach(wrapId=>{
+      const wrap=$(wrapId);
+      if(!wrap) return;
+      let revealed=false;
+      function check(){
+        if(revealed) return;
+        const r=wrap.getBoundingClientRect();
+        if(r.top<innerHeight*0.85){
+          revealed=true;
+          wrap.classList.add('revealed');
+          removeEventListener('scroll',check);
+        }
+      }
+      addEventListener('scroll',check,{passive:true});
+      check();
+    });
+  }
+
   // Touch: reveal one-shot per banner+titolo della soglia Cap.3 (solo questi due,
   // richiesto esplicitamente — non le card/lista sotto), stesso meccanismo di checkScene2Reveal sopra
   if(isTouch && !reduce){
