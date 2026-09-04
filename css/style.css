@@ -1313,6 +1313,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .qualityPaper{display:none}
   .qualityIntro,.qualityMethod,.qualityRecord,.qualityFinal{position:static;clip-path:none;transform:none;
     pointer-events:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0}
+  /* Ordine scene invertito su touch (richiesto esplicitamente): "ogni pubblicazione ha una storia
+     verificabile" (qualityRecord) passa prima di "quattro verifiche" (qualityMethod) — via order sul
+     flex di .qualitySticky sopra, stesso principio già usato per .heroGroup/.chBanner in Cap.1: zero
+     modifiche al DOM, desktop (scroll-jack, non-flex) resta invariato */
+  .qualityIntro{order:1}
+  .qualityRecord{order:2}
+  .qualityMethod{order:3}
+  .qualityFinal{order:4}
   /* width/height:auto: la regola base fissava min(46vw,560px) e un'altezza clamp — box più largo del
      testo, iniziava troppo a sinistra rispetto agli altri (segnalato). clip-path 22px come gli altri 4.
      white-space:nowrap + font-size:13px: gli altri banner hanno uno span dedicato (.ch3BannerText ecc.)
