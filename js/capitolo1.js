@@ -470,6 +470,33 @@
   // subito al tap, ha una gestione dedicata sotto (apre il sottomenu la prima volta)
   overlay.querySelectorAll('a:not(.menuMain)').forEach(a=>a.addEventListener('click',closeOverlay));
   addEventListener('keydown',e=>{if(e.key==='Escape')closeOverlay();});
+
+  // Click su un'ancora di capitolo (.legend, overlay, footer — #chapter1Start/#ecosistemaStart/
+  // #servicesStart/#qualityStart/#newsStart): il salto nativo del browser non si comporta bene con
+  // Lenis attivo su queste sezioni scroll-jack (su desktop non si muoveva affatto, atterrava sulla
+  // prima scena; su touch, con le sezioni diventate height:auto, atterrava in un punto qualunque
+  // della sezione — segnalato). Stesso identico principio già in uso qui sotto per badgeDoc40:
+  // si guida lo scroll esplicitamente via Lenis e si risincronizzano subito i moduli scroll-driven
+  // interessati, altrimenti restano fermi al loro stato iniziale finché non arriva un vero scroll
+  function scrollToAnchor(id){
+    const target=document.getElementById(id);
+    if(!target) return;
+    if(lenisInstance) lenisInstance.scrollTo(target,{immediate:true});
+    else target.scrollIntoView();
+    readScroll(); sP=pRaw; render(sP);
+    if(window.__snapScene2Instant) window.__snapScene2Instant();
+    if(window.__snapScene3Instant) window.__snapScene3Instant();
+    if(window.__snapQualityInstant) window.__snapQualityInstant();
+    history.pushState(null,'','#'+id);
+  }
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href^="#"]');
+    if(!a || a.classList.contains('menuMain') || a===badgeDoc40) return;
+    const id=a.getAttribute('href').slice(1);
+    if(!id || !document.getElementById(id)) return;
+    e.preventDefault();
+    scrollToAnchor(id);
+  });
   // rinominato da isMobileMenu: non è più "solo sotto 820px" — un dispositivo touch (hover:none o
   // pointer:coarse) attiva lo stesso comportamento "tocca per aprire" a QUALUNQUE larghezza, non solo
   // su schermi stretti. Prima un tablet/iPad largo ma touch (es. 834px, iPad Pro verticale) riceveva
@@ -500,7 +527,7 @@
     if(toggle) toggle.addEventListener('click',toggleAccordion);
     if(main) main.addEventListener('click',e=>{
       if(isTouchMenu()){ e.preventDefault(); toggleAccordion(); }
-      else closeOverlay();   // desktop: comportamento invariato, naviga e chiude il menu
+      else { e.preventDefault(); closeOverlay(); scrollToAnchor(main.getAttribute('href').slice(1)); }
     });
   });
 

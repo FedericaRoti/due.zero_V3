@@ -1462,5 +1462,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .card1b .ph i{transform:none !important}
 
   .hint{display:none}
+
+  /* Le ancore di menu (chapterAnchor: #chapter1Start/#ecosistemaStart/#servicesStart/#qualityStart)
+     sono calibrate in vh assoluti sull'altezza scroll-jack desktop delle sezioni sopra, qui diventate
+     height:auto — con l'altezza reale molto più corta l'ancora atterrava ben oltre l'inizio (es.
+     #ecosistemaStart dentro 2.0 Project/Hyperparts invece che sul banner di apertura, segnalato).
+     Su touch le sezioni sono già statiche dall'inizio: l'ancora corretta è l'inizio stesso */
+  .scene .chapterAnchor,.scene2 .chapterAnchor,.mapServicesTransition .chapterAnchor,.qualitySection .chapterAnchor{top:0}
 }
 /* ==================== FINE VERSIONE TOUCH/MOBILE ==================== */

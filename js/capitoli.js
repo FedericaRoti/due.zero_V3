@@ -330,6 +330,9 @@
       }
       addEventListener('scroll',readScroll3,{passive:true});
       readScroll3();
+      // stesso principio di __snapScene2Instant sopra: risincronizza subito la mappa dopo un salto
+      // istantaneo dello scroll (link di menu #servicesStart), senza inseguimento
+      window.__snapScene3Instant=readScroll3;
     }
 
     // Fullscreen — richiesto sul contenitore che comprende iframe + chrome (non sul solo iframe), così il bottone
@@ -681,6 +684,9 @@
     }
     addEventListener('scroll',readScrollQ,{passive:true});
     readScrollQ();
+    // stesso principio di __snapScene2Instant/__snapScene3Instant: risincronizza subito Qualità dopo
+    // un salto istantaneo dello scroll (link di menu #qualityStart), senza inseguimento
+    window.__snapQualityInstant=readScrollQ;
     setQualityDefinition(0); // prima sigla/definizione già scritte in HTML: nessun crossfade spurio al primo frame
   }
 
