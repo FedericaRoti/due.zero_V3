@@ -11,7 +11,7 @@
 <link rel="preload" href="fonts/BigShouldersDisplay-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/IBMPlexMono-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
-<link rel="stylesheet" href="css/style.css?vtest=25">
+<link rel="stylesheet" href="css/style.css?vtest=26">
 </head>
 <body>
 
@@ -1047,9 +1047,24 @@ EWAAWJUKniTEQ4QAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 -1 -5)">
   <div class="qualitySticky" id="qualitySticky">
     <div class="qualityPaper" id="qualityPaper"></div>
 
+    <!-- Ordine scene invertito (richiesto esplicitamente, sia desktop che touch): "ogni pubblicazione
+         ha una storia verificabile" (ex qualityRecord) è ora la prima scena, con banner di capitolo;
+         "la qualità non si controlla alla fine" (ex qualityIntro) è la seconda. ID/classi dei due
+         contenitori NON cambiati (troppi riferimenti CSS/JS calibrati su di essi) — si scambia solo
+         il contenuto figlio fra i due, stile e soglie di ciascun contenitore restano sue proprie
+         (centrato+scale per #qualityIntro, allineato a sinistra+slide-up per #qualityRecord) -->
     <div class="qualityIntro" id="qualityIntro">
       <div class="qualityBanner">CAPITOLO 04 | QUALITÀ</div>
-      <h2>LA QUALITÀ<br>NON SI CONTROLLA<br>ALLA FINE</h2>
+      <span class="qualityRecordLabel">CERTIFICATO DI ORIGINE</span>
+      <h2>OGNI PUBBLICAZIONE<br>HA UNA STORIA<br>VERIFICABILE.</h2>
+      <div class="qualityMeta">
+        <span>MATRICOLA / VERSIONE / RILASCIO</span>
+        <span class="qualityBarcode" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <div class="qualityRecord" id="qualityRecord">
+      <h3>LA QUALITÀ<br>NON SI CONTROLLA<br>ALLA FINE</h3>
       <p>Si progetta, si verifica, si rende tracciabile</p>
     </div>
 
@@ -1064,15 +1079,6 @@ EWAAWJUKniTEQ4QAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 -1 -5)">
         </div>
       </div>
       <div class="qualityDefinition" id="qualityDefinition">PROGETTAZIONE VERIFICATA.</div>
-    </div>
-
-    <div class="qualityRecord" id="qualityRecord">
-      <span class="qualityRecordLabel">CERTIFICATO DI ORIGINE</span>
-      <h3>OGNI PUBBLICAZIONE<br>HA UNA STORIA<br>VERIFICABILE.</h3>
-      <div class="qualityMeta">
-        <span>MATRICOLA / VERSIONE / RILASCIO</span>
-        <span class="qualityBarcode" aria-hidden="true"></span>
-      </div>
     </div>
 
     <div class="qualityFinal" id="qualityFinal">
@@ -1185,7 +1191,7 @@ EWAAWJUKniTEQ4QAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 -1 -5)">
 </div>
 
 <script src="js/vendor/lenis.min.js"></script>
-<script src="js/capitolo1.js?vtest=25"></script>
-<script src="js/capitoli.js?vtest=25"></script>
+<script src="js/capitolo1.js?vtest=26"></script>
+<script src="js/capitoli.js?vtest=26"></script>
 </body>
 </html>

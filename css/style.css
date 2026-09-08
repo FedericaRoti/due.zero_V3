@@ -721,14 +721,19 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 /* 520->655vh: +135vh dedicati solo al ciclo DQ/IQ/OQ/PQ (vedi qualityCodePos in capitoli.js), che durava
    appena ~135vh in totale per 4 elementi — "molto molto veloce" segnalato. Tutto il resto della sezione
    trasla della stessa quantità assoluta di vh, a parità di ritmo già corretto in precedenza */
-.qualitySection{position:relative;height:655vh;background:var(--black);overflow:visible}
-.qualitySection .chapterAnchor{top:100.8vh}
+/* 655vh->900vh: spazio per inserire "la qualità non si controlla" come seconda scena (ex prima)
+   senza comprimere il ciclo delle 4 sigle di Metodo (già allungato in passato su richiesta esplicita,
+   "troppo veloce"). chapterAnchor ricalcolato proporzionalmente (100.8*900/655) per restare sullo
+   stesso punto relativo di prima */
+.qualitySection{position:relative;height:900vh;background:var(--black);overflow:visible}
+.qualitySection .chapterAnchor{top:138.5vh}
 .qualitySticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--black)}
 
 .qualityPaper{position:absolute;inset:0;z-index:1;background:var(--paper);transform:translateY(101%);will-change:transform}
 
-/* ---- scena 1 — apertura: banner alto a sinistra (fuori dal flex, posizione propria), titolo grande
-   nella metà inferiore sinistra (flex column con justify-content:flex-end) ---- */
+/* ---- scena 1 — apertura (richiesto esplicitamente: ora "ogni pubblicazione ha una storia
+   verificabile", ex contenuto di #qualityRecord — banner+etichetta+titolo+matricola/barcode,
+   contenitore/soglie invariati, cambia solo il contenuto figlio) ---- */
 .qualityIntro{position:absolute;inset:0;z-index:2;pointer-events:none;
   display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
   padding:0 6vw;clip-path:inset(0 0 0 0);will-change:clip-path}
@@ -743,7 +748,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .qualityIntro h2{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;
   font-size:clamp(42px,6.6vw,104px);line-height:.94;letter-spacing:-.01em;max-width:70vw;
   clip-path:inset(0 100% 0 0);transform-origin:center center;will-change:transform,clip-path}
-.qualityIntro p{margin-top:22px;max-width:44vw;color:rgba(20,20,18,.68);
+/* .qualityRecordLabel qui dentro (spostata da #qualityRecord): prima la nascondeva il translateY(100%)
+   dell'intero contenitore .qualityRecord, qui #qualityIntro non nasconde così i figli — serve un
+   opacity:0 proprio, rivelato in JS insieme al banner/titolo (vedi renderQuality) */
+.qualityRecordLabel{color:var(--red);font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);
+  letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px;opacity:0;will-change:opacity}
+/* .qualityRecord p (spostata da #qualityIntro, stessa identica regola solo rinominata: il tag <p>
+   ora vive dentro #qualityRecord con "la qualità non si controlla") */
+.qualityRecord p{margin-top:22px;max-width:44vw;color:rgba(20,20,18,.68);
   font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);letter-spacing:.03em;text-transform:uppercase;opacity:0;will-change:opacity}
 
 /* ---- scena 2 — metodo: nessuna card/griglia/dashboard. Una sola sigla pienamente visibile alla volta,
@@ -763,13 +775,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);letter-spacing:.03em;opacity:0;
   clip-path:inset(0 0 0% 0);transition:clip-path .22s cubic-bezier(.4,0,.2,1);will-change:opacity,clip-path}
 
-/* ---- scena 3 — tracciabilità: entra dal basso come un foglio tecnico (solo translateY, niente ombra/card),
-   il testo domina; sotto, riga mono + firma di tracciabilità (linee CSS, non un barcode finto) ---- */
+/* ---- scena 2 — "la qualità non si controlla" (ex scena 1): entra dal basso come un foglio tecnico
+   (solo translateY, niente ombra/card), il testo domina; sotto, sottotitolo mono (.qualityRecord p,
+   ex figlio di #qualityIntro). Aggiunto exit-crop (clip-path, come le altre scene) prima assente:
+   qui era la penultima scena e restava semplicemente visibile fino alla chiusura, ora deve sparire
+   prima che inizi il Metodo ---- */
 .qualityRecord{position:absolute;inset:0;z-index:4;pointer-events:none;
   display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
-  padding:0 6vw;transform:translateY(100%);will-change:transform}
-.qualityRecordLabel{color:var(--red);font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);
-  letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}
+  padding:0 6vw;transform:translateY(100%);clip-path:inset(0 0 0 0);will-change:transform,clip-path}
 .qualityRecord h3{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;
   font-size:clamp(40px,6.2vw,96px);line-height:.96;letter-spacing:-.01em;max-width:56vw}
 .qualityMeta{margin-top:30px;display:flex;align-items:center;gap:22px;opacity:0;will-change:opacity}
@@ -915,15 +928,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .svc-open-h{font-size:clamp(40px,11vw,80px)}
   /* Capitolo 04 — Qualità: stesso meccanismo scroll-driven, stage più corto, titoli ridotti,
      DQ/IQ/OQ/PQ uno alla volta senza sovrapposizioni (stessa maschera, solo più piccola) */
-  .qualitySection{height:580vh}
-  /* l'ancoraggio del menu (chapterAnchor) è in vh assoluti, calcolati sull'altezza DESKTOP (520vh) —
-     qui l'altezza della sezione è diversa (460vh), quindi lo stesso valore corrisponderebbe a un
-     punto di scroll diverso (il titolo arrivava tagliato a metà). Ricalcolato sulla stessa formula,
-     stesso target_s (.24), per la nuova altezza: .24*(460-100)=86.4vh */
-  .qualitySection .chapterAnchor{top:86.4vh}
+  /* 580vh->797vh: stesso motivo/stesso fattore di scala (900/655) del breakpoint desktop principale
+     sopra — inserire la scena "la qualità non si controlla" senza comprimere il Metodo. chapterAnchor
+     ricalcolato con lo stesso fattore (86.4*900/655) per restare sullo stesso punto relativo */
+  .qualitySection{height:797vh}
+  .qualitySection .chapterAnchor{top:118.7vh}
   .qualityIntro{padding:0 8vw}
   .qualityIntro h2{font-size:clamp(34px,9vw,64px);max-width:86vw}
-  .qualityIntro p{max-width:80vw}
+  .qualityRecord p{max-width:80vw}
   .qualityBanner{width:min(70vw,420px);right:20px;top:8vh}
   .qualityMethod{padding:0 8vw}
   .qualityCodeMask{width:84vw;height:clamp(90px,17vh,150px)}
@@ -1122,7 +1134,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .qualityIntro,.qualityMethod,.qualityRecord,.qualityFinal{position:static;clip-path:none;transform:none;
     pointer-events:auto;display:flex;flex-direction:column;align-items:flex-start;padding:0}
   .qualityBanner{position:static;transform:none;margin-bottom:28px}
-  .qualityIntro h2,.qualityIntro p,.qualityEyebrow,.qualityDefinition,.qualityMeta,.qualityFinal h3,.qualityCta{
+  .qualityIntro h2,.qualityRecordLabel,.qualityRecord p,.qualityEyebrow,.qualityDefinition,.qualityMeta,.qualityFinal h3,.qualityCta{
     opacity:1;transform:none;clip-path:none}
   .qualityCodeMask{position:static;height:auto;overflow:visible;width:auto;opacity:1}
   .qualityCodeStrip{position:static;transform:none;display:flex;flex-direction:column;gap:22px}
@@ -1313,10 +1325,10 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .qualityPaper{display:none}
   .qualityIntro,.qualityMethod,.qualityRecord,.qualityFinal{position:static;clip-path:none;transform:none;
     pointer-events:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0}
-  /* Ordine scene invertito su touch (richiesto esplicitamente): "ogni pubblicazione ha una storia
-     verificabile" (qualityRecord) passa prima di "quattro verifiche" (qualityMethod) — via order sul
-     flex di .qualitySticky sopra, stesso principio già usato per .heroGroup/.chBanner in Cap.1: zero
-     modifiche al DOM, desktop (scroll-jack, non-flex) resta invariato */
+  /* Ordine scene (richiesto esplicitamente, identico a desktop): "ogni pubblicazione ha una storia
+     verificabile" (ora contenuto di #qualityIntro, banner compreso) prima di "la qualità non si
+     controlla" (ora #qualityRecord), poi "quattro verifiche" (qualityMethod) — via order sul flex di
+     .qualitySticky sopra, stesso principio già usato per .heroGroup/.chBanner in Cap.1 */
   .qualityIntro{order:1}
   .qualityRecord{order:2}
   .qualityMethod{order:3}
@@ -1329,22 +1341,29 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      dagli altri 4 (segnalato "triangolo/box diverso"). margin-right: 54px richiesti MENO il padding-right
      proprio di .qualitySticky (38px,
      già "consumato" dal contenitore) — senza la sottrazione il bordo destro non arriva al bordo vero */
-  /* ANIMAZIONE D'ENTRATA (solo scena 1 — banner+titolo+sottotitolo — richiesto esplicitamente,
-     metodo/tracciabilità/chiusura restano statici per ora): stessa tecnica di Cap.1/2/3 — transform/
-     clip-path/opacity di partenza (stato nascosto originale) + transition + classe .revealed via
-     checkQualityIntroReveal in capitoli.js. render/loop di Qualità restano disattivati per isTouch
-     (fix precedente), nessuno stile inline residuo da neutralizzare */
+  /* ANIMAZIONE D'ENTRATA scena 1 (banner+etichetta+titolo+matricola, "ogni pubblicazione..."): stessa
+     tecnica di Cap.1/2/3 — transform/clip-path/opacity di partenza (stato nascosto originale) +
+     transition + classe .revealed via checkQualityIntroReveal in capitoli.js. render/loop di Qualità
+     restano disattivati per isTouch (fix precedente), nessuno stile inline residuo da neutralizzare.
+     .qualityMeta prende qui il ruolo che aveva <p> prima dello scambio contenuto (stessi valori) */
   .qualityBanner{position:static;align-self:flex-end;width:auto;height:auto;white-space:nowrap;
     font-size:13px;transform:translateX(120%);transition:transform .6s ease;
     margin:max(64px,8vh) calc(54px - 38px) 90px 0;padding:16px 28px;
     clip-path:polygon(100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 0)}
   .qualityIntro h2{opacity:1;transform:scale(1.06);clip-path:inset(0 100% 0 0);
     transition:transform .5s ease .15s,clip-path .7s cubic-bezier(.4,0,.2,1) .15s}
-  .qualityIntro p{opacity:0;transition:opacity .5s ease .5s}
+  .qualityMeta{opacity:0;transition:opacity .5s ease .5s}
   #qualityIntro.revealed .qualityBanner{transform:translateX(0)}
   #qualityIntro.revealed h2{transform:scale(1);clip-path:inset(0 0 0 0)}
-  #qualityIntro.revealed p{opacity:1}
-  .qualityEyebrow,.qualityDefinition,.qualityMeta,.qualityFinal h3,.qualityCta{
+  #qualityIntro.revealed .qualityMeta{opacity:1}
+  /* ANIMAZIONE D'ENTRATA scena 2 ("la qualità non si controlla", ex scena 1): stessa identica tecnica
+     di #qualityIntro sopra, solo senza banner — reveal one-shot via checkQualityRecordReveal */
+  .qualityRecord h3{opacity:1;transform:scale(1.06);clip-path:inset(0 100% 0 0);
+    transition:transform .5s ease .15s,clip-path .7s cubic-bezier(.4,0,.2,1) .15s}
+  .qualityRecord p{opacity:0;transition:opacity .5s ease .5s}
+  #qualityRecord.revealed h3{transform:scale(1);clip-path:inset(0 0 0 0)}
+  #qualityRecord.revealed p{opacity:1}
+  .qualityRecordLabel,.qualityEyebrow,.qualityDefinition,.qualityFinal h3,.qualityCta{
     opacity:1;transform:none;clip-path:none}
   .qualityCodeMask{position:static;height:auto;overflow:visible;width:auto;opacity:1}
   .qualityCodeStrip{position:static;transform:none;display:flex;flex-direction:column;gap:22px}
