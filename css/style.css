@@ -776,12 +776,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   clip-path:inset(0 0 0% 0);transition:clip-path .22s cubic-bezier(.4,0,.2,1);will-change:opacity,clip-path}
 
 /* ---- scena 2 — "la qualità non si controlla" (ex scena 1): entra dal basso come un foglio tecnico
-   (solo translateY, niente ombra/card), il testo domina; sotto, sottotitolo mono (.qualityRecord p,
-   ex figlio di #qualityIntro). Aggiunto exit-crop (clip-path, come le altre scene) prima assente:
-   qui era la penultima scena e restava semplicemente visibile fino alla chiusura, ora deve sparire
-   prima che inizi il Metodo ---- */
+   (solo translateY, niente ombra/card); sotto, sottotitolo mono (.qualityRecord p, ex figlio di
+   #qualityIntro). Aggiunto exit-crop (clip-path, come le altre scene) prima assente: qui era la
+   penultima scena e restava semplicemente visibile fino alla chiusura, ora deve sparire prima che
+   inizi il Metodo. Testo centrato (richiesto esplicitamente, solo su desktop — su touch era già
+   centrato dalla regola comune del blocco touch): align-items:flex-start->center, resta solo
+   l'animazione a slide-up, non più l'allineamento a sinistra "foglio tecnico" originale ---- */
 .qualityRecord{position:absolute;inset:0;z-index:4;pointer-events:none;
-  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
   padding:0 6vw;transform:translateY(100%);clip-path:inset(0 0 0 0);will-change:transform,clip-path}
 .qualityRecord h3{color:var(--ink);font-family:var(--geo);font-weight:800;text-transform:uppercase;
   font-size:clamp(40px,6.2vw,96px);line-height:.96;letter-spacing:-.01em;max-width:56vw}
@@ -1343,9 +1345,10 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      già "consumato" dal contenitore) — senza la sottrazione il bordo destro non arriva al bordo vero */
   /* ANIMAZIONE D'ENTRATA scena 1 (banner+etichetta+titolo+matricola, "ogni pubblicazione..."): stessa
      tecnica di Cap.1/2/3 — transform/clip-path/opacity di partenza (stato nascosto originale) +
-     transition + classe .revealed via checkQualityIntroReveal in capitoli.js. render/loop di Qualità
-     restano disattivati per isTouch (fix precedente), nessuno stile inline residuo da neutralizzare.
-     .qualityMeta prende qui il ruolo che aveva <p> prima dello scambio contenuto (stessi valori) */
+     transition + classe .revealed via il ciclo forEach(['qualityIntro','qualityRecord']) in
+     capitoli.js (un trigger scroll one-shot per scena, stesso per la scena 2 sotto). render/loop di
+     Qualità restano disattivati per isTouch (fix precedente), nessuno stile inline residuo da
+     neutralizzare. .qualityMeta prende qui il ruolo che aveva <p> prima dello scambio contenuto */
   .qualityBanner{position:static;align-self:flex-end;width:auto;height:auto;white-space:nowrap;
     font-size:13px;transform:translateX(120%);transition:transform .6s ease;
     margin:max(64px,8vh) calc(54px - 38px) 90px 0;padding:16px 28px;
@@ -1357,7 +1360,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   #qualityIntro.revealed h2{transform:scale(1);clip-path:inset(0 0 0 0)}
   #qualityIntro.revealed .qualityMeta{opacity:1}
   /* ANIMAZIONE D'ENTRATA scena 2 ("la qualità non si controlla", ex scena 1): stessa identica tecnica
-     di #qualityIntro sopra, solo senza banner — reveal one-shot via checkQualityRecordReveal */
+     di #qualityIntro sopra, solo senza banner — stesso reveal one-shot via forEach, vedi sopra */
   .qualityRecord h3{opacity:1;transform:scale(1.06);clip-path:inset(0 100% 0 0);
     transition:transform .5s ease .15s,clip-path .7s cubic-bezier(.4,0,.2,1) .15s}
   .qualityRecord p{opacity:0;transition:opacity .5s ease .5s}
