@@ -606,6 +606,10 @@
           e.preventDefault();
           badges.forEach(b=>{ b.classList.remove('tapShow'); b.style.removeProperty('--tipShift'); });
           badge.classList.add('tapShow');
+          // stesso trattamento di badgeHovered su desktop (riga ~327, heroEco.style.opacity): la
+          // nuvoletta nome+descrizione risalta di più se l'etichetta dietro si abbassa, non solo
+          // su hover ma anche al primo tocco — richiesto esplicitamente, mancava su touch
+          if(heroEco) heroEco.style.opacity='0.45';
           // le icone vicine al bordo (prima/ultima della riga) hanno la nuvoletta centrata che esce
           // dallo schermo — la sposto quel tanto che basta per restare dentro, con 8px di margine
           const tip=badge.querySelector('.heroBadgeTip');
@@ -621,7 +625,10 @@
     });
     document.addEventListener('click',e=>{
       if(!isTouchMenu()) return;
-      if(!e.target.closest('.heroBadge')) badges.forEach(b=>b.classList.remove('tapShow'));
+      if(!e.target.closest('.heroBadge')){
+        badges.forEach(b=>b.classList.remove('tapShow'));
+        if(heroEco) heroEco.style.opacity='1';
+      }
     });
   }
 
