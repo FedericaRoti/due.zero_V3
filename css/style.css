@@ -1444,6 +1444,13 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      resterebbe fermo allo stato "docked" invece che centrato in mezzo allo schermo */
   .center{position:relative;inset:auto;display:flex;justify-content:center;align-items:center}
   .heroMove{transform:none !important;opacity:1 !important}
+  /* will-change:auto (contro l'eredità di will-change:transform,opacity[,transform per .tilt] della
+     regola desktop, pensato per il loop scroll-jack continuo mai eseguito su touch): stesso motivo
+     già trovato per Project/Hyperparts/HyperLabQ — will-change su un elemento i cui figli usano
+     background-clip:text + filter:drop-shadow (.title.sheen/.gloss) è un bug noto di rendering
+     Safari/WebKit (contenuto che sparisce/non si compone). Segnalato: titolo completamente piatto
+     su iPhone reale, "zero assoluto" di ombra/luce — non riproducibile nel mio ambiente (Chromium) */
+  .heroMove,.tilt{will-change:auto}
   /* display:none (non più flex): qui sotto sovrascriveva la regola base (riga ~84), riapparendo
      visibile solo su touch — segnalato, il vecchio titolo SVG si vedeva sbiadito dietro al nuovo */
   .testWall{display:none}
