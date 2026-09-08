@@ -47,7 +47,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 /* padding-bottom (non padding-top): sposta il centro del titolo verso l'alto, lasciando più spazio
    libero sotto per label+icone — in vh, non px fissi, così regge su rapporti larghezza/altezza diversi
    (il problema precedente era proprio un valore fisso calibrato su un solo formato di schermo) */
-.center{display:none} /* TEST: titolo testo sostituito da .testWall (SVG del capo) — vedi sotto */
+.center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;perspective:1400px;z-index:3;padding-bottom:22vh}
 .heroMove{position:relative;transform-origin:left top;will-change:transform,opacity}
 .tilt{position:relative;transform-style:preserve-3d;will-change:transform}
 .gloss-wrap{position:relative;text-align:center;pointer-events:auto;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
@@ -74,14 +74,15 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
     rgba(255,255,255,1) var(--gp,45%),rgba(255,255,255,0) calc(var(--gp,45%) + 22%),rgba(255,255,255,0) 100%);
   -webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 18px rgba(255,255,255,.18))}
 
-/* ---- TEST: SVG del capo con lo stesso effetto luce (versione non-testo) ----
-   background-clip:text non esiste per un <img>/SVG: l'equivalente per una forma qualsiasi è
-   mask-image con lo stesso gradiente. Il livello "shine" è reso tutto bianco via filter
+/* ---- SVG del capo (usato temporaneamente al posto del titolo testuale, poi non più convincente —
+   segnalato): nascosto ma non rimosso, stessa filosofia "facilmente reversibile" con cui era stato
+   introdotto. Il JS in capitolo1.js continua ad aggiornarlo (heroMove/testWallMove ricevono lo
+   stesso transform ogni frame) — nessun problema, semplicemente non visibile ----
+   background-clip:text non esiste per un <img>/SVG: l'equivalente per una forma qualsiasi era
+   mask-image con lo stesso gradiente. Il livello "shine" era reso tutto bianco via filter
    (brightness(0) poi invert(1), un trucco standard per forzare un'immagine a silhouette bianca)
    e poi mascherato dalla stessa banda diagonale (--gp, impostata anche qui in capitolo1.js) */
-/* stessa centratura di .center (che sostituisce): inset:0 + flex, così occupa lo stesso spazio
-   del titolo precedente invece di aggiungersi sopra o sotto */
-.testWall{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;padding-bottom:22vh}
+.testWall{display:none}
 /* testWallMove riceve il transform di aggancio (dock, in alto a sx) + opacity (heroOut): stesso
    principio di heroMove per il vecchio titolo — .testWall resta il contenitore statico che centra,
    .testWallMove è quello che si sposta/rimpicciolisce/sparisce durante lo scroll (vedi capitolo1.js) */
@@ -1412,9 +1413,10 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .scene{height:auto;background:var(--black)}
   .sticky{position:static;height:auto;overflow:visible;perspective:none;display:flex;flex-direction:column;padding:0}
   .ambient,.legend{display:none}
-  /* .center è SEMPRE display:none anche fuori da qui (vedi riga 50, "sostituito da .testWall") — il
-     titolo che si vede davvero sul sito è l'SVG (.testWall), verificato dal vivo sul sito reale.
-     Qui sotto si lavora su .testWall, non su .center */
+  /* .testWall è SEMPRE display:none anche fuori da qui (vedi riga ~84, "SVG del capo... non più
+     convincente") — il titolo che si vede davvero è di nuovo quello testuale (.center). Le regole
+     .testWall/.testWallMove sotto restano (stessa filosofia "facilmente reversibile"), ma sono
+     inerti: non c'è nulla da vedere lì, si lavora su .center/.heroMove */
 
   /* fascia 1 — hero a schermo pieno, struttura rifatta: .heroGroup è un vero contenitore (spostati
      .heroEco/.heroBadges/.triangle nel DOM per essere suoi figli, non più fratelli sparsi in
@@ -1425,12 +1427,22 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      corretto qualunque sia l'altezza reale di titolo/etichetta/badge su quel viewport */
   .heroGroup{order:1;position:relative;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
     justify-content:center;align-items:center;gap:40px;padding:90px 6vw 40px}
-  .testWall{position:relative;inset:auto;display:flex;justify-content:center;align-items:center}
+  /* stesso identico trattamento che aveva .testWall/.testWallMove qui sopra, ora su .center/.heroMove:
+     position:relative (non più assoluto, .heroGroup lo centra già via flex) + transform/opacity
+     dell'inline style azzerati (!important) — render() in capitolo1.js continua a scrivere dock/scale
+     su heroMove ad ogni frame anche su touch (hidePreloader lo chiama una volta), senza questo
+     resterebbe fermo allo stato "docked" invece che centrato in mezzo allo schermo */
+  .center{position:relative;inset:auto;display:flex;justify-content:center;align-items:center}
+  .heroMove{transform:none !important;opacity:1 !important}
+  /* display:none (non più flex): qui sotto sovrascriveva la regola base (riga ~84), riapparendo
+     visibile solo su touch — segnalato, il vecchio titolo SVG si vedeva sbiadito dietro al nuovo */
+  .testWall{display:none}
   .testWallMove{transform:none !important;opacity:1 !important}
   /* .testWallShine (copia bianca mascherata da una banda diagonale, --gp) NON va toccata: è l'effetto
      originale (rifiutato il tentativo precedente di renderla bianca intera, "deve tornare originale").
      Senza il loop che aggiorna --gp resta ferma al valore di default in CSS (45%), che è comunque
-     un aspetto valido e voluto del design — non un bug */
+     un aspetto valido e voluto del design — non un bug. Stesso principio per .title.gloss ora che
+     è di nuovo lei il titolo visibile: banda di luce statica su touch, non un bug */
   /* right:0;bottom:0 esatti (non calcolati): il triangolo è ora figlio diretto di .heroGroup
      (position:relative), lo stesso contenitore che racchiude anche heroEco/heroBadges — l'angolo è
      quindi sempre quello vero del gruppo, non un'approssimazione basata su altezze misurate a mano

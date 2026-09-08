@@ -11,7 +11,7 @@
 <link rel="preload" href="fonts/BigShouldersDisplay-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/IBMPlexMono-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
-<link rel="stylesheet" href="css/style.css?vtest=32">
+<link rel="stylesheet" href="css/style.css?vtest=34">
 </head>
 <body>
 
@@ -73,6 +73,12 @@
     <div class="chBanner" id="chBanner"><span class="bt">Capitolo 1 | Chi siamo</span></div>
     </div><!-- /ecoImgWrapCh1 -->
 
+    <!-- Titolo ripristinato (richiesto esplicitamente, "il capo non sembra più convinto dell'SVG"):
+         .center torna ad essere il titolo vero, spostato dentro #heroGroup (non era suo figlio
+         all'epoca del test SVG, .heroGroup non esisteva ancora) per restare nella sequenza flex
+         touch. .testWall resta nel DOM, solo nascosto — stessa filosofia "facilmente reversibile"
+         del test originale, in caso servisse di nuovo -->
+    <div class="heroGroup" id="heroGroup">
     <div class="center">
       <div class="heroMove" id="heroMove">
         <div class="tilt" id="tilt">
@@ -86,12 +92,9 @@
       </div>
     </div>
 
-    <!-- SVG inline (non <img>): serve poter muovere le 3 righe (.line1/2/3) singolarmente e
-         agganciarle allo stesso aggancio in alto a sinistra che aveva il vecchio titolo testuale —
-         un <img src=".svg"> non espone il DOM interno a CSS/JS del documento che lo include.
-         testWallMove riceve lo stesso transform (dock) e la stessa opacity (heroOut) di heroMove,
-         calcolati in capitolo1.js — .testWall resta il contenitore statico che centra (come .center) -->
-    <div class="heroGroup" id="heroGroup">
+    <!-- SVG inline (non <img>): fornito dal capo, usato temporaneamente al posto del titolo — vedi
+         css/style.css per come è nascosto. testWallMove riceve lo stesso transform (dock) e la
+         stessa opacity (heroOut) di heroMove, calcolati in capitolo1.js -->
     <div class="testWall" id="testWall" aria-hidden="true">
       <div class="testWallMove" id="testWallMove">
         <div class="testWallInner">
@@ -1191,7 +1194,7 @@ EWAAWJUKniTEQ4QAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 -1 -5)">
 </div>
 
 <script src="js/vendor/lenis.min.js"></script>
-<script src="js/capitolo1.js?vtest=32"></script>
-<script src="js/capitoli.js?vtest=32"></script>
+<script src="js/capitolo1.js?vtest=34"></script>
+<script src="js/capitoli.js?vtest=34"></script>
 </body>
 </html>
