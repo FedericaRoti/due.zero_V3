@@ -150,9 +150,6 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .heroBadges{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:6;
   display:flex;align-items:center;gap:14px;opacity:0;pointer-events:none;transition:opacity .4s ease}
 .heroBadge{position:relative;display:inline-flex;align-items:center;cursor:pointer}
-/* in attesa di link/pagina reale (SC Spare Manager, SC Translate): stesso trattamento già usato per il
-   sottomenu Servizi e per Privacy/Cookie in footer — presente ma non cliccabile */
-.heroBadgePending{cursor:default}
 /* lo scale del "dock" (JS) è sull'svg, non su .heroBadge: così la pillola-tooltip, che è una
    sorella non figlia dell'icona, non si ingrandisce/deforma insieme all'icona sotto al mouse */
 /* niente transition qui: la scala è interpolata via RAF in JS (stesso principio dello smoothing dello
