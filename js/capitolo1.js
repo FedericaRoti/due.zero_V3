@@ -37,9 +37,29 @@
   const returnYRaw=sessionStorage.getItem(RETURN_KEY);
   const isReturning=returnYRaw!==null;
   if(isReturning) sessionStorage.removeItem(RETURN_KEY);
+  // il salvataggio avveniva subito al click, non alla navigazione effettiva: su iOS Safari un link
+  // con hover a volte richiede due tocchi (il primo attiva l'hover, non naviga) — il click scattava
+  // comunque, la posizione restava salvata, e un refresh successivo (invece del secondo tocco)
+  // veniva scambiato per un "ritorno", saltando a metà pagina invece che in cima (segnalato,
+  // risolto solo chiudendo la scheda — sessionStorage si azzera lì, non con un refresh). Ora si
+  // salva su una chiave "pending" al click, promossa a RETURN_KEY solo su pagehide (la pagina lascia
+  // davvero questo documento) — un refresh puro innesca comunque pagehide, ma senza un click
+  // precedente non c'è nessun "pending" da promuovere. Timeout 2s: se il click non porta a una vera
+  // navigazione entro quella finestra, il pending scade da solo
+  const PENDING_KEY='duezero_pendingReturnY';
   document.addEventListener('click',e=>{
     const a=e.target.closest('a[href$=".html"]:not([target="_blank"])');
-    if(a) sessionStorage.setItem(RETURN_KEY,String(scrollY));
+    if(a){
+      sessionStorage.setItem(PENDING_KEY,String(scrollY));
+      setTimeout(()=>sessionStorage.removeItem(PENDING_KEY),2000);
+    }
+  });
+  addEventListener('pagehide',()=>{
+    const pending=sessionStorage.getItem(PENDING_KEY);
+    if(pending!==null){
+      sessionStorage.setItem(RETURN_KEY,pending);
+      sessionStorage.removeItem(PENDING_KEY);
+    }
   });
 
   // ---- preloader: schermata nera/rossa coerente col resto del sito, sparisce quando font+pagina sono pronti.
