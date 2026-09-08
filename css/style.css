@@ -350,14 +350,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    nel caso più stretto a 320px) — il testo leggeva piccolo rispetto allo spazio davvero occupato.
    Valori verificati con misure reali (non a stima) da 320 a 1920px dopo l'aumento */
 .c1b-text{font-weight:600;text-transform:uppercase;font-size:clamp(22px,2.8vw,44px);line-height:1.28;max-width:min(82vw,860px);letter-spacing:-.005em}
-/* card1b in 821-1279px usa il trattamento mobile (4 righe unite, centrate — vedi isMobileCard in
-   capitolo1.js, soglia allineata a 1280 per lo stesso motivo di GROUP_X/isMobileZoom sotto), ma il
-   font ereditava il clamp calcolato per il layout desktop a 8 righe separate (~26px a inizio fascia):
-   con solo 4 righe l'altezza fissa della card (76vh) restava poco riempita, troppo spazio vuoto
-   sopra/sotto (segnalato). Scala dedicata, più vicina al respiro verticale reale disponibile con 4
-   righe invece di 8. Va DOPO la regola base qui sopra: a parità di specificità (una classe), in CSS
-   vince l'ordine nel file, non la media query */
-@media (min-width:821px) and (max-width:1279px){
+/* card1b in 821-1279px (o touch a qualunque larghezza oltre 821px, vedi OR sotto — stesso motivo di
+   isMobileCard/isMobileZoom in capitolo1.js: un iPad largo in orizzontale ricade qui) usa il
+   trattamento mobile (4 righe unite, centrate), ma il font ereditava il clamp calcolato per il
+   layout desktop a 8 righe separate (~26px a inizio fascia): con solo 4 righe l'altezza fissa della
+   card (76vh) restava poco riempita, troppo spazio vuoto sopra/sotto (segnalato). Scala dedicata,
+   più vicina al respiro verticale reale disponibile con 4 righe invece di 8. Va DOPO la regola base
+   qui sopra: a parità di specificità (una classe), in CSS vince l'ordine nel file, non la media query */
+@media (min-width:821px) and (max-width:1279px), (hover:none) and (pointer:coarse) and (min-width:821px){
   /* min(3.5vw,4vh), non solo vw: la card ha altezza fissa (76vh) — su schermi bassi (es. 700px)
      scalare solo per larghezza sconfinava sul piè della card (segnalato, verificato: 7.3px di
      sovrapposizione a 990x700, corretto e riverificato). 4vh tiene il font proporzionato all'altezza
@@ -1516,6 +1516,11 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
     display:flex;flex-direction:column;gap:24px;opacity:1 !important;transform:none !important}
   .card1b .c1b-head,.card1b .c1b-foot{position:static;opacity:1 !important}
   .card1b .ph i{transform:none !important}
+  /* rete di sicurezza (stesso motivo di .ph i sopra): render() gira comunque una volta anche su
+     touch (chiamato da hidePreloader), e se isMobileZoom in JS avesse valutato false (bug corretto,
+     ma per sicurezza) scriverebbe comunque un transform inline con GROUP_X (fino a ±190px) —
+     !important lo neutralizza sempre, indipendentemente dal JS */
+  .card1b .phGroup{transform:none !important}
 
   .hint{display:none}
 

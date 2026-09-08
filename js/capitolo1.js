@@ -124,8 +124,11 @@
   // GROUP_X sotto, fino a ±190px) uscivano dal bordo della card ben oltre i 1024px inizialmente
   // scelti (verificato dal vivo fino a 1060px) — lo spostamento è in px fissi, non proporzionale
   // alla larghezza, quindi resta sicuro solo su schermi genuinamente larghi. 1280 riusa lo stesso
-  // valore già in uso altrove nel file per "laptop compatti" (vedi css, banner/titoli)
-  const isMobileCard=innerWidth<1280;
+  // valore già in uso altrove nel file per "laptop compatti" (vedi css, banner/titoli).
+  // || isTouch (stesso principio di isMobileMenu, rinominato in passato per lo stesso motivo): un
+  // iPad largo ma touch in orizzontale (>1280px) riceveva il trattamento desktop, frasi tagliate a
+  // sinistra — segnalato dal capo, verificato dal vivo su iPad ~10" orizzontale
+  const isMobileCard=innerWidth<1280 || isTouch;
   const mkGroup=isMobileCard
     ? arr=>'<span class="ph"><i>'+arr.join(' ')+'</i></span>'
     : arr=>arr.map(t=>'<span class="ph"><i>'+t+'</i></span>').join(' ');
@@ -408,8 +411,11 @@
     // spostamento calibrato su desktop) — restano centrate, tengono solo lo zoom
     // soglia 820->1280 (non 1024, vedi isMobileCard sopra per il calcolo): lo spread desktop (fino
     // a ±190px, in pixel fissi non proporzionali) tagliava il testo ben oltre i 1024px inizialmente
-    // scelti — verificato dal vivo a 1060px, frase tagliata a sinistra
-    const isMobileZoom=innerWidth<1280;
+    // scelti — verificato dal vivo a 1060px, frase tagliata a sinistra.
+    // || isTouch: stesso fix di isMobileCard sopra — un iPad largo ma touch in orizzontale
+    // (>1280px) cadeva nel ramo desktop, stesso identico sintomo "frase tagliata a sinistra"
+    // riportato qui sopra, ma su un dispositivo touch invece che su un browser stretto
+    const isMobileZoom=innerWidth<1280 || isTouch;
     const GROUP_X=isMobileZoom ? [0,0,0,0] : [-70,70,-190,190]; // 1° un po' a sx, 2° un po' a dx, 3° molto più a sx (oltre -170), 4° di conseguenza a dx
     // stesso Z_PEAK=210 (~1.3x) del desktop era troppo per mobile: lì il testo occupa già quasi
     // tutta la larghezza della card (margine reale ~11px per lato, verificato), quindi lo stesso
