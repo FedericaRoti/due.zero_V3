@@ -198,6 +198,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .heroBadge.tapShow .roll-icon,.heroBadge.tapShow .roll-text{opacity:1}
 .heroBadge.tapShow .static-icon,.heroBadge.tapShow .static-text{opacity:0}
 .heroBadge.tapShow .heroBadgeTip{opacity:1;transform:translateX(calc(-50% + var(--tipShift,0px))) translateY(0)}
+/* rete di sicurezza per la dimmerazione di #heroEco al primo tocco (già impostata via JS,
+   heroEco.style.opacity='0.45', nell'handler click di .heroBadge): su un iPhone reale non risultava
+   visibile — non individuata con certezza quale altro punto del codice sovrascriva lo stile inline,
+   questa regola CSS con !important la garantisce comunque, indipendentemente dalla causa esatta.
+   :has() supportato su Safari da tempo (15.4+, 2022) */
+#heroGroup:has(.heroBadge.tapShow) #heroEco{opacity:.45 !important}
 /* effetto legato al PRIMO scroll (non al caricamento): se lo scroll parte veloce i badge rischiano di
    sparire prima di essere notati, quindi proprio nell'istante in cui iniziano a sfumare fanno un piccolo
    "pop" che cattura l'occhio invece di svanire silenziosamente */
