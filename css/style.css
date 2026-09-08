@@ -1229,11 +1229,18 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      solo su titolo e sottotitolo. Sottotitolo ingrandito alla stessa misura del testo della modale
      Cap.1 (.c1b-text riga 1040, clamp(22px,6vw,26px)): a 28px (valore precedente) risultava "poco
      leggibile" sul telefono del capo (iPhone 13 Pro Max) rispetto al testo della modale */
+  /* will-change:auto (contro l'eredità del will-change:transform,opacity[,clip-path] della regola
+     desktop, pensato per il loop scroll-jack continuo): su iPad il reveal non si vedeva, solo su
+     queste 3 fasce e non su Documentation 4.0 (segnalato) — unica differenza strutturale reale trovata:
+     .ecoImgWrap resta overflow:hidden (necessario, ritaglia la foto di sfondo) mentre il contenitore
+     di Doc40 è overflow:visible su touch. will-change dentro un antenato overflow:hidden è un bug
+     noto di Safari/WebKit (la transizione non si ridisegna) — non riproducibile nel mio ambiente di
+     test (Chromium); per un reveal singolo via classe non serve comunque, va tolto qui */
   .pj-title,.hp-title,.lq-title{opacity:0;transform:scale(.92);clip-path:none !important;pointer-events:auto;
-    text-shadow:0 1px 6px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.6);
+    will-change:auto;text-shadow:0 1px 6px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.6);
     transition:opacity .5s ease .15s,transform .6s cubic-bezier(.34,1.56,.64,1) .15s}
   .pj-sub,.hp-sub,.lq-sub{opacity:0;transform:scale(.92);font-size:clamp(22px,6vw,26px);pointer-events:auto;
-    text-shadow:0 1px 6px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.6);
+    will-change:auto;text-shadow:0 1px 6px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.6);
     transition:opacity .5s ease .3s,transform .6s cubic-bezier(.34,1.56,.64,1) .3s}
   #ecoImgWrapProject.revealed .pj-title,#ecoImgWrapHyper.revealed .hp-title,#ecoImgWrapLabQ.revealed .lq-title,
   #ecoImgWrapProject.revealed .pj-sub,#ecoImgWrapHyper.revealed .hp-sub,#ecoImgWrapLabQ.revealed .lq-sub{
