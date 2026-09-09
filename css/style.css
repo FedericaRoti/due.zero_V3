@@ -1471,8 +1471,15 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      forma di rettangolo invece di sfumare (segnalato con video dal dispositivo reale, riprodotto e
      confermato anche in Chromium — bug del CSS, non di Safari). Verificato su tutto il range di
      --gp che 150% resta pulito */
+  /* CAUSA REALE del "rettangolo"/"laser" (trovata leggendo il mio stesso codice, non più
+     un'ipotesi): la shorthand background: qui sotto resetta OGNI sotto-proprietà non specificata
+     al suo default — incluso background-clip, che la regola base impostava a "text". Perso quello,
+     il gradiente si applica all'intero border-box invece che alle sole lettere: da qui il rettangolo
+     pieno e la banda "troppo accesa" (è l'intero box a illuminarsi, non solo il testo ritagliato).
+     background-image (longhand) invece di background non tocca le altre sotto-proprietà: clip resta
+     quello della regola base */
   .title.gloss{filter:none;
-    background:linear-gradient(125deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 42.7%,
+    background-image:linear-gradient(125deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 42.7%,
       rgba(255,255,255,1) 50%,rgba(255,255,255,0) 57.3%,rgba(255,255,255,0) 100%);
     background-size:150% 150%;background-position:var(--gp,45%) center}
   /* rettangolo netto dietro al testo, ancora presente dopo il fix sopra (segnalato con screenshot

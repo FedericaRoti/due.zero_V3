@@ -697,4 +697,31 @@
   readScroll();
   window.addEventListener('load',measure); measure();
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(measure);   // ricalcola con i font caricati
+
+  // pannello diagnostico temporaneo (?debugtitle=1 nell'URL): il bug del titolo su Safari reale non
+  // è riproducibile in Chromium, quindi ogni fix finora è stato "alla cieca" — questo mostra a schermo
+  // i computed style reali del dispositivo, leggibili con un semplice screenshot, senza cavo/devtools
+  if(location.search.indexOf('debugtitle=1')>-1){
+    const panel=document.createElement('div');
+    panel.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#fff;color:#000;'+
+      'font:11px/1.4 monospace;padding:8px;white-space:pre-wrap;max-height:60vh;overflow:auto';
+    document.body.appendChild(panel);
+    function fmt(el,name){
+      if(!el) return name+': NOT FOUND\n';
+      const cs=getComputedStyle(el);
+      return name+':\n  opacity='+cs.opacity+'\n  filter='+cs.filter+
+        '\n  bg-clip='+cs.webkitBackgroundClip+'\n  bg-image='+cs.backgroundImage.slice(0,70)+
+        '\n  bg-size='+cs.backgroundSize+'\n  bg-pos='+cs.backgroundPosition+
+        '\n  color='+cs.color+'\n  text-shadow='+cs.textShadow.slice(0,60)+'\n';
+    }
+    function update(){
+      const r=gloss.getBoundingClientRect();
+      panel.textContent='isTouch='+isTouch+' reduce='+reduce+' innerW='+innerWidth+' innerH='+innerHeight+
+        ' --gp='+getComputedStyle(document.documentElement).getPropertyValue('--gp')+
+        '\nglossRect: w='+r.width.toFixed(0)+' h='+r.height.toFixed(0)+' top='+r.top.toFixed(0)+' left='+r.left.toFixed(0)+
+        '\n\n'+fmt(gloss,'GLOSS')+'\n'+fmt(sheenEl,'SHEEN')+'\n'+fmt(titleBase,'BASE');
+    }
+    update();
+    setInterval(update,1000);
+  }
 })();
