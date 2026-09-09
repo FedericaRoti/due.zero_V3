@@ -2,7 +2,11 @@
   --geo:'Big Shoulders Display',sans-serif;--mono:'IBM Plex Mono',monospace;--mx:50vw;--my:44vh;
   --hero-font:'Bebas Neue',sans-serif} /* solo per .title (scritta centrale hero): il resto del sito resta su --geo */
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
+/* overflow-x:hidden su ENTRAMBI html e body: su iOS Safari uno dei due solo spesso non basta a
+   bloccare lo scroll orizzontale nativo — segnalato, si poteva scorrere tutta la pagina a sinistra
+   (spazio nero a destra) perché qualche elemento sfora di poco il bordo destro del viewport */
+html{overflow-x:hidden}
+body{background:var(--black);color:#EDEDEA;font-family:var(--geo);overflow-x:hidden}
 
 /* 1020vh, non più 760: la nuova sequenza (titolo da solo -> immagine -> sottotitolo, ciascuno con
    spazio di lettura reale) ha più tappe di prima e aveva bisogno di più spazio assoluto di scroll —
