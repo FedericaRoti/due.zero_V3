@@ -1459,38 +1459,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      quando sparisce. Tolto il filter su .title.gloss, l'effetto luce/ombra si ottiene con un ottavo
      text-shadow bianco diffuso su .title.base, dove text-shadow (senza filter) è affidabile su
      Safari — !important necessario, l'inline scritto da render()/titleShadow() ha priorità */
-  /* la banda diagonale stessa restava invisibile su Safari reale (confermato: niente striscia,
-     nemmeno ferma) — non un problema di movimento. Sospetto non verificabile da qui (nessun
-     dispositivo Safari a disposizione): calc(var(--gp) ± 22%) come stop del gradiente è un pattern
-     più fragile su WebKit di quanto lo sia su Chromium. Riscritto con background-position (var()
-     usato come valore intero di una proprietà standard, non annidato in calc() dentro un color-stop
-     — tecnica comune e ben supportata per bande di luce in movimento su testo), stesso identico
-     --gp del loop JS, nessuna modifica al JS necessaria.
-     background-size:300% era troppo grande: la "discesa" del gradiente verso trasparente restava
-     fuori dal box per gran parte del range di --gp (17%-68%), lasciando un blocco pieno bianco a
-     forma di rettangolo invece di sfumare (segnalato con video dal dispositivo reale, riprodotto e
-     confermato anche in Chromium — bug del CSS, non di Safari). Verificato su tutto il range di
-     --gp che 150% resta pulito */
-  /* CAUSA REALE del "rettangolo"/"laser" (trovata leggendo il mio stesso codice, non più
-     un'ipotesi): la shorthand background: qui sotto resetta OGNI sotto-proprietà non specificata
-     al suo default — incluso background-clip, che la regola base impostava a "text". Perso quello,
-     il gradiente si applica all'intero border-box invece che alle sole lettere: da qui il rettangolo
-     pieno e la banda "troppo accesa" (è l'intero box a illuminarsi, non solo il testo ritagliato).
-     background-image (longhand) invece di background non tocca le altre sotto-proprietà: clip resta
-     quello della regola base */
-  .title.gloss{filter:none;
-    background-image:linear-gradient(125deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 42.7%,
-      rgba(255,255,255,1) 50%,rgba(255,255,255,0) 57.3%,rgba(255,255,255,0) 100%);
-    background-size:150% 150%;background-position:var(--gp,45%) center}
-  /* rettangolo netto dietro al testo, ancora presente dopo il fix sopra (segnalato con screenshot
-     dal dispositivo reale): non riproducibile in Chromium, quindi non lo stesso bug di calibrazione
-     di prima. Sospetto (non verificato, nessun dispositivo Safari a disposizione): .title.sheen, mai
-     toccato finora, ha lo stesso pattern background-clip:text + gradient che su .gloss non si
-     componeva su Safari — qui il bounding-box del gradiente (invece di restare ritagliato sul testo)
-     potrebbe restare visibile per intero. Il suo ruolo (luce ambientale statica, evitare che il testo
-     legga "a due toni" — vedi capitolo1.js) è già coperto dal text-shadow bianco aggiunto sopra su
-     .title.base: disattivato su touch come test mirato invece di un altro fix alla cieca sul gradiente */
-  .title.sheen{opacity:0 !important}
+  /* riscrivere il gradiente (background-position, poi size, poi background-clip perso dalla
+     shorthand...) è stato un errore di metodo: ho cambiato filter e gradient insieme senza isolare
+     quale dei due fosse davvero il problema, poi ho rincorso i bug introdotti dalla riscrittura
+     invece della causa originale. Tornato al gradiente IDENTICO alla regola base (calc(var(--gp))
+     ereditato, nessuna ridefinizione qui) — l'unica differenza reale verificata è filter:drop-shadow,
+     documentato come rendering stocastico su Safari/WebKit. .title.sheen non ha alcuna modifica per
+     lo stesso motivo: mai stato confermato come causa di alcunché */
+  .title.gloss{filter:none}
   /* .35 di opacità sul glow (invece di .18 come il drop-shadow desktop che sostituisce) sommato
      alla banda dava un effetto "troppo acceso rispetto al desktop" (segnalato) — riallineato */
   .title.base{text-shadow:0 1px 0 rgba(15,15,15,1),0 2px 0 rgba(13,13,13,1),0 3px 0 rgba(11,11,11,1),
