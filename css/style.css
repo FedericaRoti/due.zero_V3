@@ -1459,7 +1459,17 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      quando sparisce. Tolto il filter su .title.gloss, l'effetto luce/ombra si ottiene con un ottavo
      text-shadow bianco diffuso su .title.base, dove text-shadow (senza filter) è affidabile su
      Safari — !important necessario, l'inline scritto da render()/titleShadow() ha priorità */
-  .title.gloss{filter:none}
+  /* la banda diagonale stessa restava invisibile su Safari reale (confermato: niente striscia,
+     nemmeno ferma) — non un problema di movimento. Sospetto non verificabile da qui (nessun
+     dispositivo Safari a disposizione): calc(var(--gp) ± 22%) come stop del gradiente è un pattern
+     più fragile su WebKit di quanto lo sia su Chromium. Riscritto con background-position (var()
+     usato come valore intero di una proprietà standard, non annidato in calc() dentro un color-stop
+     — tecnica comune e ben supportata per bande di luce in movimento su testo), stesso identico
+     --gp del loop JS, nessuna modifica al JS necessaria */
+  .title.gloss{filter:none;
+    background:linear-gradient(125deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 42.7%,
+      rgba(255,255,255,1) 50%,rgba(255,255,255,0) 57.3%,rgba(255,255,255,0) 100%);
+    background-size:300% 300%;background-position:var(--gp,45%) center}
   .title.base{text-shadow:0 1px 0 rgba(15,15,15,1),0 2px 0 rgba(13,13,13,1),0 3px 0 rgba(11,11,11,1),
     0 4px 0 rgba(9,9,9,1),0 5px 0 rgba(7,7,7,1),0 8px 14px rgba(0,0,0,.78),0 -1px 0 rgba(255,255,255,.2),
     0 0 24px rgba(255,255,255,.35) !important}
