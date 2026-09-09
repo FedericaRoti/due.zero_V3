@@ -658,20 +658,10 @@
     addEventListener('mousemove',e=>{px=e.clientX;py=e.clientY;if(!raf)raf=requestAnimationFrame(()=>{onMove(px,py);raf=null;});});
     loop();
   }
-  // touch: niente mousemove e niente loop() intero (quello guida anche render(sP), lo scroll-jack
-  // continuo — su touch il resto del Cap.1 usa reveal one-shot, non va fatto girare in parallelo).
-  // Ma il dondolio della banda di luce (--gp, dentro loop() sopra) è a TEMPO (Math.sin), non legato
-  // al mouse — richiesto esplicitamente anche su touch: loop leggero dedicato, stessa formula
-  else if(!reduce && isTouch){
-    (function lightLoop(now){
-      const t=(now||performance.now())/1000, ph=(Math.sin(t*.4)+1)/2;
-      lightX+=(.12+ph*.52-lightX)*.05; lightY+=(.24+ph*.5-lightY)*.05;
-      const gp=((lightX*0.6+lightY*0.4)*100).toFixed(1)+'%';
-      gloss.style.setProperty('--gp',gp);
-      if(testWall) testWall.style.setProperty('--gp',gp);
-      requestAnimationFrame(lightLoop);
-    })();
-  }
+  // touch: niente mousemove né loop() (quello guida anche render(sP), lo scroll-jack continuo — su
+  // touch il resto del Cap.1 usa reveal one-shot, non va fatto girare in parallelo). Un loop dedicato
+  // per animare --gp (la banda di luce) c'era, rimosso insieme a .title.gloss in css/style.css: sul
+  // dispositivo reale i computed style erano corretti ma Safari non disegnava il layer comunque
 
   // Touch: reveal one-shot per banner+titolo+elenco di Cap.1 su touch, stesso identico
   // meccanismo di checkNewsReveal/checkFooterReveal in js/capitoli.js — non lo scroll-jack continuo

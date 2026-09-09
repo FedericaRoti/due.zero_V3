@@ -1452,26 +1452,20 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   /* will-change:auto: il loop che lo giustificherebbe (dondolio/tilt) non gira mai su touch (vedi
      capitolo1.js, isTouch esclude il loop) — nessun motivo di tenere il layer promosso */
   .heroMove,.tilt{will-change:auto}
-  /* causa reale del titolo piatto su iPhone/iPad reale ("zero assoluto" di ombra/luce, non
-     riproducibile in Chromium): filter:drop-shadow su un elemento con background-clip:text ha
-     rendering stocastico documentato su Safari/WebKit (a volte non si compone affatto) — non un
-     valore mancante, i computed style (opacity/gradient/filter) risultano tutti corretti anche
-     quando sparisce. Tolto il filter su .title.gloss, l'effetto luce/ombra si ottiene con un ottavo
-     text-shadow bianco diffuso su .title.base, dove text-shadow (senza filter) è affidabile su
-     Safari — !important necessario, l'inline scritto da render()/titleShadow() ha priorità */
-  /* riscrivere il gradiente (background-position, poi size, poi background-clip perso dalla
-     shorthand...) è stato un errore di metodo: ho cambiato filter e gradient insieme senza isolare
-     quale dei due fosse davvero il problema, poi ho rincorso i bug introdotti dalla riscrittura
-     invece della causa originale. Tornato al gradiente IDENTICO alla regola base (calc(var(--gp))
-     ereditato, nessuna ridefinizione qui) — l'unica differenza reale verificata è filter:drop-shadow,
-     documentato come rendering stocastico su Safari/WebKit. .title.sheen non ha alcuna modifica per
-     lo stesso motivo: mai stato confermato come causa di alcunché */
-  .title.gloss{filter:none}
-  /* .35 di opacità sul glow (invece di .18 come il drop-shadow desktop che sostituisce) sommato
-     alla banda dava un effetto "troppo acceso rispetto al desktop" (segnalato) — riallineato */
+  /* svolta dopo il pannello diagnostico (?debugtitle=1): sul dispositivo reale i computed style di
+     .title.gloss/.title.sheen/.title.base erano TUTTI corretti (filter, bg-clip:text, gradiente coi
+     color-stop calc(var(--gp)) già risolti in numeri validi, tutti gli 8 layer del text-shadow) —
+     non un problema di codice sbagliato, ma di Safari che calcola giusto e non disegna. Da lì in
+     avanti nessun fix CSS poteva bastare: serviva il pannello Layers del Web Inspector reale (cavo
+     non disponibile) per capire perché. Deciso di abbandonare il pattern invece di continuare a
+     inseguirlo: .title.sheen e .title.gloss (entrambi background-clip:text, il layer sospetto)
+     nascosti su touch, resta solo .title.base — testo con colore pieno + text-shadow, niente
+     ritagliato sul testo. Perde l'aspetto "metallico"/la banda che scorre, ma è verificabile subito:
+     è la stessa tecnica (color + text-shadow) già confermata renderizzata correttamente dal pannello */
+  .title.sheen,.title.gloss{display:none}
   .title.base{text-shadow:0 1px 0 rgba(15,15,15,1),0 2px 0 rgba(13,13,13,1),0 3px 0 rgba(11,11,11,1),
     0 4px 0 rgba(9,9,9,1),0 5px 0 rgba(7,7,7,1),0 8px 14px rgba(0,0,0,.78),0 -1px 0 rgba(255,255,255,.2),
-    0 0 18px rgba(255,255,255,.18) !important}
+    0 0 18px rgba(255,255,255,.35) !important}
   /* display:none (non più flex): qui sotto sovrascriveva la regola base (riga ~84), riapparendo
      visibile solo su touch — segnalato, il vecchio titolo SVG si vedeva sbiadito dietro al nuovo */
   .testWall{display:none}
