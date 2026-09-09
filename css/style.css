@@ -357,7 +357,12 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    margine libero sopra/sotto (verificato: 450px su 608 disponibili a 1280px, 224px su 432 anche
    nel caso più stretto a 320px) — il testo leggeva piccolo rispetto allo spazio davvero occupato.
    Valori verificati con misure reali (non a stima) da 320 a 1920px dopo l'aumento */
-.c1b-text{font-weight:600;text-transform:uppercase;font-size:clamp(22px,2.8vw,44px);line-height:1.28;max-width:min(82vw,860px);letter-spacing:-.005em}
+/* min(2.8vw,4vh), non solo vw: la card ha altezza fissa (76vh) — su laptop larghi ma bassi (es.
+   MacBook 13" 1280x800 o 1512x900) il font scalava solo sulla larghezza e l'ultima frase finiva
+   sopra il piè della card (segnalato, verificato: overlap a entrambe le risoluzioni). Stesso
+   principio già usato sotto per la fascia 821-1279px (min(3.5vw,4vh)), qui esteso alla regola
+   base perché il bug si presenta anche a larghezza piena quando l'altezza è limitata */
+.c1b-text{font-weight:600;text-transform:uppercase;font-size:clamp(22px,min(2.8vw,4vh),44px);line-height:1.28;max-width:min(82vw,860px);letter-spacing:-.005em}
 /* card1b in 821-1279px (o touch a qualunque larghezza oltre 821px, vedi OR sotto — stesso motivo di
    isMobileCard/isMobileZoom in capitolo1.js: un iPad largo in orizzontale ricade qui) usa il
    trattamento mobile (4 righe unite, centrate), ma il font ereditava il clamp calcolato per il
@@ -1444,13 +1449,20 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      resterebbe fermo allo stato "docked" invece che centrato in mezzo allo schermo */
   .center{position:relative;inset:auto;display:flex;justify-content:center;align-items:center}
   .heroMove{transform:none !important;opacity:1 !important}
-  /* will-change:auto (contro l'eredità di will-change:transform,opacity[,transform per .tilt] della
-     regola desktop, pensato per il loop scroll-jack continuo mai eseguito su touch): stesso motivo
-     già trovato per Project/Hyperparts/HyperLabQ — will-change su un elemento i cui figli usano
-     background-clip:text + filter:drop-shadow (.title.sheen/.gloss) è un bug noto di rendering
-     Safari/WebKit (contenuto che sparisce/non si compone). Segnalato: titolo completamente piatto
-     su iPhone reale, "zero assoluto" di ombra/luce — non riproducibile nel mio ambiente (Chromium) */
+  /* will-change:auto: il loop che lo giustificherebbe (dondolio/tilt) non gira mai su touch (vedi
+     capitolo1.js, isTouch esclude il loop) — nessun motivo di tenere il layer promosso */
   .heroMove,.tilt{will-change:auto}
+  /* causa reale del titolo piatto su iPhone/iPad reale ("zero assoluto" di ombra/luce, non
+     riproducibile in Chromium): filter:drop-shadow su un elemento con background-clip:text ha
+     rendering stocastico documentato su Safari/WebKit (a volte non si compone affatto) — non un
+     valore mancante, i computed style (opacity/gradient/filter) risultano tutti corretti anche
+     quando sparisce. Tolto il filter su .title.gloss, l'effetto luce/ombra si ottiene con un ottavo
+     text-shadow bianco diffuso su .title.base, dove text-shadow (senza filter) è affidabile su
+     Safari — !important necessario, l'inline scritto da render()/titleShadow() ha priorità */
+  .title.gloss{filter:none}
+  .title.base{text-shadow:0 1px 0 rgba(15,15,15,1),0 2px 0 rgba(13,13,13,1),0 3px 0 rgba(11,11,11,1),
+    0 4px 0 rgba(9,9,9,1),0 5px 0 rgba(7,7,7,1),0 8px 14px rgba(0,0,0,.78),0 -1px 0 rgba(255,255,255,.2),
+    0 0 24px rgba(255,255,255,.35) !important}
   /* display:none (non più flex): qui sotto sovrascriveva la regola base (riga ~84), riapparendo
      visibile solo su touch — segnalato, il vecchio titolo SVG si vedeva sbiadito dietro al nuovo */
   .testWall{display:none}
