@@ -704,22 +704,25 @@
   if(location.search.indexOf('debugtitle=1')>-1){
     const panel=document.createElement('div');
     panel.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#fff;color:#000;'+
-      'font:11px/1.4 monospace;padding:8px;white-space:pre-wrap;max-height:60vh;overflow:auto';
+      'font:11px/1.4 monospace;padding:8px;white-space:pre-wrap;max-height:80vh;overflow:auto';
     document.body.appendChild(panel);
+    // stringhe complete (niente troncamento), a-capo dopo ogni virgola: sui primi giri il valore
+    // troncato a 60-70 caratteri nascondeva esattamente i color-stop calc(var(--gp)) e l'ultimo
+    // layer del text-shadow, cioè le due cose che serviva vedere
+    function br(s){ return s.replace(/, /g,',\n    '); }
     function fmt(el,name){
       if(!el) return name+': NOT FOUND\n';
       const cs=getComputedStyle(el);
-      return name+':\n  opacity='+cs.opacity+'\n  filter='+cs.filter+
-        '\n  bg-clip='+cs.webkitBackgroundClip+'\n  bg-image='+cs.backgroundImage.slice(0,70)+
-        '\n  bg-size='+cs.backgroundSize+'\n  bg-pos='+cs.backgroundPosition+
-        '\n  color='+cs.color+'\n  text-shadow='+cs.textShadow.slice(0,60)+'\n';
+      return name+':\n  opacity='+cs.opacity+' filter='+cs.filter+' bg-clip='+cs.webkitBackgroundClip+
+        '\n  --gp(local)='+cs.getPropertyValue('--gp')+
+        '\n  bg-image=\n    '+br(cs.backgroundImage)+
+        '\n  text-shadow=\n    '+br(cs.textShadow)+'\n';
     }
     function update(){
       const r=gloss.getBoundingClientRect();
-      panel.textContent='isTouch='+isTouch+' reduce='+reduce+' innerW='+innerWidth+' innerH='+innerHeight+
-        ' --gp='+getComputedStyle(document.documentElement).getPropertyValue('--gp')+
-        '\nglossRect: w='+r.width.toFixed(0)+' h='+r.height.toFixed(0)+' top='+r.top.toFixed(0)+' left='+r.left.toFixed(0)+
-        '\n\n'+fmt(gloss,'GLOSS')+'\n'+fmt(sheenEl,'SHEEN')+'\n'+fmt(titleBase,'BASE');
+      panel.textContent='isTouch='+isTouch+' innerW='+innerWidth+' innerH='+innerHeight+
+        '\nglossRect: w='+r.width.toFixed(0)+' h='+r.height.toFixed(0)+
+        '\n\n'+fmt(gloss,'GLOSS')+'\n'+fmt(titleBase,'BASE');
     }
     update();
     setInterval(update,1000);
