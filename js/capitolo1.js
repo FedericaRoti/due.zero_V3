@@ -658,10 +658,19 @@
     addEventListener('mousemove',e=>{px=e.clientX;py=e.clientY;if(!raf)raf=requestAnimationFrame(()=>{onMove(px,py);raf=null;});});
     loop();
   }
-  // touch: niente mousemove né loop() (quello guida anche render(sP), lo scroll-jack continuo — su
-  // touch il resto del Cap.1 usa reveal one-shot, non va fatto girare in parallelo). Un loop dedicato
-  // per animare --gp (la banda di luce) c'era, rimosso insieme a .title.gloss in css/style.css: sul
-  // dispositivo reale i computed style erano corretti ma Safari non disegnava il layer comunque
+  // touch: niente mousemove né loop() intero (quello guida anche render(sP), lo scroll-jack continuo
+  // — su touch il resto del Cap.1 usa reveal one-shot, non va fatto girare in parallelo). Il dondolio
+  // della banda di luce (--gp) è a TEMPO (Math.sin), non legato al mouse: loop leggero dedicato,
+  // ripristinato perché .title.gloss ora la usa di nuovo (mask-image invece di background-clip:text)
+  else if(!reduce && isTouch){
+    (function lightLoop(now){
+      const t=(now||performance.now())/1000, ph=(Math.sin(t*.4)+1)/2;
+      lightX+=(.12+ph*.52-lightX)*.05; lightY+=(.24+ph*.5-lightY)*.05;
+      const gp=((lightX*0.6+lightY*0.4)*100).toFixed(1)+'%';
+      gloss.style.setProperty('--gp',gp);
+      requestAnimationFrame(lightLoop);
+    })();
+  }
 
   // Touch: reveal one-shot per banner+titolo+elenco di Cap.1 su touch, stesso identico
   // meccanismo di checkNewsReveal/checkFooterReveal in js/capitoli.js — non lo scroll-jack continuo
@@ -703,8 +712,10 @@
     function fmt(el,name){
       if(!el) return name+': NOT FOUND\n';
       const cs=getComputedStyle(el);
-      return name+':\n  opacity='+cs.opacity+' filter='+cs.filter+' bg-clip='+cs.webkitBackgroundClip+
+      const maskImg=cs.getPropertyValue('-webkit-mask-image')||cs.getPropertyValue('mask-image');
+      return name+':\n  color='+cs.color+' opacity='+cs.opacity+' filter='+cs.filter+' bg-clip='+cs.webkitBackgroundClip+
         '\n  --gp(local)='+cs.getPropertyValue('--gp')+
+        '\n  mask-image=\n    '+br(maskImg)+
         '\n  bg-image=\n    '+br(cs.backgroundImage)+
         '\n  text-shadow=\n    '+br(cs.textShadow)+'\n';
     }

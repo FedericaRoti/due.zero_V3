@@ -1452,17 +1452,24 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   /* will-change:auto: il loop che lo giustificherebbe (dondolio/tilt) non gira mai su touch (vedi
      capitolo1.js, isTouch esclude il loop) — nessun motivo di tenere il layer promosso */
   .heroMove,.tilt{will-change:auto}
-  /* svolta dopo il pannello diagnostico (?debugtitle=1): sul dispositivo reale i computed style di
-     .title.gloss/.title.sheen/.title.base erano TUTTI corretti (filter, bg-clip:text, gradiente coi
-     color-stop calc(var(--gp)) già risolti in numeri validi, tutti gli 8 layer del text-shadow) —
-     non un problema di codice sbagliato, ma di Safari che calcola giusto e non disegna. Da lì in
-     avanti nessun fix CSS poteva bastare: serviva il pannello Layers del Web Inspector reale (cavo
-     non disponibile) per capire perché. Deciso di abbandonare il pattern invece di continuare a
-     inseguirlo: .title.sheen e .title.gloss (entrambi background-clip:text, il layer sospetto)
-     nascosti su touch, resta solo .title.base — testo con colore pieno + text-shadow, niente
-     ritagliato sul testo. Perde l'aspetto "metallico"/la banda che scorre, ma è verificabile subito:
-     è la stessa tecnica (color + text-shadow) già confermata renderizzata correttamente dal pannello */
-  .title.sheen,.title.gloss{display:none}
+  /* dopo il pannello diagnostico: .title.gloss/.sheen calcolavano tutto giusto (bg-clip:text,
+     gradiente coi color-stop già risolti) ma Safari non disegnava — non un problema di valori.
+     .title.sheen resta disattivato (il suo compito, luce ambientale statica, è coperto dal
+     text-shadow su .title.base sotto). Per .title.gloss, l'utente ha notato che l'SVG di prova
+     (.testWallShine, righe ~101-106 sopra) otteneva la STESSA banda mobile con mask-image invece di
+     background-clip:text — tecnica diversa, e a quanto riferito funzionante su questo stesso
+     dispositivo. mask-image ha una storia di supporto WebKit più matura (usata da anni per icone e
+     reveal) di background-clip:text (ancora prefissata, mai standardizzata) — non garantito, ma è un
+     indizio concreto dal dispositivo reale, non un'altra ipotesi da web search. Stessa tecnica
+     dell'SVG: testo bianco pieno (non più trasparente+background-clip) mascherato dalla banda —
+     qui non serve filter:brightness(0) invert(1) (quel trucco serviva solo perché l'SVG aveva già
+     un colore proprio da azzerare; il testo lo controlliamo già direttamente con color) */
+  .title.sheen{display:none}
+  .title.gloss{color:#fff;-webkit-text-fill-color:#fff;background:none;filter:none;
+    -webkit-mask-image:linear-gradient(125deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0) calc(var(--gp,45%) - 22%),
+      rgba(0,0,0,1) var(--gp,45%),rgba(0,0,0,0) calc(var(--gp,45%) + 22%),rgba(0,0,0,0) 100%);
+    mask-image:linear-gradient(125deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0) calc(var(--gp,45%) - 22%),
+      rgba(0,0,0,1) var(--gp,45%),rgba(0,0,0,0) calc(var(--gp,45%) + 22%),rgba(0,0,0,0) 100%)}
   .title.base{text-shadow:0 1px 0 rgba(15,15,15,1),0 2px 0 rgba(13,13,13,1),0 3px 0 rgba(11,11,11,1),
     0 4px 0 rgba(9,9,9,1),0 5px 0 rgba(7,7,7,1),0 8px 14px rgba(0,0,0,.78),0 -1px 0 rgba(255,255,255,.2),
     0 0 18px rgba(255,255,255,.35) !important}
