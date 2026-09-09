@@ -1475,6 +1475,15 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
     background:linear-gradient(125deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 42.7%,
       rgba(255,255,255,1) 50%,rgba(255,255,255,0) 57.3%,rgba(255,255,255,0) 100%);
     background-size:150% 150%;background-position:var(--gp,45%) center}
+  /* rettangolo netto dietro al testo, ancora presente dopo il fix sopra (segnalato con screenshot
+     dal dispositivo reale): non riproducibile in Chromium, quindi non lo stesso bug di calibrazione
+     di prima. Sospetto (non verificato, nessun dispositivo Safari a disposizione): .title.sheen, mai
+     toccato finora, ha lo stesso pattern background-clip:text + gradient che su .gloss non si
+     componeva su Safari — qui il bounding-box del gradiente (invece di restare ritagliato sul testo)
+     potrebbe restare visibile per intero. Il suo ruolo (luce ambientale statica, evitare che il testo
+     legga "a due toni" — vedi capitolo1.js) è già coperto dal text-shadow bianco aggiunto sopra su
+     .title.base: disattivato su touch come test mirato invece di un altro fix alla cieca sul gradiente */
+  .title.sheen{opacity:0 !important}
   /* .35 di opacità sul glow (invece di .18 come il drop-shadow desktop che sostituisce) sommato
      alla banda dava un effetto "troppo acceso rispetto al desktop" (segnalato) — riallineato */
   .title.base{text-shadow:0 1px 0 rgba(15,15,15,1),0 2px 0 rgba(13,13,13,1),0 3px 0 rgba(11,11,11,1),
