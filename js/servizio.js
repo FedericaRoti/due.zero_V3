@@ -71,6 +71,13 @@
     const pool=IMAGE_POOL.filter(img=>img.file!==anchorFile);
     for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
     pool.slice(0,5).forEach(img=>{
+      // <picture> invece di solo <img>: stesso identico elemento IMG (classe/loading/decoding/alt/
+      // listener/src invariati, .svcSidebarImg riceve gli stessi stili di prima), con un <source>
+      // webp in più che il browser preferisce se lo sa decodificare — fallback al jpg altrimenti
+      const picture=document.createElement('picture');
+      const source=document.createElement('source');
+      source.type='image/webp';
+      source.srcset='img/services/gallery/'+img.file.replace(/\.jpg$/,'.webp');
       const el=document.createElement('img');
       el.className='svcSidebarImg';
       el.loading='lazy';
@@ -78,7 +85,9 @@
       el.alt=img.alt;
       el.addEventListener('load',()=>el.classList.add('loaded'));
       el.src='img/services/gallery/'+img.file;
-      svcSidebar.appendChild(el);
+      picture.appendChild(source);
+      picture.appendChild(el);
+      svcSidebar.appendChild(picture);
     });
   }
 
