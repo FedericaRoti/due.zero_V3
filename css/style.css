@@ -237,8 +237,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo);overflow-x:hid
 /* immagine: appare già alla sua inquadratura finale (106% / 62%,48% — la stessa a cui arrivava
    prima lo zoom), niente più crop/scale animato via JS: solo dissolvenza */
 .ch1Img{position:absolute;inset:-4vh -4vw;z-index:2;
-  background-image:url('../img/01-DOCTEC.jpg'); /* fallback: se il browser non capisce image-set, questa resta valida */
-  background-image:image-set(url('../img/01-DOCTEC.webp') type('image/webp'),url('../img/01-DOCTEC.jpg') type('image/jpeg'));
+  background-image:url('../img/01-DOCTEC.jpg');
   background-repeat:no-repeat;
   background-size:106% auto;background-position:62% 48%;
   opacity:0;pointer-events:none;will-change:opacity}
@@ -457,7 +456,6 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo);overflow-x:hid
 /* ---- ponte verso 2.0 PROJECT: campo fotografico immersivo (non un box), emerge da destra, crop ravvicinato -> a fuoco ---- */
 .ecoProjectImg{position:absolute;inset:-4vh -4vw;z-index:1;
   background-image:url('../img/eco_project_bg.jpg');
-  background-image:image-set(url('../img/eco_project_bg.webp') type('image/webp'),url('../img/eco_project_bg.jpg') type('image/jpeg'));
   background-repeat:no-repeat;transform-origin:center;
   opacity:0;pointer-events:none;will-change:transform,filter,background-size,background-position}
 /* stesso velo scuro di .ecoHyperImg: qui il testo è già bianco, stesso schema di leggibilità.
@@ -507,7 +505,6 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo);overflow-x:hid
 /* stesso principio del velo di 2.0 Project: oscuramento concentrato in basso, non un velo uniforme */
 .ecoHyperImg{position:absolute;inset:-4vh -4vw;z-index:1;
   background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.35) 45%,rgba(7,12,20,.62) 65%,rgba(7,12,20,.88) 100%),url('../img/eco_hyperparts_bg.jpg');
-  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.35) 45%,rgba(7,12,20,.62) 65%,rgba(7,12,20,.88) 100%),image-set(url('../img/eco_hyperparts_bg.webp') type('image/webp'),url('../img/eco_hyperparts_bg.jpg') type('image/jpeg'));
   background-repeat:no-repeat;background-position:center,center 30%;background-size:cover,cover;
   transform-origin:50% 30%;opacity:0;pointer-events:none;will-change:transform,filter,clip-path}
 
@@ -525,7 +522,6 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo);overflow-x:hid
    immersivo, titolo dominante con maschera laterale, sottotitolo, desc, CTA ---- */
 .ecoLabQImg{position:absolute;inset:-4vh -4vw;z-index:1;
   background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.35) 45%,rgba(7,12,20,.62) 65%,rgba(7,12,20,.88) 100%),url('../img/eco_hyperlabq_bg.jpg');
-  background-image:linear-gradient(180deg,rgba(7,12,20,.10) 0%,rgba(7,12,20,.35) 45%,rgba(7,12,20,.62) 65%,rgba(7,12,20,.88) 100%),image-set(url('../img/eco_hyperlabq_bg.webp') type('image/webp'),url('../img/eco_hyperlabq_bg.jpg') type('image/jpeg'));
   background-repeat:no-repeat;background-position:center,center 30%;background-size:cover,cover;
   transform-origin:50% 30%;opacity:0;pointer-events:none;will-change:transform,filter,clip-path}
 #sceneLabQContent{position:absolute;left:38px;bottom:8vh;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:8px;max-width:760px;pointer-events:none}
@@ -1236,13 +1232,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo);overflow-x:hid
   .ecoProjectVeil{position:absolute;inset:0;opacity:1 !important;
     background:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%) !important}
   .ecoHyperImg,.ecoLabQImg{background-blend-mode:normal}
-  /* due dichiarazioni, entrambe !important: la seconda (image-set) vince se il browser la capisce,
-     altrimenti è scartata come invalida e resta la prima (jpg) — stesso fallback sicuro della
-     regola base, ma serve ripeterlo qui con !important per non perdere la precedenza su touch */
-  .ecoHyperImg{background-image:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%),url('../img/eco_hyperparts_bg.jpg') !important;
-    background-image:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%),image-set(url('../img/eco_hyperparts_bg.webp') type('image/webp'),url('../img/eco_hyperparts_bg.jpg') type('image/jpeg')) !important}
-  .ecoLabQImg{background-image:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%),url('../img/eco_hyperlabq_bg.jpg') !important;
-    background-image:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%),image-set(url('../img/eco_hyperlabq_bg.webp') type('image/webp'),url('../img/eco_hyperlabq_bg.jpg') type('image/jpeg')) !important}
+  .ecoHyperImg{background-image:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%),url('../img/eco_hyperparts_bg.jpg') !important}
+  .ecoLabQImg{background-image:linear-gradient(180deg,rgba(7,12,20,.40) 0%,rgba(7,12,20,.65) 35%,rgba(7,12,20,.86) 65%,rgba(7,12,20,.90) 100%),url('../img/eco_hyperlabq_bg.jpg') !important}
   #sceneProject,#sceneHyper,#sceneLabQContent{position:relative;z-index:2;display:flex;flex-direction:column;
     align-items:flex-start;gap:14px;padding:38px;max-width:none}
   .pj-group,.hp-group,.lq-group{transform:none}
