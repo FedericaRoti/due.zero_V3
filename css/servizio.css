@@ -75,6 +75,10 @@ body{background:var(--paper);color:var(--ink);font-family:var(--geo)}
    meno paragrafi), la sidebar diventa la colonna più alta della grid e l'ultima immagine finiva
    incollata al fondo, senza il margine "sollevato" delle pagine con testo più lungo */
 .svcSidebar{display:flex;flex-direction:column;gap:3vh;padding-top:8vh;padding-bottom:8vh}
+/* <picture> non stilizzato altrimenti sarebbe lui il flex item (invece di .svcSidebarImg), vanificando
+   width/aspect-ratio/flex-basis sotto: display:contents lo rimuove dal layout, l'<img> torna a
+   comportarsi come se fosse figlio diretto di .svcSidebar */
+.svcSidebar picture{display:contents}
 .svcSidebarImg{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:rgba(20,20,18,.05);
   opacity:0;transition:opacity .6s ease}
 .svcSidebarImg.loaded{opacity:1}

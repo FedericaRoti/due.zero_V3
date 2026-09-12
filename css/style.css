@@ -2,13 +2,15 @@
   --geo:'Big Shoulders Display',sans-serif;--mono:'IBM Plex Mono',monospace;--mx:50vw;--my:44vh;
   --hero-font:'Bebas Neue',sans-serif} /* solo per .title (scritta centrale hero): il resto del sito resta su --geo */
 *{margin:0;padding:0;box-sizing:border-box}
-/* overflow-x:hidden su html/body (fix precedente per lo scroll orizzontale) rimosso: qualsiasi
-   overflow su un antenato di un elemento position:sticky rompe lo sticky positioning (bug CSS noto,
-   soprattutto su Safari) — ha reso l'intero sito nero oltre la prima scena, perché tutto lo
-   scroll-jack si basa su .sticky. Verificato (scrollWidth===clientWidth sul sito pubblicato, senza
-   overflow-x) che non c'è più overflow orizzontale reale da bloccare: il fix del pinch-zoom
-   (maximum-scale=1 nel meta viewport, commit precedente) aveva già risolto il problema originale —
-   questo era ridondante e ha solo rotto sticky senza risolvere altro */
+/* overflow-x:hidden su html/body (fix precedente per lo scroll orizzontale) era stato rimosso perché
+   qualsiasi overflow su un antenato di un elemento position:sticky rompe lo sticky positioning (bug
+   CSS noto, soprattutto su Safari) — aveva reso l'intero sito nero oltre la prima scena. La verifica
+   scrollWidth===clientWidth era però stata fatta solo a larghezza desktop: su viewport mobile reale
+   (375px) c'è overflow orizzontale vero, dovuto a elementi volutamente fuori schermo (banner in
+   scivolamento, tooltip dei badge hero). overflow-x:clip risolve entrambi i problemi insieme: a
+   differenza di hidden, NON forza overflow-y a auto e quindi non rompe lo sticky (verificato: sticky
+   resta a top:0 durante tutto lo scroll-jack) — supportato da Safari 16+ (2022), copertura ampia oggi */
+html,body{overflow-x:clip}
 body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* 1020vh, non più 760: la nuova sequenza (titolo da solo -> immagine -> sottotitolo, ciascuno con
