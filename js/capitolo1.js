@@ -696,36 +696,4 @@
   readScroll();
   window.addEventListener('load',measure); measure();
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(measure);   // ricalcola con i font caricati
-
-  // pannello diagnostico temporaneo (?debugtitle=1 nell'URL): il bug del titolo su Safari reale non
-  // è riproducibile in Chromium, quindi ogni fix finora è stato "alla cieca" — questo mostra a schermo
-  // i computed style reali del dispositivo, leggibili con un semplice screenshot, senza cavo/devtools
-  if(location.search.indexOf('debugtitle=1')>-1){
-    const panel=document.createElement('div');
-    panel.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#fff;color:#000;'+
-      'font:11px/1.4 monospace;padding:8px;white-space:pre-wrap;max-height:80vh;overflow:auto';
-    document.body.appendChild(panel);
-    // stringhe complete (niente troncamento), a-capo dopo ogni virgola: sui primi giri il valore
-    // troncato a 60-70 caratteri nascondeva esattamente i color-stop calc(var(--gp)) e l'ultimo
-    // layer del text-shadow, cioè le due cose che serviva vedere
-    function br(s){ return s.replace(/, /g,',\n    '); }
-    function fmt(el,name){
-      if(!el) return name+': NOT FOUND\n';
-      const cs=getComputedStyle(el);
-      const maskImg=cs.getPropertyValue('-webkit-mask-image')||cs.getPropertyValue('mask-image');
-      return name+':\n  color='+cs.color+' opacity='+cs.opacity+' filter='+cs.filter+' bg-clip='+cs.webkitBackgroundClip+
-        '\n  --gp(local)='+cs.getPropertyValue('--gp')+
-        '\n  mask-image=\n    '+br(maskImg)+
-        '\n  bg-image=\n    '+br(cs.backgroundImage)+
-        '\n  text-shadow=\n    '+br(cs.textShadow)+'\n';
-    }
-    function update(){
-      const r=gloss.getBoundingClientRect();
-      panel.textContent='isTouch='+isTouch+' innerW='+innerWidth+' innerH='+innerHeight+
-        '\nglossRect: w='+r.width.toFixed(0)+' h='+r.height.toFixed(0)+
-        '\n\n'+fmt(gloss,'GLOSS')+'\n'+fmt(titleBase,'BASE');
-    }
-    update();
-    setInterval(update,1000);
-  }
 })();
