@@ -49,3 +49,7 @@
 }
 
 .footerLegalStatic{cursor:default;color:rgba(237,237,234,.32)} /* Privacy/Cookie: nessun URL reale ancora, testo non cliccabile */
+
+/* anello di focus da tastiera: solo il colore del brand al posto di quello generico del
+   browser — :focus-visible (non :focus) mostra l'anello solo a chi naviga con Tab, non al click */
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}

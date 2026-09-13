@@ -1535,5 +1535,13 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      #ecosistemaStart dentro 2.0 Project/Hyperparts invece che sul banner di apertura, segnalato).
      Su touch le sezioni sono già statiche dall'inizio: l'ancora corretta è l'inizio stesso */
   .scene .chapterAnchor,.scene2 .chapterAnchor,.mapServicesTransition .chapterAnchor,.qualitySection .chapterAnchor{top:0}
+  /* #chapter1Start è un caso diverso dagli altri tre sopra: non ha una sezione propria che inizia
+     a top:0, è dentro .scene insieme all'hero (che su touch va per primo, order:1, min-height:100vh).
+     "Chi Siamo" atterrerebbe quindi in cima all'hero invece che sul banner rosso "Capitolo 1 | Chi
+     Siamo" più sotto (segnalato: "il menu non salta al punto giusto"). Misurato dal vivo su 375px:
+     il banner sta a ~113.7vh da cima .scene (hero 100vh + margine) — 110vh è una stima leggermente
+     conservativa, per non superare l'inizio del banner. Specificità ID batte .scene .chapterAnchor
+     sopra senza bisogno di !important */
+  #chapter1Start{top:110vh}
 }
 /* ==================== FINE VERSIONE TOUCH/MOBILE ==================== */
