@@ -48,7 +48,9 @@
   .overlay .submenu a{font-size:clamp(15px,3.6vw,22px)}
 }
 
-.footerLegalStatic{cursor:default;color:rgba(237,237,234,.32)} /* Privacy/Cookie: nessun URL reale ancora, testo non cliccabile */
+/* opacità .32->.5: su nero il bianco risultante faceva 2.57:1, il peggiore tra i contrasti rilevati
+   da Lighthouse (soglia AA 4.5:1) — Privacy/Cookie restano testo non cliccabile, solo più leggibili */
+.footerLegalStatic{cursor:default;color:rgba(237,237,234,.5)}
 
 /* anello di focus da tastiera: solo il colore del brand al posto di quello generico del
    browser — :focus-visible (non :focus) mostra l'anello solo a chi naviga con Tab, non al click */

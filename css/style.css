@@ -158,7 +158,9 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 .heroEco{position:absolute;left:0;right:0;bottom:140px;margin:0 auto;z-index:5;
   display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;
   max-width:780px;padding:0 24px;opacity:0;pointer-events:none;transition:opacity .4s ease}
-.heroEcoLabel{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
+/* #E4352C non #E2231A (var(--red)): su nero il rosso brand fa 4.23:1, sotto soglia AA 4.5:1
+   (rilevato da Lighthouse) — variante più chiara solo qui, stessa logica di .svcEyebrow su carta */
+.heroEcoLabel{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#E4352C}
 .heroEcoSub{font-family:var(--mono);font-size:13px;line-height:1.55;text-transform:uppercase;color:rgba(237,237,234,.55)}
 
 .heroBadges{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:6;
@@ -307,10 +309,11 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
    bordo destro" (metà reale, non l'intera larghezza) — bug già trovato e risolto una volta per
    .heroEco/.c1b-foot su mobile, ma il fix era scoped solo lì: qui si corregge alla radice, valido
    a ogni larghezza. Il centraggio del testo arriva per eredità da .card1b{text-align:center} */
+/* opacità .5->.62: su carta il grigio risultante faceva 3.33:1, sotto soglia AA 4.5:1 (Lighthouse) */
 .card1b .c1b-head,.card1b .c1b-foot{position:absolute;left:0;right:0;
-  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(20,20,18,.5);opacity:0}
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(20,20,18,.62);opacity:0}
 .card1b .c1b-head{top:34px}.card1b .c1b-foot{bottom:34px}
-.card1b .c1b-head .idx{color:var(--red)}
+.card1b .c1b-head .idx{color:#D02018}
 /* corpo ingrandito (30px->44px, 16px->22px al minimo): con 5 frasi la card aveva ancora molto
    margine libero sopra/sotto (verificato: 450px su 608 disponibili a 1280px, 224px su 432 anche
    nel caso più stretto a 320px) — il testo leggeva piccolo rispetto allo spazio davvero occupato.
@@ -660,8 +663,9 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 
 /* lista verticale (mobile + reduced-motion): stessi dati delle card, nessun pin */
 .svcMobileList{display:none;background:var(--black);padding:90px 8vw 100px}
+/* #E4352C: stesso motivo di .heroEcoLabel sopra, rosso brand su nero sotto soglia contrasto */
 .svcMobileLabel{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--red);display:flex;align-items:center;gap:10px;margin-bottom:34px}
+  color:#E4352C;display:flex;align-items:center;gap:10px;margin-bottom:34px}
 /* anteprima: ogni riga diventa un rettangolo con la foto del servizio come sfondo (stessa immagine
    già usata per le card desktop), invece di numero+miniatura+nome in una riga sottile. Overlay
    scuro sfumato dal basso (stessa tecnica di .ecoHyperImg in Ecosistema) per leggibilità del testo,
@@ -719,7 +723,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
 /* .qualityRecordLabel qui dentro (spostata da #qualityRecord): prima la nascondeva il translateY(100%)
    dell'intero contenitore .qualityRecord, qui #qualityIntro non nasconde così i figli — serve un
    opacity:0 proprio, rivelato in JS insieme al banner/titolo (vedi renderQuality) */
-.qualityRecordLabel{color:var(--red);font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);
+/* #D02018 non var(--red): su carta il rosso brand fa 3.98:1, sotto soglia — stesso fix di .svcEyebrow */
+.qualityRecordLabel{color:#D02018;font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);
   letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px;opacity:0;will-change:opacity}
 /* .qualityRecord p (spostata da #qualityIntro, stessa identica regola solo rinominata: il tag <p>
    ora vive dentro #qualityRecord con "la qualità non si controlla") */
