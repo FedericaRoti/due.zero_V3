@@ -597,12 +597,14 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   display:flex;flex-direction:column;justify-content:center}
 .svcHead{padding:0 38px 26px;display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap}
 .svcHeadLabel{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--red);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  /* var(--red) su nero a 11px scende a 4.23:1 (Lighthouse) sotto la soglia WCAG 4.5:1; stesso trattamento già usato per .heroEcoLabel/.svcMobileLabel */
+  color:#E4352C;display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .svcHeadBar{display:inline-block;width:2px;height:12px;background:var(--red);flex-shrink:0}
 .svcHeadTitle{font-family:var(--geo);font-weight:800;text-transform:uppercase;color:#EDEDEA;
   font-size:clamp(28px,3.6vw,52px);line-height:1.02;letter-spacing:-.01em}
 .svcProgressWrap{display:flex;align-items:center;gap:22px;flex-shrink:0}
-.svcCounter{font-family:var(--mono);font-size:11px;color:rgba(237,237,234,.35);letter-spacing:.2em;min-width:80px;text-align:right}
+/* alpha .35 su nero dava 2.82:1 (Lighthouse), sotto la soglia WCAG 4.5:1 */
+.svcCounter{font-family:var(--mono);font-size:11px;color:rgba(237,237,234,.5);letter-spacing:.2em;min-width:80px;text-align:right}
 .svcProgressTrack{width:120px;height:1px;background:rgba(237,237,234,.12);position:relative;overflow:hidden}
 .svcProgressBar{position:absolute;top:0;left:0;height:100%;width:0%;background:var(--red)}
 .svcTrackWrap{overflow:hidden}
