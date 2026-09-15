@@ -17,7 +17,7 @@
     history.replaceState(null,'',location.pathname+location.search);
   }
   const $=id=>document.getElementById(id);
-  const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),testWall=$('testWall'),testWallMove=$('testWallMove'),menuBtn=$('menuBtn'),
+  const scene=$('scene'),heroMove=$('heroMove'),tilt=$('tilt'),gloss=$('gloss'),menuBtn=$('menuBtn'),
         glossWrap=$('glossWrap'),triangle=$('triangle'),legend=$('legend'),hint=$('hint'),
         chapter1=$('chapter1'),chBanner=$('chBanner'),card1b=$('card1b'),chSub=$('chSub'),ch1Img=$('ch1Img'),ch1ImgVeil=$('ch1ImgVeil'),
         overlay=$('overlay'),closeBtn=$('closeBtn'),root=document.documentElement,body=document.body,
@@ -199,9 +199,6 @@
   }
 
   let rect0={left:0,top:0}, l0Off=0, l1Off=0, l2Off=0;
-  // stesso aggancio (in alto a sx) del vecchio titolo testuale, riusato anche per il nuovo SVG —
-  // vedi rect0Test/testWallMove sotto
-  let rect0Test={left:0,top:0}, wl1Off=0, wl2Off=0, wl3Off=0;
   const DOCK={x:38,y:78,scale:.8};    // font grande, quasi metà viewport
   function measure(){
     heroMove.style.transform='none';
@@ -215,26 +212,6 @@
     if(l0&&l1&&l2){
       const w0=l0.offsetWidth, w1=l1.offsetWidth, w2=l2.offsetWidth, maxW=Math.max(w0,w1,w2);
       l0Off=-(maxW-w0)/2; l1Off=-(maxW-w1)/2; l2Off=-(maxW-w2)/2;
-    }
-    // SVG di test: le 3 righe (.line1/2/3) sono posizionate dall'artwork originale, non da
-    // margin:auto — ma sono comunque centrate tra loro (verificato via getBBox: i centri delle 3
-    // righe cadono entro 3.5 unità l'uno dall'altro), quindi lo stesso principio di riallineamento
-    // si applica: ogni riga si sposta fino a condividere il bordo sinistro della più larga (qui
-    // "COMMUNICATION", già verificato essere la più larga E la più a sinistra delle tre — offset 0).
-    // getBBox() è in coordinate utente dell'SVG (viewBox): CSS transform su elementi SVG usa la
-    // STESSA unità (transform-box:view-box è il default), quindi lo shift si applica as-is, senza
-    // conversione in px dello schermo
-    if(testWallMove){
-      testWallMove.style.transform='none';
-      rect0Test=testWallMove.getBoundingClientRect();
-      const wl1=document.querySelector('.testWallBase .line1'),
-            wl2=document.querySelector('.testWallBase .line2'),
-            wl3=document.querySelector('.testWallBase .line3');
-      if(wl1&&wl2&&wl3){
-        const b1=wl1.getBBox(), b2=wl2.getBBox(), b3=wl3.getBBox();
-        const minX=Math.min(b1.x,b2.x,b3.x);
-        wl1Off=minX-b1.x; wl2Off=minX-b2.x; wl3Off=minX-b3.x;
-      }
     }
     buildBanner();
     if(reduce) render(pRaw);
@@ -334,18 +311,6 @@
     glossWrap.style.setProperty('--l1Shift',(l1Off*alignDock1).toFixed(1)+'px');
     glossWrap.style.setProperty('--l2Shift','0px');
     heroMove.style.opacity=heroOut.toFixed(3);
-    // SVG di test: stesso identico aggancio (dock) e stessa dissolvenza (heroOut) del titolo testuale
-    // sopra — prima restava fermo per tutto il Capitolo 1, sovrapponendosi alle scene successive
-    if(testWallMove){
-      const scT=1-(1-DOCK.scale)*dock, txT=(DOCK.x-rect0Test.left)*dock, tyT=(DOCK.y-rect0Test.top)*dock;
-      testWallMove.style.transform='translate('+txT.toFixed(1)+'px,'+tyT.toFixed(1)+'px) scale('+scT.toFixed(4)+')';
-      testWallMove.style.opacity=heroOut.toFixed(3);
-      // stesso riallineamento a sinistra delle righe corte del vecchio titolo, stesse due finestre
-      // sfasate (alignDock0/alignDock1) per lo stesso moto organico non in blocco
-      testWallMove.style.setProperty('--wl1Shift',(wl1Off*alignDock0).toFixed(1)+'px');
-      testWallMove.style.setProperty('--wl2Shift',(wl2Off*alignDock1).toFixed(1)+'px');
-      testWallMove.style.setProperty('--wl3Shift',(wl3Off*alignDock1).toFixed(1)+'px');
-    }
     tiltK=tiltFade;
     gloss.style.opacity=shadowOut.toFixed(3);   // riflesso e drop-shadow: spariscono nel primo terzo del docking, non insieme al movimento
     titleBase.style.textShadow=titleShadow(shadowOut);   // idem per l'ombra materica: quando il titolo è chiaramente in moto, niente ombra dietro
@@ -467,7 +432,6 @@
     // ricondotta a UN valore solo (--gp) perché un linear-gradient ha una posizione, non un centro x/y
     const gp=((lightX*0.6+lightY*0.4)*100).toFixed(1)+'%';
     gloss.style.setProperty('--gp',gp);
-    if(testWall) testWall.style.setProperty('--gp',gp); // TEST: stessa banda di luce, riusata sul nuovo SVG
 
     sP+=(pRaw-sP)*0.07;   // UNICO smoothing per tutta la coreografia del Capitolo 1
     render(sP);

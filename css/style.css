@@ -90,33 +90,6 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
     rgba(255,255,255,1) var(--gp,45%),rgba(255,255,255,0) calc(var(--gp,45%) + 22%),rgba(255,255,255,0) 100%);
   -webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 18px rgba(255,255,255,.18))}
 
-/* ---- SVG del capo (usato temporaneamente al posto del titolo testuale, poi non più convincente —
-   segnalato): nascosto ma non rimosso, stessa filosofia "facilmente reversibile" con cui era stato
-   introdotto. Il JS in capitolo1.js continua ad aggiornarlo (heroMove/testWallMove ricevono lo
-   stesso transform ogni frame) — nessun problema, semplicemente non visibile ----
-   background-clip:text non esiste per un <img>/SVG: l'equivalente per una forma qualsiasi era
-   mask-image con lo stesso gradiente. Il livello "shine" era reso tutto bianco via filter
-   (brightness(0) poi invert(1), un trucco standard per forzare un'immagine a silhouette bianca)
-   e poi mascherato dalla stessa banda diagonale (--gp, impostata anche qui in capitolo1.js) */
-.testWall{display:none}
-/* testWallMove riceve il transform di aggancio (dock, in alto a sx) + opacity (heroOut): stesso
-   principio di heroMove per il vecchio titolo — .testWall resta il contenitore statico che centra,
-   .testWallMove è quello che si sposta/rimpicciolisce/sparisce durante lo scroll (vedi capitolo1.js) */
-.testWallMove{position:relative;transform-origin:left top;will-change:transform,opacity}
-.testWallInner{position:relative;width:min(840px,82vw)} /* ~ larghezza del vecchio titolo (839.7px a 1440px), misura approssimativa */
-.testWallInner svg{display:block;width:100%;height:auto}
-/* le 3 righe, ciascuna spostabile per conto proprio (stesso schema di .title .l0/.l1/.l2): serve per
-   l'aggancio in alto a sx, dove le righe più corte si riallineano al bordo sinistro della più lunga */
-.testWallInner .line1{transform:translateX(var(--wl1Shift,0px))}
-.testWallInner .line2{transform:translateX(var(--wl2Shift,0px))}
-.testWallInner .line3{transform:translateX(var(--wl3Shift,0px))}
-.testWallShine{position:absolute;left:0;top:0;
-  filter:brightness(0) invert(1) drop-shadow(0 0 18px rgba(255,255,255,.18));
-  -webkit-mask-image:linear-gradient(125deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0) calc(var(--gp,45%) - 22%),
-    rgba(0,0,0,1) var(--gp,45%),rgba(0,0,0,0) calc(var(--gp,45%) + 22%),rgba(0,0,0,0) 100%);
-  mask-image:linear-gradient(125deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0) calc(var(--gp,45%) - 22%),
-    rgba(0,0,0,1) var(--gp,45%),rgba(0,0,0,0) calc(var(--gp,45%) + 22%),rgba(0,0,0,0) 100%)}
-
 /* ---- triangolo ---- */
 .triangle{position:absolute;left:0;top:0;z-index:7;width:65px;height:65px;background:var(--red);clip-path:polygon(100% 0,100% 100%,0 100%,100% 0);will-change:left,top,width,height,clip-path,opacity}
 
@@ -1394,10 +1367,6 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .scene{height:auto;background:var(--black)}
   .sticky{position:static;height:auto;overflow:visible;perspective:none;display:flex;flex-direction:column;padding:0}
   .ambient,.legend{display:none}
-  /* .testWall è SEMPRE display:none anche fuori da qui (vedi riga ~84, "SVG del capo... non più
-     convincente") — il titolo che si vede davvero è di nuovo quello testuale (.center). Le regole
-     .testWall/.testWallMove sotto restano (stessa filosofia "facilmente reversibile"), ma sono
-     inerti: non c'è nulla da vedere lì, si lavora su .center/.heroMove */
 
   /* fascia 1 — hero a schermo pieno, struttura rifatta: .heroGroup è un vero contenitore (spostati
      .heroEco/.heroBadges/.triangle nel DOM per essere suoi figli, non più fratelli sparsi in
@@ -1408,8 +1377,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      corretto qualunque sia l'altezza reale di titolo/etichetta/badge su quel viewport */
   .heroGroup{order:1;position:relative;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
     justify-content:center;align-items:center;gap:40px;padding:90px 6vw 40px}
-  /* stesso identico trattamento che aveva .testWall/.testWallMove qui sopra, ora su .center/.heroMove:
-     position:relative (non più assoluto, .heroGroup lo centra già via flex) + transform/opacity
+  /* position:relative (non più assoluto, .heroGroup lo centra già via flex) + transform/opacity
      dell'inline style azzerati (!important) — render() in capitolo1.js continua a scrivere dock/scale
      su heroMove ad ogni frame anche su touch (hidePreloader lo chiama una volta), senza questo
      resterebbe fermo allo stato "docked" invece che centrato in mezzo allo schermo */
@@ -1422,8 +1390,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
      gradiente coi color-stop già risolti) ma Safari non disegnava — non un problema di valori.
      .title.sheen resta disattivato (il suo compito, luce ambientale statica, è coperto dal
      text-shadow su .title.base sotto). Per .title.gloss, l'utente ha notato che l'SVG di prova
-     (.testWallShine, righe ~101-106 sopra) otteneva la STESSA banda mobile con mask-image invece di
-     background-clip:text — tecnica diversa, e a quanto riferito funzionante su questo stesso
+     (rimosso, otteneva la stessa banda mobile con mask-image invece di
+     background-clip:text) — tecnica diversa, e a quanto riferito funzionante su questo stesso
      dispositivo. mask-image ha una storia di supporto WebKit più matura (usata da anni per icone e
      reveal) di background-clip:text (ancora prefissata, mai standardizzata) — non garantito, ma è un
      indizio concreto dal dispositivo reale, non un'altra ipotesi da web search. Stessa tecnica
@@ -1439,15 +1407,8 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   .title.base{text-shadow:0 1px 0 rgba(15,15,15,1),0 2px 0 rgba(13,13,13,1),0 3px 0 rgba(11,11,11,1),
     0 4px 0 rgba(9,9,9,1),0 5px 0 rgba(7,7,7,1),0 8px 14px rgba(0,0,0,.78),0 -1px 0 rgba(255,255,255,.2),
     0 0 18px rgba(255,255,255,.35) !important}
-  /* display:none (non più flex): qui sotto sovrascriveva la regola base (riga ~84), riapparendo
-     visibile solo su touch — segnalato, il vecchio titolo SVG si vedeva sbiadito dietro al nuovo */
-  .testWall{display:none}
-  .testWallMove{transform:none !important;opacity:1 !important}
-  /* .testWallShine (copia bianca mascherata da una banda diagonale, --gp) NON va toccata: è l'effetto
-     originale (rifiutato il tentativo precedente di renderla bianca intera, "deve tornare originale").
-     Senza il loop che aggiorna --gp resta ferma al valore di default in CSS (45%), che è comunque
-     un aspetto valido e voluto del design — non un bug. Stesso principio per .title.gloss ora che
-     è di nuovo lei il titolo visibile: banda di luce statica su touch, non un bug */
+  /* senza il loop di dondolio (mai attivo su touch), --gp resta ferma al valore di default in CSS
+     (45%): un aspetto valido e voluto del design, non un bug — banda di luce statica su touch */
   /* right:0;bottom:0 esatti (non calcolati): il triangolo è ora figlio diretto di .heroGroup
      (position:relative), lo stesso contenitore che racchiude anche heroEco/heroBadges — l'angolo è
      quindi sempre quello vero del gruppo, non un'approssimazione basata su altezze misurate a mano
