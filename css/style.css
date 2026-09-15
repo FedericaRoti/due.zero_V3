@@ -163,7 +163,7 @@ body{background:var(--black);color:#EDEDEA;font-family:var(--geo)}
   max-width:780px;padding:0 24px;opacity:0;pointer-events:none;transition:opacity .4s ease}
 /* #E4352C non #E2231A (var(--red)): su nero il rosso brand fa 4.23:1, sotto soglia AA 4.5:1
    (rilevato da Lighthouse) — variante più chiara solo qui, stessa logica di .svcEyebrow su carta */
-.heroEcoLabel{font-family:var(--hero-font);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#E4352C}
+.heroEcoLabel{font-family:var(--hero-font);font-size:17px;letter-spacing:.18em;text-transform:uppercase;color:#E4352C}
 .heroEcoSub{font-family:var(--mono);font-size:13px;line-height:1.55;text-transform:uppercase;color:rgba(237,237,234,.55)}
 
 .heroBadges{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:6;
