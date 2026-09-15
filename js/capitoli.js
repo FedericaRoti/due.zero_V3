@@ -193,11 +193,12 @@
       lqCtaRow.style.opacity=(lqCtaIn*(1-lqOut)).toFixed(3);
       lqCtaRow.style.pointerEvents=(lqCtaIn>.6 && lqOut<.5)?'auto':'none';
 
-      // ---- uscita di scena, verso Documentation 4.0 (scena indipendente successiva): fino a .98, non
-      // oltre — stesso principio già applicato altrove, niente scroll morto prima del cambio scena.
-      // Qui il fondo carta di Documentation dà comunque un segnale di cambio scena immediato (a
-      // differenza del confine Hyperparts/Hyper.LabQ, stesso identico colore di fondo su entrambe) ----
-      const labToDoc = smooth(sub(s,.850,.98));
+      // ---- uscita di scena, verso Documentation 4.0 (scena indipendente successiva): esteso fino a 1
+      // (era .98) — con il tetto a .98 l'animazione si fermava presto e i restanti ~735px di scroll
+      // (il margine tecnico di sblocco dello sticky, sempre pari a un'altezza di viewport per qualunque
+      // sezione scroll-jacked di questo sito) restavano completamente fermi su nero pieno (segnalato).
+      // Ora la foto continua a restringersi/sfumare fino all'ultimo pixel utile, niente più fermo ----
+      const labToDoc = smooth(sub(s,.850,1));
       ecoLabQImg.style.opacity=(lqPhotoIn*(1-labToDoc)).toFixed(3);
       ecoLabQImg.style.filter='blur('+(lerp(9,0,lqZoomIn)+lerp(0,16,labToDoc)).toFixed(2)+'px)';
       ecoLabQImg.style.transform='scale('+(lerp(1.28,1,lqZoomIn)*lerp(1,2.6,labToDoc)).toFixed(3)+')';
@@ -232,9 +233,16 @@
     let pRawD40=0, sPD40=0;
     function readScrollD40(){ const denom=Math.max(1,sceneDoc40.offsetHeight-innerHeight); pRawD40=clamp((scrollY-sceneDoc40.offsetTop)/denom,0,1); }
     function renderD40(s){
-      const dcTitleIn    = smooth(sub(s,0,.11));    // blocco che si rivela tramite maschera centrale + leggero scale
+      // preDoc40: stesso principio di preQuality (vedi renderQuality) — lo sticky di scene2 si sblocca
+      // nativamente nell'ultima altezza di viewport del suo scroll, PRIMA che "s" locale di sceneDoc40
+      // inizi a muoversi: senza questo, al cambio scena si sommava ANCHE lo scroll locale per rivelare
+      // titolo+accento (.11/.16 sotto), allungando il tratto già fermo segnalato dal capo. Segue lo
+      // scroll reale (non smussato) e completa la rivelazione già al momento esatto in cui si entra
+      // nella scena, invece di richiederne altro dopo
+      const preDoc40 = smooth(clamp((scrollY-(sceneDoc40.offsetTop-innerHeight))/innerHeight,0,1));
+      const dcTitleIn    = Math.max(preDoc40, smooth(sub(s,0,.11)));    // blocco che si rivela tramite maschera centrale + leggero scale
       // hold leggibile [.11,.16]: nessuna variabile qui, il titolo resta fermo e dominante
-      const dcAccentIn   = smooth(sub(s,.085,.16));
+      const dcAccentIn   = Math.max(preDoc40, smooth(sub(s,.085,.16)));
       const dcTitleShift = smooth(sub(s,.215,.30));
       const dcSubIn      = smooth(sub(s,.315,.395));
       const dcParaIn     = smooth(sub(s,.395,.47));
@@ -702,16 +710,19 @@
         setQualityDefinition(clamp(Math.round(pos),0,qCount-1));
       }
       if(qualityMethod){
-        const methodOut=smooth(sub(s,.809,.897)); // il metodo esce tramite crop
+        const methodOut=smooth(sub(s,.809,.870)); // il metodo esce tramite crop — accorciato (era .897): il
+        // testo, ancorato a sinistra, spariva dal ritaglio molto prima che l'animazione finisse, lasciando
+        // un bianco vuoto per un lungo tratto (segnalato, stessa dinamica del vuoto nero fra Ecosistema e
+        // Documentation 4.0) — il ciclo dei quattro codici sopra (.501-.855) resta invariato
         qualityMethod.style.clipPath='inset(0 0 0 '+(methodOut*100).toFixed(1)+'%)';
       }
 
       // ---- scena 4 — chiusura: un campo nero (il layer stesso) sale sopra la carta, poi titolo,
-      // poi CTA — nessun box pieno, solo testo. Soglie spostate in avanti (stage allungato), stessa
-      // identica durata/ampiezza relativa di prima ----
-      if(qualityFinal) qualityFinal.style.transform='translateY('+lerp(100,0,smooth(sub(s,.910,.955))).toFixed(2)+'%)';
-      if(qualityFinalH) qualityFinalH.style.opacity=smooth(sub(s,.939,.959)).toFixed(3);
-      if(qualityCta) qualityCta.style.opacity=smooth(sub(s,.954,.969)).toFixed(3);
+      // poi CTA — nessun box pieno, solo testo. Soglie anticipate di .030 (erano .910/.939/.954) per
+      // chiudere il vuoto bianco sopra, stessa durata/ampiezza relativa di ciascun elemento ----
+      if(qualityFinal) qualityFinal.style.transform='translateY('+lerp(100,0,smooth(sub(s,.880,.925))).toFixed(2)+'%)';
+      if(qualityFinalH) qualityFinalH.style.opacity=smooth(sub(s,.909,.929)).toFixed(3);
+      if(qualityCta) qualityCta.style.opacity=smooth(sub(s,.924,.939)).toFixed(3);
     }
 
     // risposta diretta allo scroll, nessuno smoothing artificiale — stesso principio già richiesto e
