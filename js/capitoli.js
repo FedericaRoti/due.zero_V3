@@ -282,6 +282,8 @@
     let sP3=1; // progress corrente (scope condiviso con il gestore fullscreen); reduced motion resta a 1 (stabile, nessuna riscrittura inline)
     function render3(s){
       if(reduce) return; // reduced motion: la CSS dedicata mostra già mappa piena e outro disattivato, JS non tocca nulla
+      if(isTouch) return; // touch: geometria gestita solo dalla CSS statica dedicata (vedi sopra) — richiamata anche dall'uscita
+      // dal fullscreen (sotto), dove senza questa guardia scriverebbe stili inline che vincono su regole CSS prive di !important
       if(fsTarget && fsTarget.classList.contains('isFullscreen')) return; // in fullscreen il CSS (!important) comanda, render3 non scrive mai
       // fase 1 [0,.16]: da mappa contenuta a piena, animando left/top/width/height (mai scale, per non perdere nitidezza)
       const growT = smooth(sub(s,0,.16));

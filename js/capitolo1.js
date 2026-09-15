@@ -504,7 +504,7 @@
   // della sezione — segnalato). Stesso identico principio già in uso qui sotto per badgeDoc40:
   // si guida lo scroll esplicitamente via Lenis e si risincronizzano subito i moduli scroll-driven
   // interessati, altrimenti restano fermi al loro stato iniziale finché non arriva un vero scroll
-  function scrollToAnchor(id){
+  function goToAnchor(id){
     const target=document.getElementById(id);
     if(!target) return;
     if(lenisInstance) lenisInstance.scrollTo(target,{immediate:true});
@@ -513,6 +513,9 @@
     if(window.__snapScene2Instant) window.__snapScene2Instant();
     if(window.__snapScene3Instant) window.__snapScene3Instant();
     if(window.__snapQualityInstant) window.__snapQualityInstant();
+  }
+  function scrollToAnchor(id){
+    goToAnchor(id);
     history.pushState(null,'','#'+id);
   }
   document.addEventListener('click',e=>{
@@ -522,6 +525,13 @@
     if(!id || !document.getElementById(id)) return;
     e.preventDefault();
     scrollToAnchor(id);
+  });
+  // scrollRestoration='manual' (inizio file) disattiva il ripristino nativo del browser per QUALSIASI
+  // popstate, non solo per il reload — senza questo listener, premendo "indietro" tra le voci di history
+  // create da pushState sopra l'URL cambiava ma lo scroll restava fermo dov'era
+  addEventListener('popstate',()=>{
+    const id=location.hash.slice(1);
+    if(id && document.getElementById(id)) goToAnchor(id);
   });
   // rinominato da isMobileMenu: non è più "solo sotto 820px" — un dispositivo touch (hover:none o
   // pointer:coarse) attiva lo stesso comportamento "tocca per aprire" a QUALUNQUE larghezza, non solo
